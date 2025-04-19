@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using BusBuddy.Models;
 using BusBuddy.UI.Interfaces;
+using Serilog;
 
 namespace BusBuddy.UI.Forms
 {
@@ -15,55 +16,29 @@ namespace BusBuddy.UI.Forms
         private Timer? _autoRefreshTimer;
         private const string NoTripsMessage = "No scheduled trips for today";
         private const string TimeFormatPlaceholder = "--:--";
+        private readonly ILogger _logger = Log.Logger;
 
         public Welcome() : base(new MainFormNavigator())
         {
             InitializeComponent();
             _presenter = new WelcomePresenter(this);
-            
-            // Apply modern styling
-            ApplyModernStyling();
-            
-            Logger.Information("Welcome form initialized.");
-            UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
 
+            // Set window title
+            this.Text = "BusBuddy - School Bus Management System";
+            
             // Set current date
             dateTimeLabel.Text = DateTime.Now.ToString("MMMM d, yyyy");
             
-            // Setup refresh timer
+            _logger.Information("Welcome form initialized");
+            UpdateStatus("Ready", Color.Black);
+            
+            // Setup refresh timer (5 minutes)
             SetupRefreshTimer();
 
             // Load initial trips data
             LoadTripsData();
         }
-
-        private void ApplyModernStyling()
-        {
-            // Style the navigation buttons
-            foreach (Control control in navPanel.Controls)
-            {
-                if (control is Button button)
-                {
-                    button.MouseEnter += (sender, e) => button.BackColor = AppSettings.Theme.NavHoverColor;
-                    button.MouseLeave += (sender, e) => button.BackColor = AppSettings.Theme.NavBackgroundColor;
-                }
-            }
-
-            // Style the DataGridView for modern look
-            if (todaysActivitiesGrid != null)
-            {
-                todaysActivitiesGrid.BorderStyle = BorderStyle.None;
-                todaysActivitiesGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(250, 250, 252);
-                todaysActivitiesGrid.EnableHeadersVisualStyles = false;
-            }
-            
-            // Style the refresh button
-            refreshTodayButton.FlatAppearance.MouseOverBackColor = AppSettings.Theme.SecondaryColor;
-            
-            // Set form title
-            this.Text = "BusBuddy - Dashboard";
-        }
-
+        
         private void SetupRefreshTimer()
         {
             try
@@ -76,12 +51,12 @@ namespace BusBuddy.UI.Forms
                     };
                     _autoRefreshTimer.Tick += AutoRefreshTimer_Tick;
                     _autoRefreshTimer.Start();
-                    Logger.Information("Auto refresh timer started with interval {Interval}ms", _autoRefreshTimer.Interval);
+                    _logger.Information("Auto refresh timer started with interval {Interval}ms", _autoRefreshTimer.Interval);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Error setting up refresh timer: {ErrorMessage}", ex.Message);
+                _logger.Error(ex, "Error setting up refresh timer: {ErrorMessage}", ex.Message);
             }
         }
 
@@ -94,8 +69,8 @@ namespace BusBuddy.UI.Forms
         {
             try
             {
-                Logger.Information("Loading today's trips data");
-                UpdateStatus("Loading trips data...", AppSettings.Theme.InfoColor);
+                _logger.Information("Loading today's trips data");
+                UpdateStatus("Loading trips data...", Color.FromArgb(0, 99, 177));
                 
                 var todaysTrips = _presenter.GetTodaysTripsData();
                 DisplayTodaysTripsInGrid(todaysTrips);
@@ -104,12 +79,12 @@ namespace BusBuddy.UI.Forms
                 string stats = _presenter.GetDashboardStats();
                 statsLabel.Text = stats;
                 
-                UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
+                UpdateStatus("Ready", Color.Black);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Error loading trips data: {ErrorMessage}", ex.Message);
-                UpdateStatus("Error loading data.", AppSettings.Theme.ErrorColor);
+                _logger.Error(ex, "Error loading trips data: {ErrorMessage}", ex.Message);
+                UpdateStatus("Error loading data", Color.Red);
             }
         }
 
@@ -117,7 +92,7 @@ namespace BusBuddy.UI.Forms
         {
             if (trips == null)
             {
-                Logger.Warning("Trips list is null");
+                _logger.Warning("Trips list is null");
                 return;
             }
 
@@ -152,11 +127,11 @@ namespace BusBuddy.UI.Forms
                 todaysActivitiesGrid.DataSource = tripTable;
                 FormatGridColumns();
 
-                Logger.Information("Displayed {Count} trips in the grid", trips.Count);
+                _logger.Information("Displayed {Count} trips in the grid", trips.Count);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Error displaying trips in grid: {ErrorMessage}", ex.Message);
+                _logger.Error(ex, "Error displaying trips in grid: {ErrorMessage}", ex.Message);
             }
         }
 
@@ -166,7 +141,7 @@ namespace BusBuddy.UI.Forms
             noTrips.Columns.Add("Info", typeof(string));
             noTrips.Rows.Add(NoTripsMessage);
             todaysActivitiesGrid.DataSource = noTrips;
-            Logger.Information("No scheduled trips found for today");
+            _logger.Information("No scheduled trips found for today");
         }
 
         private void FormatGridColumns()
@@ -174,7 +149,13 @@ namespace BusBuddy.UI.Forms
             if (todaysActivitiesGrid.Columns == null || todaysActivitiesGrid.Columns.Count == 0)
                 return;
 
-            todaysActivitiesGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            todaysActivitiesGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            todaysActivitiesGrid.EnableHeadersVisualStyles = false;
+            todaysActivitiesGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 99, 177);
+            todaysActivitiesGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            todaysActivitiesGrid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            todaysActivitiesGrid.ColumnHeadersHeight = 30;
+            todaysActivitiesGrid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 215);
 
             if (todaysActivitiesGrid.Columns.Count <= 1)
                 return;
@@ -196,128 +177,149 @@ namespace BusBuddy.UI.Forms
             if (todaysActivitiesGrid?.Columns != null && 
                 todaysActivitiesGrid.Columns.Contains(columnName))
             {
-                // Use null-forgiving operator to tell compiler we've checked for null
                 todaysActivitiesGrid.Columns[columnName]!.Width = width;
             }
         }
 
-        private void refreshTodayButton_Click(object sender, EventArgs e)
+        public void UpdateStatus(string message, Color color)
         {
-            LoadTripsData();
+            if (statusLabel != null && !this.IsDisposed)
+            {
+                // Use BeginInvoke to ensure thread safety for UI updates
+                this.BeginInvoke(new Action(() =>
+                {
+                    statusLabel.ForeColor = color;
+                    statusLabel.Text = message;
+                }));
+            }
         }
 
-        // Navigation methods from your original code
+        // Navigation methods
         public void NavigateToInputs()
         {
-            Logger.Information("Navigating to Inputs.");
-            UpdateStatus("Opening Inputs...", AppSettings.Theme.InfoColor);
+            _logger.Information("Navigating to Inputs");
+            UpdateStatus("Opening Inputs...", Color.FromArgb(0, 99, 177));
             using (var inputsForm = new Inputs())
             {
                 inputsForm.ShowDialog();
             }
             LoadTripsData(); // Refresh data when returning from Inputs
-            UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
+            UpdateStatus("Ready", Color.Black);
         }
 
         public void NavigateToScheduler()
         {
-            Logger.Information("Navigating to Trip Scheduler.");
-            UpdateStatus("Opening Trip Scheduler...", AppSettings.Theme.InfoColor);
+            _logger.Information("Navigating to Trip Scheduler");
+            UpdateStatus("Opening Trip Scheduler...", Color.FromArgb(0, 99, 177));
             FormNavigator.NavigateTo("Trip Scheduler");
             LoadTripsData(); // Refresh data when returning from Scheduler
-            UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
+            UpdateStatus("Ready", Color.Black);
         }
 
         public void NavigateToFuelRecords()
         {
-            Logger.Information("Navigating to Fuel Records.");
-            UpdateStatus("Opening Fuel Records...", AppSettings.Theme.InfoColor);
+            _logger.Information("Navigating to Fuel Records");
+            UpdateStatus("Opening Fuel Records...", Color.FromArgb(0, 99, 177));
             FormNavigator.NavigateTo("Fuel Records");
-            UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
+            UpdateStatus("Ready", Color.Black);
         }
 
         public void NavigateToDriverManagement()
         {
-            Logger.Information("Navigating to Driver Management.");
-            UpdateStatus("Opening Driver Management...", AppSettings.Theme.InfoColor);
+            _logger.Information("Navigating to Driver Management");
+            UpdateStatus("Opening Driver Management...", Color.FromArgb(0, 99, 177));
             FormNavigator.NavigateTo("Driver Management");
-            UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
+            UpdateStatus("Ready", Color.Black);
         }
 
         public void NavigateToReports()
         {
-            Logger.Information("Navigating to Reports.");
-            UpdateStatus("Opening Reports...", AppSettings.Theme.InfoColor);
-            MessageBox.Show("Reports form not implemented yet.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
+            _logger.Information("Navigating to Reports");
+            UpdateStatus("Opening Reports...", Color.FromArgb(0, 99, 177));
+            MessageBox.Show("Reports form not implemented yet.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            UpdateStatus("Ready", Color.Black);
         }
 
         public void NavigateToSettings()
         {
-            Logger.Information("Navigating to Settings.");
-            UpdateStatus("Opening Settings...", AppSettings.Theme.InfoColor);
+            _logger.Information("Navigating to Settings");
+            UpdateStatus("Opening Settings...", Color.FromArgb(0, 99, 177));
             using (var settingsForm = new Settings())
             {
                 settingsForm.ShowDialog();
             }
-            UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
+            UpdateStatus("Ready", Color.Black);
+        }
+
+        // Event handlers for the UI buttons
+        private void refreshTodayButton_Click(object sender, EventArgs e)
+        {
+            _logger.Information("Refresh button clicked");
+            LoadTripsData();
+        }
+
+        private void InputsButton_Click(object sender, EventArgs e)
+        {
+            _logger.Information("Data Entry button clicked");
+            NavigateToInputs();
         }
 
         private void SchedulerButton_Click(object sender, EventArgs e)
         {
+            _logger.Information("Scheduler button clicked");
             NavigateToScheduler();
         }
 
         private void FuelButton_Click(object sender, EventArgs e)
         {
+            _logger.Information("Fuel button clicked");
             NavigateToFuelRecords();
         }
 
         private void DriverButton_Click(object sender, EventArgs e)
         {
+            _logger.Information("Driver button clicked");
             NavigateToDriverManagement();
         }
 
         private void ReportsButton_Click(object sender, EventArgs e)
         {
+            _logger.Information("Reports button clicked");
             NavigateToReports();
         }
 
         private void SettingsButton_Click(object sender, EventArgs e)
         {
+            _logger.Information("Settings button clicked");
             NavigateToSettings();
-        }
-
-        private void InputsButton_Click(object sender, EventArgs e)
-        {
-            NavigateToInputs();
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
         {
-            Logger.Information("Exit button clicked.");
+            _logger.Information("Exit button clicked");
             var result = MessageBox.Show("Are you sure you want to exit BusBuddy?", "Confirm Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                Logger.Information("Exiting application.");
+                _logger.Information("Exiting application");
                 Application.Exit();
             }
         }
 
         private void TestDbButton_Click(object sender, EventArgs e)
         {
+            _logger.Information("Test Database button clicked");
             try
             {
-                UpdateStatus("Testing database connection...", AppSettings.Theme.InfoColor);
+                UpdateStatus("Testing database connection...", Color.FromArgb(0, 99, 177));
                 var stats = _presenter.GetDashboardStats();
                 MessageBox.Show($"Database connection successful!\n\n{stats}", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                UpdateStatus("Database test completed.", AppSettings.Theme.SuccessColor);
+                UpdateStatus("Database test completed", Color.Green);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Database connection failed: {ErrorMessage}", ex.Message);
+                _logger.Error(ex, "Database connection failed: {ErrorMessage}", ex.Message);
                 MessageBox.Show($"Database connection failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                UpdateStatus("Database test failed.", AppSettings.Theme.ErrorColor);
+                UpdateStatus("Database test failed", Color.Red);
             }
         }
     }

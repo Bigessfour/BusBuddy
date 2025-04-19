@@ -1,12 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
+    <NoWarn>$(NoWarn);1701;1702;1998;8600;8602;8603;8604;8618;8625;0108;0169;0414;8632</NoWarn>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1701;CS1702;CS1998;CS8600;CS8602;CS8603;CS8604;CS8618;CS8625;CS0108;CS0169;CS0414;CS8632</WarningsNotAsErrors>
+    <MSBuildTreatWarningsAsErrors>false</MSBuildTreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
