@@ -21,6 +21,9 @@ namespace BusBuddy.UI.Forms
             InitializeComponent();
             _presenter = new WelcomePresenter(this);
             
+            // Apply modern styling
+            ApplyModernStyling();
+            
             Logger.Information("Welcome form initialized.");
             UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
 
@@ -32,6 +35,33 @@ namespace BusBuddy.UI.Forms
 
             // Load initial trips data
             LoadTripsData();
+        }
+
+        private void ApplyModernStyling()
+        {
+            // Style the navigation buttons
+            foreach (Control control in navPanel.Controls)
+            {
+                if (control is Button button)
+                {
+                    button.MouseEnter += (sender, e) => button.BackColor = AppSettings.Theme.NavHoverColor;
+                    button.MouseLeave += (sender, e) => button.BackColor = AppSettings.Theme.NavBackgroundColor;
+                }
+            }
+
+            // Style the DataGridView for modern look
+            if (todaysActivitiesGrid != null)
+            {
+                todaysActivitiesGrid.BorderStyle = BorderStyle.None;
+                todaysActivitiesGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(250, 250, 252);
+                todaysActivitiesGrid.EnableHeadersVisualStyles = false;
+            }
+            
+            // Style the refresh button
+            refreshTodayButton.FlatAppearance.MouseOverBackColor = AppSettings.Theme.SecondaryColor;
+            
+            // Set form title
+            this.Text = "BusBuddy - Dashboard";
         }
 
         private void SetupRefreshTimer()
