@@ -1,0 +1,1 @@
+- Added SonarCloud setup for master branch 
