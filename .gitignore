@@ -1,0 +1,39 @@
+# Build artifacts
+bin/
+obj/
+*.user
+*.suo
+*.vs
+*.pdb
+*.dll
+*.exe
+*.deps.json
+*.runtimeconfig.json
+*.cache
+*.log
+
+# Database
+*.db
+WileySchool.db
+
+# Logs
+logs/
+*.log
+
+# Executables
+*.exe
+
+# IDE-specific
+.vscode/
+.editorconfig
+
+# NuGet
+project.assets.json
+project.nuget.cache
+*.nuget.dgspec.json
+*.nuget.g.props
+*.nuget.g.targets
+
+# Responses
+responses/
+.fake
