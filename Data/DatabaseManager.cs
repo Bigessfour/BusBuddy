@@ -28,6 +28,10 @@ namespace BusBuddy.Data
             _connectionString = _configuration.GetConnectionString("DefaultConnection") ?? "Data Source=WileySchool.db;Version=3;";
         }
 
+        public DatabaseManager() : this(Log.Logger)
+        {
+        }
+
         private T ExecuteWithRetry<T>(Func<SQLiteConnection, T> operation, string operationName)
         {
             for (int attempt = 1; attempt <= AppSettings.Database.MaxRetries; attempt++)
@@ -85,6 +89,31 @@ namespace BusBuddy.Data
                 var trips = connection.Query<Trip>("SELECT TripID, TripType, Date, BusNumber, DriverName, StartTime, EndTime, Total_Hours_Driven FROM Trips").AsList();
                 return trips ?? new List<Trip>();
             }, "retrieve trips");
+        }
+
+        public List<Trip> GetTripsByDate(string date)
+        {
+            return ExecuteWithRetry(connection =>
+            {
+                var query = "SELECT TripID, TripType, Date, BusNumber, DriverName, StartTime, EndTime, Total_Hours_Driven, Destination FROM Trips WHERE Date = @Date";
+                var trips = connection.Query<Trip>(query, new { Date = date }).AsList();
+                return trips ?? new List<Trip>();
+            }, "retrieve trips by date");
+        }
+
+        public Dictionary<string, int> GetDatabaseStatistics()
+        {
+            return ExecuteWithRetry(connection =>
+            {
+                var stats = new Dictionary<string, int>
+                {
+                    ["Trips"] = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Trips"),
+                    ["Drivers"] = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Drivers"),
+                    ["Buses"] = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Vehicles"),
+                    ["FuelRecords"] = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Fuel")
+                };
+                return stats;
+            }, "retrieve database statistics");
         }
 
         public void AddTrip(Trip trip)

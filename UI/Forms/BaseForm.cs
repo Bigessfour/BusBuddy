@@ -14,7 +14,9 @@ namespace BusBuddy.UI.Forms
         protected readonly IFormNavigator FormNavigator;
         protected readonly FormFactory FormFactory;
         private bool _disposed;
-        private System.ComponentModel.IContainer components = null;
+        
+        // Initialize the components field properly
+        private System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         protected BaseForm() : this(new MainFormNavigator())
         {
