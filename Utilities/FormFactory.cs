@@ -1,4 +1,3 @@
-// BusBuddy/Utilities/FormFactory.cs
 using System;
 using System.Collections.Generic;
 using BusBuddy.UI.Forms;
@@ -13,7 +12,7 @@ namespace BusBuddy
         {
             _formCreators = new Dictionary<string, Func<BaseForm>>
             {
-                { "Trip Scheduler", () => new SchedulerForm() },
+                { "Trip Scheduler", () => new TripSchedulerForm() },
                 { "Fuel Records", () => new FuelForm() },
                 { "Driver Management", () => new DriverForm() },
                 { "Inputs", () => new Inputs() },

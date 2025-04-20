@@ -1,137 +1,64 @@
-// BusBuddy/UI/Forms/BaseForm.cs
 using System;
-using System.Linq;
+using System.Drawing;
 using System.Windows.Forms;
 using Serilog;
-using BusBuddy.UI.Interfaces;
+using System.ComponentModel;
+using BusBuddy.UI.Interfaces; // Changed to use the correct namespace for IFormNavigator
 
 namespace BusBuddy.UI.Forms
 {
     public class BaseForm : Form
     {
-        protected readonly ILogger Logger;
-        protected readonly ToolStripStatusLabel? StatusLabel; // Nullable to handle cases where not found
-        protected readonly IFormNavigator FormNavigator;
-        protected readonly FormFactory FormFactory;
-        private bool _disposed;
-        
-        // Initialize the components field properly
-        private System.ComponentModel.IContainer components = new System.ComponentModel.Container();
+        protected IFormNavigator FormNavigator { get; }
+        protected ILogger Logger { get; }
+        public ToolStripStatusLabel? statusLabel; // Make nullable with ? operator
+        private IContainer? components = null; // Already nullable with ?
 
-        protected BaseForm() : this(new MainFormNavigator())
+        public BaseForm(IFormNavigator navigator)
         {
+            FormNavigator = navigator ?? throw new ArgumentNullException(nameof(navigator));
+            Logger = Log.Logger;
         }
 
-        protected BaseForm(IFormNavigator formNavigator)
+        protected void UpdateStatus(string message, Color color)
         {
-            Logger = new LoggerConfiguration()
-                .WriteTo.Console()
-                .WriteTo.File("logs/busbuddy.log", rollingInterval: RollingInterval.Day)
-                .CreateLogger();
-
-            FormNavigator = formNavigator ?? throw new ArgumentNullException(nameof(formNavigator));
-            FormFactory = new FormFactory();
-
-            // Initialize status strip if not already present
-            var statusStrip = Controls.OfType<StatusStrip>().FirstOrDefault();
-            if (statusStrip == null)
+            if (statusLabel == null || this.IsDisposed)
             {
-                statusStrip = new StatusStrip
+                Logger.Warning("Cannot update status: statusLabel is null or form is disposed.");
+                return;
+            }
+
+            // Check if the form's handle is created before invoking
+            if (!this.IsHandleCreated)
+            {
+                Logger.Warning("Cannot update status: Form handle not created yet. Deferring update.");
+                // Defer the update until the form is loaded
+                this.Load += (s, e) =>
                 {
-                    SizingGrip = false,
-                    Dock = DockStyle.Bottom,
-                    BackColor = AppSettings.Theme.BackgroundColor
+                    UpdateStatus(message, color);
                 };
-                statusStrip.Items.Add(new ToolStripStatusLabel("Ready.") { Name = "statusLabel" });
-                Controls.Add(statusStrip);
+                return;
             }
-            StatusLabel = statusStrip.Items["statusLabel"] as ToolStripStatusLabel ?? statusStrip.Items[0] as ToolStripStatusLabel;
 
-            // Apply theme
-            BackColor = AppSettings.Theme.BackgroundColor;
-        }
-
-        protected void UpdateStatus(string message, System.Drawing.Color color)
-        {
-            if (StatusLabel != null)
+            // Use BeginInvoke to ensure thread safety for UI updates
+            this.BeginInvoke(new Action(() =>
             {
-                StatusLabel.Text = message;
-                StatusLabel.ForeColor = color;
-                Application.DoEvents();
-            }
-            else
-            {
-                Logger.Warning("StatusLabel is null; cannot update status: {Message}", message);
-            }
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                var result = MessageBox.Show("Are you sure you want to close this form?", "Confirm Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result != DialogResult.Yes)
+                if (!statusLabel.IsDisposed)
                 {
-                    e.Cancel = true;
-                    return;
+                    statusLabel.ForeColor = color;
+                    statusLabel.Text = message;
                 }
-            }
-
-            // Ensure all forms are closed and the application exits cleanly
-            try
-            {
-                foreach (Form form in Application.OpenForms.Cast<Form>().ToList())
-                {
-                    if (form != this)
-                    {
-                        form.Close();
-                    }
-                }
-                Logger.Information("All forms closed for {FormName}.", this.Name);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error closing forms: {ErrorMessage}", ex.Message);
-            }
-            finally
-            {
-                if (e.CloseReason == CloseReason.ApplicationExitCall)
-                {
-                    Environment.Exit(0); // Forcefully exit the process
-                }
-            }
+            }));
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (_disposed)
-                return;
-
-            try
+            if (disposing)
             {
-                if (disposing)
-                {
-                    // Dispose managed resources
-                    if (components != null)
-                    {
-                        components.Dispose();
-                    }
-                }
-
-                // Dispose unmanaged resources (if any)
-                // Currently none in this class
-
-                _disposed = true;
+                statusLabel?.Dispose();
+                components?.Dispose();
             }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error during disposal of BaseForm: {ErrorMessage}", ex.Message);
-            }
-            finally
-            {
-                base.Dispose(disposing);
-            }
+            base.Dispose(disposing);
         }
     }
 }

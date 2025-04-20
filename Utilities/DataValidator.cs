@@ -1,4 +1,3 @@
-// BusBuddy/DataValidator.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +59,32 @@ namespace BusBuddy
                 errors.Add("Driver Name is required.");
             if (string.IsNullOrWhiteSpace(driver.DL_Type))
                 errors.Add("DL Type is required.");
+
+            return (errors.Count == 0, errors);
+        }
+
+        public static (bool IsValid, List<string> Errors) ValidateActivity(ActivityTrip activity, List<string> drivers, List<int> busNumbers)
+        {
+            var errors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(activity.Date))
+                errors.Add("Date is required.");
+            if (activity.BusNumber == 0)
+                errors.Add("Bus Number is required.");
+            else if (!busNumbers.Contains(activity.BusNumber))
+                errors.Add("Invalid Bus Number.");
+            if (string.IsNullOrWhiteSpace(activity.Destination))
+                errors.Add("Destination is required.");
+            if (string.IsNullOrWhiteSpace(activity.LeaveTime) || !TimeSpan.TryParse(activity.LeaveTime, out _))
+                errors.Add("Leave Time must be in HH:mm format.");
+            if (string.IsNullOrWhiteSpace(activity.Driver))
+                errors.Add("Driver is required.");
+            else if (!drivers.Contains(activity.Driver))
+                errors.Add("Invalid Driver Name.");
+            if (string.IsNullOrWhiteSpace(activity.HoursDriven) || !TimeSpan.TryParse(activity.HoursDriven, out _))
+                errors.Add("Hours Driven must be in HH:mm format.");
+            if (activity.StudentsDriven < 0)
+                errors.Add("Students Driven must be a non-negative number.");
 
             return (errors.Count == 0, errors);
         }

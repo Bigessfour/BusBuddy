@@ -1,7 +1,9 @@
 // BusBuddy/MainFormNavigator.cs
 using System.Windows.Forms;
+using BusBuddy.UI.Interfaces; // Add self-reference for IFormNavigator
+using BusBuddy.Utilities; // For FormFactory
 
-namespace BusBuddy
+namespace BusBuddy.UI.Interfaces
 {
     public class MainFormNavigator : IFormNavigator
     {

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BusBuddy.API;
+using BusBuddy.UI.Interfaces;
 
 namespace BusBuddy.UI.Forms
 {

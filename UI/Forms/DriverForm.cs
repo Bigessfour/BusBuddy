@@ -1,125 +1,112 @@
-// BusBuddy/UI/Forms/DriverForm.cs
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using BusBuddy.Data;
 using BusBuddy.Models;
 using BusBuddy.Utilities;
+using BusBuddy.UI.Interfaces;
+using Serilog;
 
 namespace BusBuddy.UI.Forms
 {
     public partial class DriverForm : BaseForm
     {
         private readonly DatabaseManager _dbManager;
+        private readonly ILogger _logger;
 
         public DriverForm() : base(new MainFormNavigator())
         {
+            _dbManager = new DatabaseManager();
+            _logger = Log.Logger;
             InitializeComponent();
-            _dbManager = new DatabaseManager(Logger);
-            LoadDrivers();
+            LoadDriversDataGrid();
+
+            // Subscribe to Load event to ensure UI updates occur after form is loaded
+            this.Load += DriverForm_Load;
         }
 
-        private void LoadDrivers()
+        private void DriverForm_Load(object sender, EventArgs e)
+        {
+            UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
+        }
+
+        private void LoadDriversDataGrid()
         {
             try
             {
-                UpdateStatus("Loading driver records...", AppSettings.Theme.InfoColor);
+                UpdateStatus("Loading drivers...", AppSettings.Theme.InfoColor);
                 var drivers = _dbManager.GetDrivers();
-                dataGridView.DataSource = drivers;
-                UpdateStatus("Driver records loaded.", AppSettings.Theme.SuccessColor);
+                driversDataGridView.Rows.Clear();
+                foreach (var driver in drivers)
+                {
+                    driversDataGridView.Rows.Add(driver.DriverID, driver.Driver_Name, driver.Address, driver.City, driver.State, driver.Zip_Code, driver.Phone_Number, driver.Email_Address, driver.Is_Stipend_Paid, driver.DL_Type);
+                }
+                UpdateStatus("Drivers loaded.", AppSettings.Theme.SuccessColor);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Failed to load drivers: {ErrorMessage}", ex.Message);
+                _logger.Error(ex, "Error loading drivers: {ErrorMessage}", ex.Message);
                 UpdateStatus("Error loading drivers.", AppSettings.Theme.ErrorColor);
-                MessageBox.Show("Failed to load drivers.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error loading drivers: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private async void AddDriverButton_Click(object sender, EventArgs e)
+        private async void DriverAddButton_Click(object sender, EventArgs e)
         {
-            Logger.Information("Add Driver button clicked.");
-
-            // Map UI inputs to Driver model
-            var driver = MapInputsToDriver();
-            if (driver == null)
+            _logger.Information("Driver Add button clicked.");
+            var driver = new Driver
             {
-                UpdateStatus("Invalid input data.", AppSettings.Theme.ErrorColor);
-                return;
-            }
+                Driver_Name = driverNameTextBox.Text,
+                Address = driverAddressTextBox.Text,
+                City = driverCityTextBox.Text,
+                State = driverStateTextBox.Text,
+                Zip_Code = driverZipTextBox.Text,
+                Phone_Number = driverPhoneTextBox.Text,
+                Email_Address = driverEmailTextBox.Text,
+                Is_Stipend_Paid = driverStipendComboBox.Text,
+                DL_Type = driverDLTypeComboBox.Text
+            };
 
-            // Validate the driver data
             var (isValid, errors) = DataValidator.ValidateDriver(driver);
             if (!isValid)
             {
                 MessageBox.Show(string.Join("\n", errors), "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                UpdateStatus("Validation failed.", AppSettings.Theme.ErrorColor);
                 return;
             }
 
-            // Add the driver using DataManager
-            bool success = await DataManager.AddRecordAsync(
-                driver,
-                _dbManager.AddDriver,
-                Logger,
-                UpdateStatus
-            );
-
-            if (success)
-            {
-                LoadDrivers();
-                ClearInputs();
-                MessageBox.Show("Driver added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("Failed to add driver.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private Driver MapInputsToDriver()
-        {
             try
             {
-                return new Driver
-                {
-                    Driver_Name = driverNameTextBox.Text?.Trim() ?? string.Empty,
-                    Address = addressTextBox.Text?.Trim() ?? string.Empty,
-                    City = cityTextBox.Text?.Trim() ?? string.Empty,
-                    State = stateTextBox.Text?.Trim() ?? string.Empty,
-                    Zip_Code = zipCodeTextBox.Text?.Trim() ?? string.Empty,
-                    Phone_Number = phoneNumberTextBox.Text?.Trim() ?? string.Empty,
-                    Email_Address = emailTextBox.Text?.Trim() ?? string.Empty,
-                    Is_Stipend_Paid = isStipendPaidCheckBox.Checked ? "TRUE" : "FALSE",
-                    DL_Type = dlTypeTextBox.Text?.Trim() ?? string.Empty
-                };
+                UpdateStatus("Adding driver...", AppSettings.Theme.InfoColor);
+                await DataManager.AddRecordAsync(driver, _dbManager.AddDriver, _logger, UpdateStatus);
+                LoadDriversDataGrid();
+                ClearDriverInputs();
+                MessageBox.Show("Driver added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Failed to map inputs to Driver: {ErrorMessage}", ex.Message);
-                return null;
+                _logger.Error(ex, "Error adding driver: {ErrorMessage}", ex.Message);
+                UpdateStatus("Error adding driver.", AppSettings.Theme.ErrorColor);
+                MessageBox.Show($"Error adding driver: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void RefreshButton_Click(object sender, EventArgs e)
+        private void DriverClearButton_Click(object sender, EventArgs e)
         {
-            Logger.Information("Refresh button clicked.");
-            LoadDrivers();
+            _logger.Information("Driver Clear button clicked.");
+            ClearDriverInputs();
         }
 
-        private void ClearInputs()
+        private void ClearDriverInputs()
         {
             driverNameTextBox.Clear();
-            addressTextBox.Clear();
-            cityTextBox.Clear();
-            stateTextBox.Clear();
-            zipCodeTextBox.Clear();
-            phoneNumberTextBox.Clear();
-            emailTextBox.Clear();
-            isStipendPaidCheckBox.Checked = false;
-            dlTypeTextBox.Clear();
-            UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
+            driverAddressTextBox.Clear();
+            driverCityTextBox.Clear();
+            driverStateTextBox.Clear();
+            driverZipTextBox.Clear();
+            driverPhoneTextBox.Clear();
+            driverEmailTextBox.Clear();
+            driverStipendComboBox.SelectedIndex = -1;
+            driverDLTypeComboBox.SelectedIndex = -1;
+            UpdateStatus("Driver inputs cleared.", AppSettings.Theme.InfoColor);
         }
     }
 }

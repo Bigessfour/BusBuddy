@@ -68,6 +68,16 @@ CREATE TABLE IF NOT EXISTS "Vehicles" (
 	"Annual Inspection"	TEXT,
 	"Purchase Price"	TEXT
 );
+CREATE TABLE IF NOT EXISTS "Activities" (
+	"ActivityID"	INTEGER PRIMARY KEY AUTOINCREMENT,
+	"Date"	TEXT NOT NULL,
+	"BusNumber"	INTEGER NOT NULL,
+	"Destination"	TEXT NOT NULL,
+	"LeaveTime"	TEXT NOT NULL,
+	"Driver"	TEXT NOT NULL,
+	"HoursDriven"	TEXT,
+	"StudentsDriven"	INTEGER
+);
 INSERT INTO "Drivers" ("DriverID","Driver Name","Address","City","State","Zip Code","Phone Number","Email Address","Is Stipend Paid","DL Type") VALUES (4,'Sheilah Anderson',NULL,NULL,NULL,NULL,NULL,NULL,'FALSE','Passenger'),
  (5,'Tandy Bitner',NULL,NULL,NULL,NULL,NULL,NULL,'TRUE','Passenger'),
  (6,'Riley Brookshire',NULL,NULL,NULL,NULL,NULL,NULL,'FALSE','Passenger'),

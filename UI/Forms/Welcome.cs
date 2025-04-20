@@ -1,4 +1,3 @@
-// BusBuddy/UI/Forms/Welcome.cs
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,7 +12,7 @@ namespace BusBuddy.UI.Forms
     public partial class Welcome : BaseForm, IWelcomeView
     {
         private readonly WelcomePresenter _presenter;
-        private Timer? _autoRefreshTimer;
+        private System.Windows.Forms.Timer _autoRefreshTimer; // Fully qualified Timer type
         private const string NoTripsMessage = "No scheduled trips for today";
         private const string TimeFormatPlaceholder = "--:--";
         private readonly ILogger _logger = Log.Logger;
@@ -30,22 +29,27 @@ namespace BusBuddy.UI.Forms
             dateTimeLabel.Text = DateTime.Now.ToString("MMMM d, yyyy");
             
             _logger.Information("Welcome form initialized");
-            UpdateStatus("Ready", Color.Black);
             
             // Setup refresh timer (5 minutes)
             SetupRefreshTimer();
 
-            // Load initial trips data
+            // Subscribe to Load event for UI updates
+            Load += Welcome_Load;
+        }
+
+        private void Welcome_Load(object sender, EventArgs e)
+        {
+            UpdateStatus("Ready", Color.Black);
             LoadTripsData();
         }
-        
+
         private void SetupRefreshTimer()
         {
             try
             {
                 if (_autoRefreshTimer == null)
                 {
-                    _autoRefreshTimer = new Timer
+                    _autoRefreshTimer = new System.Windows.Forms.Timer
                     {
                         Interval = 5 * 60 * 1000 // 5 minutes
                     };
@@ -60,7 +64,7 @@ namespace BusBuddy.UI.Forms
             }
         }
 
-        private void AutoRefreshTimer_Tick(object? sender, EventArgs e)
+        private void AutoRefreshTimer_Tick(object sender, EventArgs e)
         {
             LoadTripsData();
         }
@@ -177,11 +181,11 @@ namespace BusBuddy.UI.Forms
             if (todaysActivitiesGrid?.Columns != null && 
                 todaysActivitiesGrid.Columns.Contains(columnName))
             {
-                todaysActivitiesGrid.Columns[columnName]!.Width = width;
+                todaysActivitiesGrid.Columns[columnName].Width = width;
             }
         }
 
-        public void UpdateStatus(string message, Color color)
+        public new void UpdateStatus(string message, Color color)
         {
             if (statusLabel != null && !this.IsDisposed)
             {

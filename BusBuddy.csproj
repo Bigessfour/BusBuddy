@@ -3,34 +3,66 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
-    <Nullable>disable</Nullable>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <NoWarn>$(NoWarn);1701;1702;1998;8600;8602;8603;8604;8618;8625;0108;0169;0414;8632</NoWarn>
-    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1701;CS1702;CS1998;CS8600;CS8602;CS8603;CS8604;CS8618;CS8625;CS0108;CS0169;CS0414;CS8632</WarningsNotAsErrors>
-    <MSBuildTreatWarningsAsErrors>false</MSBuildTreatWarningsAsErrors>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="WileySchool.db">
+    <Compile Include="Program.cs" />
+    <Compile Include="Data\DatabaseManager.cs" />
+    <Compile Include="Models\ActivityTrip.cs" />
+    <Compile Include="Models\Driver.cs" />
+    <Compile Include="Models\Fuel.cs" />
+    <Compile Include="Models\Trip.cs" />
+    <Compile Include="UI\Forms\BaseForm.cs" />
+    <Compile Include="UI\Forms\DriverForm.cs" />
+    <Compile Include="UI\Forms\DriverForm.Designer.cs" />
+    <Compile Include="UI\Forms\FuelForm.cs" />
+    <Compile Include="UI\Forms\FuelForm.Designer.cs" />
+    <Compile Include="UI\Forms\Inputs.cs" />
+    <Compile Include="UI\Forms\Inputs.Designer.cs" />
+    <Compile Include="UI\Forms\MainForm.cs" />
+    <Compile Include="UI\Forms\MainForm.Designer.cs" />
+    <Compile Include="UI\Forms\Settings.cs" />
+    <Compile Include="UI\Forms\TableColumnManager.cs" />
+    <Compile Include="UI\Forms\TripSchedulerForm.cs" />
+    <Compile Include="UI\Forms\Welcome.cs" />
+    <Compile Include="UI\Forms\Welcome.Designer.cs" />
+    <Compile Include="UI\Forms\WelcomePresenter.cs" />
+    <Compile Include="UI\Interfaces\IWelcomeView.cs" />
+    <Compile Include="UI\Interfaces\IFormNavigator.cs" />
+    <Compile Include="UI\Interfaces\MainFormNavigator.cs" />
+    <Compile Include="API\ApiClient.cs" />
+    <Compile Include="Utilities\AppSettings.cs" />
+    <Compile Include="Utilities\DataManager.cs" />
+    <Compile Include="Utilities\DataValidator.cs" />
+    <Compile Include="Utilities\FormFactory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Activity.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="app.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="app.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
 
 </Project>

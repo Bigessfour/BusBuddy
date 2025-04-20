@@ -1,4 +1,3 @@
-// BusBuddy/Data/DatabaseManager.cs
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -15,6 +14,7 @@ namespace BusBuddy.Data
         private readonly ILogger _logger;
         private readonly string _connectionString;
         private bool _disposed;
+        private const int CURRENT_SCHEMA_VERSION = 2; // Start with version 2 (assuming v1 is without Activities table)
 
         public DatabaseManager(ILogger logger)
         {
@@ -26,10 +26,189 @@ namespace BusBuddy.Data
                 .Build();
 
             _connectionString = _configuration.GetConnectionString("DefaultConnection") ?? "Data Source=WileySchool.db;Version=3;";
+            
+            // Ensure database schema is up to date
+            EnsureDatabaseUpdated();
         }
 
         public DatabaseManager() : this(Log.Logger)
         {
+        }
+
+        private void EnsureDatabaseUpdated()
+        {
+            try
+            {
+                // First ensure the database exists with basic structure
+                EnsureDatabaseExists();
+                
+                // Then check and upgrade the schema if needed
+                CheckAndUpgradeSchema();
+                
+                _logger.Information("Database schema is up to date");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error ensuring database is updated");
+                // Continue execution - we'll handle missing tables gracefully
+            }
+        }
+
+        public static void EnsureDatabaseExists()
+        {
+            string dbPath = "WileySchool.db";
+            if (!System.IO.File.Exists(dbPath))
+            {
+                SQLiteConnection.CreateFile(dbPath);
+                using (var connection = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+                {
+                    connection.Open();
+                    
+                    // Create schema version table first
+                    connection.Execute(@"
+                        CREATE TABLE IF NOT EXISTS SchemaVersion (
+                            Version INTEGER PRIMARY KEY,
+                            AppliedOn TEXT
+                        )");
+                    
+                    // Insert initial schema version
+                    connection.Execute("INSERT INTO SchemaVersion (Version, AppliedOn) VALUES (1, datetime('now'))");
+                    
+                    // Create necessary tables
+                    connection.Execute(@"
+                        CREATE TABLE IF NOT EXISTS Trips (
+                            TripID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            TripType TEXT,
+                            Date TEXT,
+                            BusNumber INTEGER,
+                            DriverName TEXT,
+                            StartTime TEXT,
+                            EndTime TEXT,
+                            Total_Hours_Driven TEXT,
+                            Destination TEXT
+                        )");
+                    connection.Execute(@"
+                        CREATE TABLE IF NOT EXISTS Drivers (
+                            DriverID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            ""Driver Name"" TEXT,
+                            Address TEXT,
+                            City TEXT,
+                            State TEXT,
+                            ""Zip Code"" TEXT,
+                            ""Phone Number"" TEXT,
+                            ""Email Address"" TEXT,
+                            ""Is Stipend Paid"" TEXT,
+                            ""DL Type"" TEXT
+                        )");
+                    connection.Execute(@"
+                        CREATE TABLE IF NOT EXISTS Vehicles (
+                            VehicleID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            ""Bus Number"" INTEGER
+                        )");
+                    connection.Execute(@"
+                        CREATE TABLE IF NOT EXISTS Fuel (
+                            Fuel_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            ""Bus Number"" INTEGER,
+                            ""Fuel Gallons"" INTEGER,
+                            ""Fuel Date"" TEXT,
+                            ""Fuel Type"" TEXT,
+                            ""Odometer Reading"" INTEGER
+                        )");
+                    connection.Execute(@"
+                        CREATE TABLE IF NOT EXISTS Activities (
+                            ActivityID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            Date TEXT,
+                            BusNumber INTEGER,
+                            Destination TEXT,
+                            LeaveTime TEXT,
+                            Driver TEXT,
+                            HoursDriven TEXT,
+                            StudentsDriven INTEGER
+                        )");
+                }
+                Log.Logger.Information("Database created at {Path}", dbPath);
+            }
+        }
+        
+        private void CheckAndUpgradeSchema() 
+        {
+            ExecuteWithRetry(connection => {
+                // Check if SchemaVersion table exists
+                var tableExists = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'SchemaVersion'");
+                
+                if (tableExists == 0) 
+                {
+                    // Create schema version table if it doesn't exist
+                    connection.Execute(@"
+                        CREATE TABLE IF NOT EXISTS SchemaVersion (
+                            Version INTEGER PRIMARY KEY,
+                            AppliedOn TEXT
+                        )");
+                    connection.Execute("INSERT INTO SchemaVersion (Version, AppliedOn) VALUES (1, datetime('now'))");
+                }
+                
+                // Get the current schema version
+                int currentVersion = connection.ExecuteScalar<int>("SELECT IFNULL(MAX(Version), 0) FROM SchemaVersion");
+                
+                // Apply upgrades sequentially
+                if (currentVersion < 2)
+                {
+                    _logger.Information("Upgrading database schema to version 2...");
+                    
+                    // Apply version 2 changes (add Activities table if it doesn't exist)
+                    connection.Execute(@"
+                        CREATE TABLE IF NOT EXISTS Activities (
+                            ActivityID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            Date TEXT,
+                            BusNumber INTEGER,
+                            Destination TEXT,
+                            LeaveTime TEXT,
+                            Driver TEXT,
+                            HoursDriven TEXT,
+                            StudentsDriven INTEGER
+                        )");
+                    
+                    // Record the upgrade
+                    connection.Execute("INSERT INTO SchemaVersion (Version, AppliedOn) VALUES (2, datetime('now'))");
+                    _logger.Information("Upgraded to schema version 2");
+                    
+                    currentVersion = 2;
+                }
+                
+                // Future upgrades would continue here with if (currentVersion < 3), etc.
+                
+                return currentVersion;
+            }, "check and upgrade database schema");
+        }
+        
+        public bool EnsureTableExists(string tableName, string creationSql)
+        {
+            try
+            {
+                return ExecuteWithRetry(connection => {
+                    var tableExists = connection.ExecuteScalar<int>(
+                        "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = @TableName", 
+                        new { TableName = tableName });
+                    
+                    if (tableExists == 0)
+                    {
+                        _logger.Information("Creating missing table: {TableName}", tableName);
+                        connection.Execute(creationSql);
+                        return true;
+                    }
+                    return false;
+                }, $"ensure table {tableName} exists");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error ensuring table {TableName} exists", tableName);
+                return false;
+            }
+        }
+
+        public static void Cleanup()
+        {
+            Log.Logger.Information("Database cleanup performed (no-op for SQLite).");
         }
 
         private T ExecuteWithRetry<T>(Func<SQLiteConnection, T> operation, string operationName)
@@ -105,15 +284,41 @@ namespace BusBuddy.Data
         {
             return ExecuteWithRetry(connection =>
             {
-                var stats = new Dictionary<string, int>
-                {
-                    ["Trips"] = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Trips"),
-                    ["Drivers"] = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Drivers"),
-                    ["Buses"] = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Vehicles"),
-                    ["FuelRecords"] = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Fuel")
-                };
+                var stats = new Dictionary<string, int>();
+                
+                // Add entries for tables we know exist
+                stats["Trips"] = TableRowCount(connection, "Trips");
+                stats["Drivers"] = TableRowCount(connection, "Drivers");
+                stats["Buses"] = TableRowCount(connection, "Vehicles");
+                stats["FuelRecords"] = TableRowCount(connection, "Fuel");
+                
+                // Try to get Activities count, but don't crash if table doesn't exist
+                stats["Activities"] = TableRowCount(connection, "Activities");
+                
                 return stats;
             }, "retrieve database statistics");
+        }
+        
+        private int TableRowCount(SQLiteConnection connection, string tableName)
+        {
+            try
+            {
+                // Check if table exists before querying row count
+                var tableExists = connection.ExecuteScalar<int>(
+                    "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = @TableName", 
+                    new { TableName = tableName });
+                    
+                if (tableExists > 0)
+                {
+                    return connection.ExecuteScalar<int>($"SELECT COUNT(*) FROM {tableName}");
+                }
+                return 0;
+            }
+            catch
+            {
+                // If there's any error, just return 0
+                return 0;
+            }
         }
 
         public void AddTrip(Trip trip)
@@ -193,14 +398,77 @@ namespace BusBuddy.Data
 
         public void LoadVehicleNumbers()
         {
-            // Placeholder for loading vehicle numbers, used by Inputs.cs
             _logger.Information("Loaded vehicle numbers (placeholder).");
         }
 
         public void LoadDriverNames()
         {
-            // Placeholder for loading driver names, used by Inputs.cs
             _logger.Information("Loaded driver names (placeholder).");
+        }
+
+        public List<ActivityTrip> GetActivities()
+        {
+            try
+            {
+                // Ensure Activities table exists before trying to query it
+                EnsureTableExists("Activities", @"
+                    CREATE TABLE IF NOT EXISTS Activities (
+                        ActivityID INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Date TEXT,
+                        BusNumber INTEGER,
+                        Destination TEXT,
+                        LeaveTime TEXT,
+                        Driver TEXT,
+                        HoursDriven TEXT,
+                        StudentsDriven INTEGER
+                    )");
+                    
+                return ExecuteWithRetry(connection =>
+                {
+                    var activities = connection.Query<ActivityTrip>("SELECT ActivityID, Date, BusNumber, Destination, LeaveTime, Driver, HoursDriven, StudentsDriven FROM Activities").AsList();
+                    return activities ?? new List<ActivityTrip>();
+                }, "retrieve activities");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error retrieving activities");
+                return new List<ActivityTrip>(); // Return empty list instead of crashing
+            }
+        }
+
+        public void AddActivity(ActivityTrip activity)
+        {
+            if (activity == null) throw new ArgumentNullException(nameof(activity));
+
+            try
+            {
+                // Ensure Activities table exists before trying to insert
+                EnsureTableExists("Activities", @"
+                    CREATE TABLE IF NOT EXISTS Activities (
+                        ActivityID INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Date TEXT,
+                        BusNumber INTEGER,
+                        Destination TEXT,
+                        LeaveTime TEXT,
+                        Driver TEXT,
+                        HoursDriven TEXT,
+                        StudentsDriven INTEGER
+                    )");
+                
+                ExecuteWithRetry(connection =>
+                {
+                    connection.Execute(
+                        "INSERT INTO Activities (Date, BusNumber, Destination, LeaveTime, Driver, HoursDriven, StudentsDriven) VALUES (@Date, @BusNumber, @Destination, @LeaveTime, @Driver, @HoursDriven, @StudentsDriven)",
+                        activity);
+                    _logger.Information("Activity added: {Destination} on {Date}", activity.Destination, activity.Date);
+                }, "add activity");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error adding activity {Destination} on {Date}", 
+                    activity.Destination, activity.Date);
+                throw; // Re-throw after logging
+            }
         }
 
         public void Dispose()

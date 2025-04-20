@@ -1,5 +1,5 @@
 // BusBuddy/IFormNavigator.cs
-namespace BusBuddy
+namespace BusBuddy.UI.Interfaces
 {
     public interface IFormNavigator
     {
