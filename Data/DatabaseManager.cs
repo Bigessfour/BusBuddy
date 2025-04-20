@@ -4,7 +4,7 @@ using System.Data.SQLite;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Serilog;
-using BusBuddy.Models;
+using BusBuddy.Models;  // Ensures Route, SchoolCalendarDay, and ScheduledRoute are accessible
 
 namespace BusBuddy.Data
 {
@@ -470,6 +470,279 @@ namespace BusBuddy.Data
                 throw; // Re-throw after logging
             }
         }
+
+        #region Routes Management
+        
+        public List<Route> GetRoutes()
+        {
+            // Ensure Routes table exists
+            EnsureTableExists("Routes", @"
+                CREATE TABLE IF NOT EXISTS Routes (
+                    RouteId INTEGER PRIMARY KEY AUTOINCREMENT,
+                    RouteName TEXT NOT NULL,
+                    DefaultBusNumber INTEGER NOT NULL,
+                    DefaultDriverName TEXT NOT NULL,
+                    Description TEXT,
+                    FOREIGN KEY (DefaultBusNumber) REFERENCES Vehicles (""Bus Number"")
+                )");
+                
+            return ExecuteWithRetry(connection =>
+            {
+                var routes = connection.Query<Route>("SELECT RouteId, RouteName, DefaultBusNumber, DefaultDriverName, Description FROM Routes").AsList();
+                return routes ?? new List<Route>();
+            }, "retrieve routes");
+        }
+
+        public Route GetRoute(int routeId)
+        {
+            return ExecuteWithRetry(connection =>
+            {
+                return connection.QueryFirstOrDefault<Route>(
+                    "SELECT RouteId, RouteName, DefaultBusNumber, DefaultDriverName, Description FROM Routes WHERE RouteId = @RouteId",
+                    new { RouteId = routeId });
+            }, "get route by id");
+        }
+
+        public void AddRoute(Route route)
+        {
+            if (route == null) throw new ArgumentNullException(nameof(route));
+
+            ExecuteWithRetry(connection =>
+            {
+                connection.Execute(
+                    "INSERT INTO Routes (RouteName, DefaultBusNumber, DefaultDriverName, Description) VALUES (@RouteName, @DefaultBusNumber, @DefaultDriverName, @Description)",
+                    route);
+                _logger.Information("Route added: {RouteName}", route.RouteName);
+            }, "add route");
+        }
+
+        public void UpdateRoute(Route route)
+        {
+            if (route == null) throw new ArgumentNullException(nameof(route));
+
+            ExecuteWithRetry(connection =>
+            {
+                connection.Execute(
+                    "UPDATE Routes SET RouteName = @RouteName, DefaultBusNumber = @DefaultBusNumber, DefaultDriverName = @DefaultDriverName, Description = @Description WHERE RouteId = @RouteId",
+                    route);
+                _logger.Information("Route updated: {RouteName}", route.RouteName);
+            }, "update route");
+        }
+
+        public void DeleteRoute(int routeId)
+        {
+            ExecuteWithRetry(connection =>
+            {
+                connection.Execute(
+                    "DELETE FROM Routes WHERE RouteId = @RouteId",
+                    new { RouteId = routeId });
+                _logger.Information("Route deleted: ID {RouteId}", routeId);
+            }, "delete route");
+        }
+        
+        #endregion
+
+        #region School Calendar Management
+        
+        public List<SchoolCalendarDay> GetSchoolCalendar(DateTime startDate, DateTime endDate)
+        {
+            // Ensure Calendar table exists
+            EnsureTableExists("SchoolCalendarDays", @"
+                CREATE TABLE IF NOT EXISTS SchoolCalendarDays (
+                    CalendarDayId INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Date TEXT NOT NULL,
+                    IsSchoolDay BOOLEAN NOT NULL DEFAULT 1,
+                    DayType TEXT NOT NULL DEFAULT 'Regular',
+                    Notes TEXT
+                )");
+                
+            return ExecuteWithRetry(connection =>
+            {
+                var calendar = connection.Query<SchoolCalendarDay>(@"
+                    SELECT 
+                        CalendarDayId,
+                        Date,
+                        IsSchoolDay,
+                        DayType,
+                        Notes
+                    FROM SchoolCalendarDays 
+                    WHERE Date BETWEEN @StartDate AND @EndDate
+                    ORDER BY Date",
+                    new { 
+                        StartDate = startDate.ToString("yyyy-MM-dd"), 
+                        EndDate = endDate.ToString("yyyy-MM-dd") 
+                    }).AsList();
+                
+                // For each calendar day, get its scheduled routes
+                foreach (var day in calendar)
+                {
+                    day.ActiveRouteIds = GetActiveRouteIdsForCalendarDay(connection, day.CalendarDayId);
+                }
+                
+                return calendar ?? new List<SchoolCalendarDay>();
+            }, "retrieve school calendar");
+        }
+
+        private List<int> GetActiveRouteIdsForCalendarDay(SQLiteConnection connection, int calendarDayId)
+        {
+            return connection.Query<int>(@"
+                SELECT RouteId 
+                FROM ScheduledRoutes 
+                WHERE CalendarDayId = @CalendarDayId",
+                new { CalendarDayId = calendarDayId }).AsList();
+        }
+
+        public SchoolCalendarDay GetCalendarDay(DateTime date)
+        {
+            return ExecuteWithRetry(connection =>
+            {
+                var day = connection.QueryFirstOrDefault<SchoolCalendarDay>(@"
+                    SELECT 
+                        CalendarDayId,
+                        Date,
+                        IsSchoolDay,
+                        DayType,
+                        Notes
+                    FROM SchoolCalendarDays 
+                    WHERE Date = @Date",
+                    new { Date = date.ToString("yyyy-MM-dd") });
+                
+                if (day != null)
+                {
+                    day.ActiveRouteIds = GetActiveRouteIdsForCalendarDay(connection, day.CalendarDayId);
+                }
+                
+                return day;
+            }, "get calendar day");
+        }
+
+        public int AddOrUpdateCalendarDay(SchoolCalendarDay day)
+        {
+            if (day == null) throw new ArgumentNullException(nameof(day));
+
+            return ExecuteWithRetry(connection =>
+            {
+                var existingDay = connection.QueryFirstOrDefault<SchoolCalendarDay>(@"
+                    SELECT CalendarDayId FROM SchoolCalendarDays WHERE Date = @Date",
+                    new { Date = day.Date.ToString("yyyy-MM-dd") });
+                
+                int calendarDayId;
+                
+                if (existingDay == null)
+                {
+                    // Insert new calendar day
+                    calendarDayId = connection.ExecuteScalar<int>(@"
+                        INSERT INTO SchoolCalendarDays (Date, IsSchoolDay, DayType, Notes)
+                        VALUES (@Date, @IsSchoolDay, @DayType, @Notes);
+                        SELECT last_insert_rowid();",
+                        new { 
+                            Date = day.Date.ToString("yyyy-MM-dd"),
+                            day.IsSchoolDay,
+                            day.DayType,
+                            day.Notes
+                        });
+                    _logger.Information("Calendar day added for {Date}", day.Date.ToString("yyyy-MM-dd"));
+                }
+                else
+                {
+                    // Update existing calendar day
+                    calendarDayId = existingDay.CalendarDayId;
+                    connection.Execute(@"
+                        UPDATE SchoolCalendarDays 
+                        SET IsSchoolDay = @IsSchoolDay, DayType = @DayType, Notes = @Notes
+                        WHERE CalendarDayId = @CalendarDayId",
+                        new {
+                            CalendarDayId = calendarDayId,
+                            day.IsSchoolDay,
+                            day.DayType,
+                            day.Notes
+                        });
+                    _logger.Information("Calendar day updated for {Date}", day.Date.ToString("yyyy-MM-dd"));
+                }
+                
+                // Clear existing scheduled routes
+                connection.Execute(@"DELETE FROM ScheduledRoutes WHERE CalendarDayId = @CalendarDayId",
+                    new { CalendarDayId = calendarDayId });
+                
+                // Add new scheduled routes
+                foreach (var routeId in day.ActiveRouteIds)
+                {
+                    // Get the default route info
+                    var route = connection.QueryFirstOrDefault<Route>(@"
+                        SELECT RouteId, DefaultBusNumber, DefaultDriverName
+                        FROM Routes
+                        WHERE RouteId = @RouteId",
+                        new { RouteId = routeId });
+                    
+                    if (route != null)
+                    {
+                        connection.Execute(@"
+                            INSERT INTO ScheduledRoutes 
+                            (CalendarDayId, RouteId, AssignedBusNumber, AssignedDriverName)
+                            VALUES 
+                            (@CalendarDayId, @RouteId, @AssignedBusNumber, @AssignedDriverName)",
+                            new {
+                                CalendarDayId = calendarDayId,
+                                RouteId = routeId,
+                                AssignedBusNumber = route.DefaultBusNumber,
+                                AssignedDriverName = route.DefaultDriverName
+                            });
+                    }
+                }
+                
+                return calendarDayId;
+            }, "add or update calendar day");
+        }
+        
+        #endregion
+
+        #region Scheduled Routes Management
+        
+        public List<ScheduledRoute> GetScheduledRoutes(DateTime date)
+        {
+            return ExecuteWithRetry(connection =>
+            {
+                var calendarDay = connection.QueryFirstOrDefault<SchoolCalendarDay>(@"
+                    SELECT CalendarDayId FROM SchoolCalendarDays WHERE Date = @Date",
+                    new { Date = date.ToString("yyyy-MM-dd") });
+                
+                if (calendarDay == null)
+                {
+                    return new List<ScheduledRoute>();
+                }
+                
+                var scheduledRoutes = connection.Query<ScheduledRoute>(@"
+                    SELECT 
+                        sr.ScheduledRouteId,
+                        sr.CalendarDayId,
+                        sr.RouteId,
+                        sr.AssignedBusNumber,
+                        sr.AssignedDriverName
+                    FROM ScheduledRoutes sr
+                    JOIN Routes r ON sr.RouteId = r.RouteId
+                    WHERE sr.CalendarDayId = @CalendarDayId",
+                    new { CalendarDayId = calendarDay.CalendarDayId }).AsList();
+                
+                return scheduledRoutes ?? new List<ScheduledRoute>();
+            }, "get scheduled routes for date");
+        }
+
+        public void UpdateScheduledRoute(ScheduledRoute scheduledRoute)
+        {
+            if (scheduledRoute == null) throw new ArgumentNullException(nameof(scheduledRoute));
+
+            ExecuteWithRetry(connection =>
+            {
+                connection.Execute(@"
+                    UPDATE ScheduledRoutes 
+                    SET AssignedBusNumber = @AssignedBusNumber, AssignedDriverName = @AssignedDriverName
+                    WHERE ScheduledRouteId = @ScheduledRouteId",
+                    scheduledRoute);
+                _logger.Information("Scheduled route updated: ID {ScheduledRouteId}", scheduledRoute.ScheduledRouteId);
+            }, "update scheduled route");
+        }
+        
+        #endregion
 
         public void Dispose()
         {

@@ -29,11 +29,27 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
         private Button addButton;
         private Button refreshButton;
         private StatusStrip statusStrip;
+        private TextBox destinationTextBox;
+        private Label destinationLabel;
+        private ToolStripStatusLabel statusLabel;
+        private string _tripCategory; // "Route" or "Activity"
 
         public TripSchedulerForm() : base(new MainFormNavigator())
         {
             _dbManager = new DatabaseManager();
             _logger = Log.Logger;
+            _tripCategory = "Regular";
+            InitializeComponent();
+
+            // Defer loading until the form is fully loaded
+            this.Load += TripSchedulerForm_Load;
+        }
+
+        public TripSchedulerForm(string tripCategory) : base(new MainFormNavigator())
+        {
+            _dbManager = new DatabaseManager();
+            _logger = Log.Logger;
+            _tripCategory = tripCategory; // "Route" or "Activity"
             InitializeComponent();
 
             // Defer loading until the form is fully loaded
@@ -48,7 +64,8 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
 
         private void InitializeComponent()
         {
-            this.Text = "Trip Scheduler";
+            // Set form title based on trip category
+            this.Text = _tripCategory == "Activity" ? "Activity Trip Scheduler" : "Route Trip Scheduler";
             this.Size = new System.Drawing.Size(800, 600);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -72,12 +89,14 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
             dataGridView.Columns.Add("BusNumber", "BusNumber");
             dataGridView.Columns.Add("DriverName", "DriverName");
             dataGridView.Columns.Add("StartTime", "StartTime");
+            dataGridView.Columns.Add("EndTime", "EndTime");
+            dataGridView.Columns.Add("Destination", "Destination");
             this.Controls.Add(dataGridView);
 
             // Form Section
             var inputGroupBox = new GroupBox
             {
-                Text = "Add New Trip",
+                Text = $"Add New {_tripCategory}",
                 Location = new System.Drawing.Point(10, 220),
                 Size = new System.Drawing.Size(760, 300),
                 BackColor = AppSettings.Theme.GroupBoxColor,
@@ -93,7 +112,16 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Font = AppSettings.Theme.DataFont
             };
-            tripTypeComboBox.Items.AddRange(new[] { "Regular", "Field Trip", "Charter" });
+
+            // Set different trip type options based on category
+            if (_tripCategory == "Activity")
+            {
+                tripTypeComboBox.Items.AddRange(new[] { "Field Trip", "Sports", "Competition", "Special Event" });
+            }
+            else // Route
+            {
+                tripTypeComboBox.Items.AddRange(new[] { "Morning Route", "Afternoon Route", "Special Needs", "Alternative" });
+            }
 
             var labelDate = new Label { Text = "Date:", Location = new System.Drawing.Point(10, 70), AutoSize = true, Font = AppSettings.Theme.LabelFont };
             datePicker = new DateTimePicker
@@ -101,7 +129,7 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
                 Location = new System.Drawing.Point(120, 67),
                 Size = new System.Drawing.Size(200, 30),
                 Format = DateTimePickerFormat.Short,
-                Value = new DateTime(2025, 4, 19),
+                Value = DateTime.Now,
                 Font = AppSettings.Theme.DataFont
             };
 
@@ -123,20 +151,28 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
                 Font = AppSettings.Theme.DataFont
             };
 
-            var labelStartTime = new Label { Text = "Start Time:", Location = new System.Drawing.Point(10, 190), AutoSize = true, Font = AppSettings.Theme.LabelFont };
-            startTimePicker = new DateTimePicker
+            destinationLabel = new Label { Text = "Destination:", Location = new System.Drawing.Point(10, 190), AutoSize = true, Font = AppSettings.Theme.LabelFont };
+            destinationTextBox = new TextBox
             {
                 Location = new System.Drawing.Point(120, 187),
+                Size = new System.Drawing.Size(200, 30),
+                Font = AppSettings.Theme.DataFont
+            };
+
+            var labelStartTime = new Label { Text = "Start Time:", Location = new System.Drawing.Point(350, 70), AutoSize = true, Font = AppSettings.Theme.LabelFont };
+            startTimePicker = new DateTimePicker
+            {
+                Location = new System.Drawing.Point(460, 67),
                 Size = new System.Drawing.Size(200, 30),
                 Format = DateTimePickerFormat.Time,
                 ShowUpDown = true,
                 Font = AppSettings.Theme.DataFont
             };
 
-            var labelEndTime = new Label { Text = "End Time:", Location = new System.Drawing.Point(10, 230), AutoSize = true, Font = AppSettings.Theme.LabelFont };
+            var labelEndTime = new Label { Text = "End Time:", Location = new System.Drawing.Point(350, 110), AutoSize = true, Font = AppSettings.Theme.LabelFont };
             endTimePicker = new DateTimePicker
             {
-                Location = new System.Drawing.Point(120, 227),
+                Location = new System.Drawing.Point(460, 107),
                 Size = new System.Drawing.Size(200, 30),
                 Format = DateTimePickerFormat.Time,
                 ShowUpDown = true,
@@ -147,7 +183,7 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
             addButton = new Button
             {
                 Text = "Add",
-                Location = new System.Drawing.Point(120, 267),
+                Location = new System.Drawing.Point(120, 230),
                 Size = new System.Drawing.Size(100, 35),
                 BackColor = AppSettings.Theme.SuccessColor,
                 ForeColor = AppSettings.Theme.TextLightColor,
@@ -159,8 +195,8 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
 
             refreshButton = new Button
             {
-                Text = "Refresh",
-                Location = new System.Drawing.Point(230, 267),
+                Text = "Clear",
+                Location = new System.Drawing.Point(230, 230),
                 Size = new System.Drawing.Size(100, 35),
                 BackColor = AppSettings.Theme.InfoColor,
                 ForeColor = AppSettings.Theme.TextLightColor,
@@ -184,9 +220,17 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
             };
             statusStrip.Items.Add(statusLabel);
 
-            inputGroupBox.Controls.AddRange(new Control[] { labelTripType, tripTypeComboBox, labelDate, datePicker, labelBusNumber,
-                busNumberComboBox, labelDriverName, driverNameComboBox, labelStartTime, startTimePicker,
-                labelEndTime, endTimePicker, addButton, refreshButton });
+            // Add controls to group box - using an array allows us to rearrange more easily
+            inputGroupBox.Controls.AddRange(new Control[] { 
+                labelTripType, tripTypeComboBox, 
+                labelDate, datePicker, 
+                labelBusNumber, busNumberComboBox, 
+                labelDriverName, driverNameComboBox, 
+                destinationLabel, destinationTextBox,
+                labelStartTime, startTimePicker,
+                labelEndTime, endTimePicker, 
+                addButton, refreshButton 
+            });
 
             this.Controls.AddRange(new Control[] { dataGridView, inputGroupBox, statusStrip });
 
@@ -222,20 +266,55 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
         {
             try
             {
-                UpdateStatus("Loading trips...", AppSettings.Theme.InfoColor);
-                var trips = _dbManager.GetTrips();
+                UpdateStatus($"Loading {_tripCategory.ToLower()} trips...", AppSettings.Theme.InfoColor);
+                var allTrips = _dbManager.GetTrips();
+
+                // Filter trips based on category
+                var filteredTrips = FilterTripsByCategory(allTrips);
+
                 dataGridView.Rows.Clear();
-                foreach (var trip in trips)
+                foreach (var trip in filteredTrips)
                 {
-                    dataGridView.Rows.Add(trip.TripID, trip.TripType, trip.Date, trip.BusNumber.ToString(), trip.DriverName, trip.StartTime);
+                    dataGridView.Rows.Add(
+                        trip.TripID, 
+                        trip.TripType, 
+                        trip.Date, 
+                        trip.BusNumber.ToString(), 
+                        trip.DriverName, 
+                        trip.StartTime,
+                        trip.EndTime,
+                        trip.Destination
+                    );
                 }
-                UpdateStatus("Trips loaded.", AppSettings.Theme.SuccessColor);
+                UpdateStatus($"{_tripCategory} trips loaded.", AppSettings.Theme.SuccessColor);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Unexpected error loading trips: {ErrorMessage}", ex.Message);
-                UpdateStatus("Error loading trips.", AppSettings.Theme.ErrorColor);
-                MessageBox.Show($"Unexpected error loading trips: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _logger.Error(ex, $"Unexpected error loading {_tripCategory.ToLower()} trips: {{ErrorMessage}}", ex.Message);
+                UpdateStatus($"Error loading {_tripCategory.ToLower()} trips.", AppSettings.Theme.ErrorColor);
+                MessageBox.Show($"Unexpected error loading {_tripCategory.ToLower()} trips: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private List<Trip> FilterTripsByCategory(List<Trip> allTrips)
+        {
+            if (_tripCategory == "Activity")
+            {
+                // Activity trips include Field Trip, Sports, Competition, Special Event
+                return allTrips.Where(t => 
+                    t.TripType == "Field Trip" || 
+                    t.TripType == "Sports" || 
+                    t.TripType == "Competition" || 
+                    t.TripType == "Special Event").ToList();
+            }
+            else // Route
+            {
+                // Route trips include Morning Route, Afternoon Route, Special Needs, Alternative
+                return allTrips.Where(t => 
+                    t.TripType == "Morning Route" || 
+                    t.TripType == "Afternoon Route" || 
+                    t.TripType == "Special Needs" || 
+                    t.TripType == "Alternative").ToList();
             }
         }
 
@@ -250,7 +329,8 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
                 BusNumber = int.TryParse(busNumberComboBox.Text, out int busNumber) ? busNumber : 0,
                 DriverName = driverNameComboBox.Text,
                 StartTime = startTimePicker.Value.ToString("HH:mm"),
-                EndTime = endTimePicker.Value.ToString("HH:mm")
+                EndTime = endTimePicker.Value.ToString("HH:mm"),
+                Destination = destinationTextBox.Text
             };
 
             // Validation
@@ -318,9 +398,10 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
         private void RefreshForm()
         {
             tripTypeComboBox.SelectedIndex = -1;
-            datePicker.Value = new DateTime(2025, 4, 19);
+            datePicker.Value = DateTime.Now;
             busNumberComboBox.SelectedIndex = -1;
             driverNameComboBox.SelectedIndex = -1;
+            destinationTextBox.Clear();
             startTimePicker.Value = DateTime.Now;
             endTimePicker.Value = DateTime.Now;
             UpdateStatus("Ready.", AppSettings.Theme.InfoColor);

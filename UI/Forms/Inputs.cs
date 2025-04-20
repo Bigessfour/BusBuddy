@@ -23,6 +23,7 @@ namespace BusBuddy.UI.Forms
             _dbManager = new DatabaseManager();
             _logger = Log.Logger;
             InitializeComponent();
+            
             LoadComboBoxData();
             LoadAllDataGrids();
 
@@ -83,7 +84,7 @@ namespace BusBuddy.UI.Forms
                 tripsDataGridView.Rows.Clear();
                 foreach (var trip in trips)
                 {
-                    tripsDataGridView.Rows.Add(trip.TripID, trip.TripType, trip.Date, trip.BusNumber.ToString(), trip.DriverName, trip.StartTime, trip.EndTime);
+                    tripsDataGridView.Rows.Add(trip.TripID, trip.TripType, trip.Date, trip.BusNumber.ToString(), trip.DriverName, trip.StartTime, trip.EndTime, trip.Destination);
                 }
                 UpdateStatus("Trips data loaded.", AppSettings.Theme.SuccessColor);
             }

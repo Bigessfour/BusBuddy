@@ -255,6 +255,30 @@ namespace BusBuddy.UI.Forms
             UpdateStatus("Ready", Color.Black);
         }
 
+        public void NavigateToRoutes()
+        {
+            _logger.Information("Navigating to Routes Management");
+            UpdateStatus("Opening Routes...", Color.FromArgb(0, 99, 177));
+            using (var routesForm = new ScheduledRoutesForm())
+            {
+                routesForm.ShowDialog();
+            }
+            LoadTripsData(); // Refresh data when returning from Routes
+            UpdateStatus("Ready", Color.Black);
+        }
+
+        public void NavigateToActivities()
+        {
+            _logger.Information("Navigating to Activities Management");
+            UpdateStatus("Opening Activities...", Color.FromArgb(0, 99, 177));
+            using (var tripSchedulerForm = new TripSchedulerForm("Activity"))
+            {
+                tripSchedulerForm.ShowDialog();
+            }
+            LoadTripsData(); // Refresh data when returning from Activities
+            UpdateStatus("Ready", Color.Black);
+        }
+
         // Event handlers for the UI buttons
         private void refreshTodayButton_Click(object sender, EventArgs e)
         {
@@ -325,6 +349,29 @@ namespace BusBuddy.UI.Forms
                 MessageBox.Show($"Database connection failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 UpdateStatus("Database test failed", Color.Red);
             }
+        }
+
+        private void RoutesButton_Click(object sender, EventArgs e)
+        {
+            _logger.Information("Routes button clicked");
+            NavigateToRoutes();
+        }
+
+        private void ActivitiesButton_Click(object sender, EventArgs e)
+        {
+            _logger.Information("Activities button clicked");
+            NavigateToActivities();
+        }
+
+        private void SchedulesButton_Click(object sender, EventArgs e)
+        {
+            _logger.Information("School Calendar button clicked");
+            UpdateStatus("Opening School Calendar...", Color.FromArgb(0, 99, 177));
+            using (var calendarForm = new SchoolCalendarForm())
+            {
+                calendarForm.ShowDialog();
+            }
+            UpdateStatus("Ready", Color.Black);
         }
     }
 }

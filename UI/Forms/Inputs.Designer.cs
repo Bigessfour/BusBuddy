@@ -171,6 +171,7 @@ namespace BusBuddy.UI.Forms
             this.tripsDataGridView.Columns.Add("DriverName", "DriverName");
             this.tripsDataGridView.Columns.Add("StartTime", "StartTime");
             this.tripsDataGridView.Columns.Add("EndTime", "EndTime");
+            this.tripsDataGridView.Columns.Add("Destination", "Destination");
 
             this.tripTypeLabel.Text = "Trip Type:";
             this.tripTypeLabel.Location = new System.Drawing.Point(10, 220);

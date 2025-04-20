@@ -69,10 +69,12 @@ namespace BusBuddy.UI.Forms
             this.buttonGroupBox3 = new System.Windows.Forms.GroupBox();
 
             // Button GroupBox 1 - Trip Management
-            this.startButton = new System.Windows.Forms.Button();
-            this.tripsButton = new System.Windows.Forms.Button();
+            this.routesButton = new System.Windows.Forms.Button();
+            this.activitiesButton = new System.Windows.Forms.Button();
+            this.schedulesButton = new System.Windows.Forms.Button();
 
             // Button GroupBox 2 - Fleet & Staff
+            this.dataEntryButton = new System.Windows.Forms.Button();
             this.vehiclesButton = new System.Windows.Forms.Button();
             this.fuelButton = new System.Windows.Forms.Button();
             this.maintenanceButton = new System.Windows.Forms.Button();
@@ -81,7 +83,6 @@ namespace BusBuddy.UI.Forms
             // Button GroupBox 3 - System & Reports
             this.reportsButton = new System.Windows.Forms.Button();
             this.settingsButton = new System.Windows.Forms.Button();
-            this.schedulesButton = new System.Windows.Forms.Button();
             this.testDbButton = new System.Windows.Forms.Button();
 
             this.headerPanel.SuspendLayout();
@@ -261,55 +262,79 @@ namespace BusBuddy.UI.Forms
             this.mainButtonsPanel.Controls.Add(this.buttonGroupBox2);
             this.mainButtonsPanel.Controls.Add(this.buttonGroupBox3);
 
-            // Button GroupBox 1 - Trip Management - 260x160 pixels
+            // Button GroupBox 1 - Trip Management - 260x200 pixels
             this.buttonGroupBox1.Text = "Trip Management";
             this.buttonGroupBox1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.buttonGroupBox1.Location = new System.Drawing.Point(20, 20);
-            this.buttonGroupBox1.Size = new System.Drawing.Size(260, 160);
+            this.buttonGroupBox1.Size = new System.Drawing.Size(260, 200);
             this.buttonGroupBox1.BackColor = System.Drawing.Color.WhiteSmoke;
             this.buttonGroupBox1.Name = "buttonGroupBox1";
-            this.buttonGroupBox1.Controls.Add(this.startButton);
-            this.buttonGroupBox1.Controls.Add(this.tripsButton);
+            this.buttonGroupBox1.Controls.Add(this.routesButton);
+            this.buttonGroupBox1.Controls.Add(this.activitiesButton);
+            this.buttonGroupBox1.Controls.Add(this.schedulesButton);
 
-            this.startButton.Text = "Data Entry";
-            this.startButton.BackColor = System.Drawing.Color.FromArgb(0, 122, 204);
-            this.startButton.ForeColor = System.Drawing.Color.White;
-            this.startButton.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
-            this.startButton.Location = new System.Drawing.Point(21, 32);
-            this.startButton.Size = new System.Drawing.Size(180, 45);
-            this.startButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.startButton.FlatAppearance.BorderSize = 0;
-            this.startButton.Name = "startButton";
-            this.startButton.Click += new System.EventHandler(this.InputsButton_Click);
+            this.routesButton.Text = "Routes";
+            this.routesButton.BackColor = System.Drawing.Color.FromArgb(0, 122, 204);
+            this.routesButton.ForeColor = System.Drawing.Color.White;
+            this.routesButton.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
+            this.routesButton.Location = new System.Drawing.Point(21, 32);
+            this.routesButton.Size = new System.Drawing.Size(180, 45);
+            this.routesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.routesButton.FlatAppearance.BorderSize = 0;
+            this.routesButton.Name = "routesButton";
+            this.routesButton.Click += new System.EventHandler(this.RoutesButton_Click);
 
-            this.tripsButton.Text = "Trips";
-            this.tripsButton.BackColor = System.Drawing.Color.FromArgb(80, 170, 220);
-            this.tripsButton.ForeColor = System.Drawing.Color.White;
-            this.tripsButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.tripsButton.Location = new System.Drawing.Point(21, 83);
-            this.tripsButton.Size = new System.Drawing.Size(180, 40);
-            this.tripsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tripsButton.FlatAppearance.BorderSize = 0;
-            this.tripsButton.Name = "tripsButton";
-            this.tripsButton.Click += new System.EventHandler(this.SchedulerButton_Click);
+            this.activitiesButton.Text = "Activities";
+            this.activitiesButton.BackColor = System.Drawing.Color.FromArgb(80, 170, 220);
+            this.activitiesButton.ForeColor = System.Drawing.Color.White;
+            this.activitiesButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.activitiesButton.Location = new System.Drawing.Point(21, 83);
+            this.activitiesButton.Size = new System.Drawing.Size(180, 40);
+            this.activitiesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.activitiesButton.FlatAppearance.BorderSize = 0;
+            this.activitiesButton.Name = "activitiesButton";
+            this.activitiesButton.Click += new System.EventHandler(this.ActivitiesButton_Click);
+
+            this.schedulesButton.Text = "School Calendar";
+            this.schedulesButton.BackColor = System.Drawing.Color.FromArgb(80, 170, 220);
+            this.schedulesButton.ForeColor = System.Drawing.Color.White;
+            this.schedulesButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.schedulesButton.Location = new System.Drawing.Point(21, 129);
+            this.schedulesButton.Size = new System.Drawing.Size(180, 40);
+            this.schedulesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.schedulesButton.FlatAppearance.BorderSize = 0;
+            this.schedulesButton.Name = "schedulesButton";
+            this.schedulesButton.Click += new System.EventHandler(this.SchedulesButton_Click);
 
             // Button GroupBox 2 - Fleet & Staff - 260x250 pixels
-            this.buttonGroupBox2.Text = "Fleet & Staff";
+            this.buttonGroupBox2.Text = "Vehicle Management";
             this.buttonGroupBox2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.buttonGroupBox2.Location = new System.Drawing.Point(320, 20);
             this.buttonGroupBox2.Size = new System.Drawing.Size(260, 250);
             this.buttonGroupBox2.BackColor = System.Drawing.Color.WhiteSmoke;
             this.buttonGroupBox2.Name = "buttonGroupBox2";
+            this.buttonGroupBox2.Controls.Add(this.dataEntryButton);
             this.buttonGroupBox2.Controls.Add(this.vehiclesButton);
             this.buttonGroupBox2.Controls.Add(this.fuelButton);
             this.buttonGroupBox2.Controls.Add(this.maintenanceButton);
             this.buttonGroupBox2.Controls.Add(this.driversButton);
 
+            this.dataEntryButton.Text = "Data Entry";
+            this.dataEntryButton.BackColor = System.Drawing.Color.FromArgb(0, 122, 204);
+            this.dataEntryButton.ForeColor = System.Drawing.Color.White;
+            this.dataEntryButton.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold);
+            this.dataEntryButton.Location = new System.Drawing.Point(21, 32);
+            this.dataEntryButton.Size = new System.Drawing.Size(180, 40);
+            this.dataEntryButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dataEntryButton.FlatAppearance.BorderSize = 0;
+            this.dataEntryButton.Name = "dataEntryButton";
+            this.dataEntryButton.Click += new System.EventHandler(this.InputsButton_Click);
+
             this.vehiclesButton.Text = "Vehicles";
             this.vehiclesButton.BackColor = System.Drawing.Color.FromArgb(80, 170, 220);
             this.vehiclesButton.ForeColor = System.Drawing.Color.White;
             this.vehiclesButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.vehiclesButton.Location = new System.Drawing.Point(21, 32);
+            this.vehiclesButton.Location = new System.Drawing.Point(21, 78);
             this.vehiclesButton.Size = new System.Drawing.Size(180, 40);
             this.vehiclesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.vehiclesButton.FlatAppearance.BorderSize = 0;
@@ -319,7 +344,7 @@ namespace BusBuddy.UI.Forms
             this.fuelButton.BackColor = System.Drawing.Color.FromArgb(80, 170, 220);
             this.fuelButton.ForeColor = System.Drawing.Color.White;
             this.fuelButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.fuelButton.Location = new System.Drawing.Point(21, 78);
+            this.fuelButton.Location = new System.Drawing.Point(21, 124);
             this.fuelButton.Size = new System.Drawing.Size(180, 40);
             this.fuelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.fuelButton.FlatAppearance.BorderSize = 0;
@@ -330,7 +355,7 @@ namespace BusBuddy.UI.Forms
             this.maintenanceButton.BackColor = System.Drawing.Color.FromArgb(80, 170, 220);
             this.maintenanceButton.ForeColor = System.Drawing.Color.White;
             this.maintenanceButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.maintenanceButton.Location = new System.Drawing.Point(21, 124);
+            this.maintenanceButton.Location = new System.Drawing.Point(21, 170);
             this.maintenanceButton.Size = new System.Drawing.Size(180, 40);
             this.maintenanceButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.maintenanceButton.FlatAppearance.BorderSize = 0;
@@ -340,7 +365,7 @@ namespace BusBuddy.UI.Forms
             this.driversButton.BackColor = System.Drawing.Color.FromArgb(80, 170, 220);
             this.driversButton.ForeColor = System.Drawing.Color.White;
             this.driversButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.driversButton.Location = new System.Drawing.Point(21, 170);
+            this.driversButton.Location = new System.Drawing.Point(21, 216);
             this.driversButton.Size = new System.Drawing.Size(180, 40);
             this.driversButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.driversButton.FlatAppearance.BorderSize = 0;
@@ -356,7 +381,6 @@ namespace BusBuddy.UI.Forms
             this.buttonGroupBox3.Name = "buttonGroupBox3";
             this.buttonGroupBox3.Controls.Add(this.reportsButton);
             this.buttonGroupBox3.Controls.Add(this.settingsButton);
-            this.buttonGroupBox3.Controls.Add(this.schedulesButton);
             this.buttonGroupBox3.Controls.Add(this.testDbButton);
 
             this.reportsButton.Text = "Reports";
@@ -380,17 +404,6 @@ namespace BusBuddy.UI.Forms
             this.settingsButton.FlatAppearance.BorderSize = 0;
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
-
-            this.schedulesButton.Text = "Schedules";
-            this.schedulesButton.BackColor = System.Drawing.Color.FromArgb(0, 122, 204);
-            this.schedulesButton.ForeColor = System.Drawing.Color.White;
-            this.schedulesButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.schedulesButton.Location = new System.Drawing.Point(21, 129);
-            this.schedulesButton.Size = new System.Drawing.Size(180, 40);
-            this.schedulesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.schedulesButton.FlatAppearance.BorderSize = 0;
-            this.schedulesButton.Name = "schedulesButton";
-            this.schedulesButton.Click += new System.EventHandler(this.SchedulerButton_Click);
 
             this.testDbButton.Text = "Test Database";
             this.testDbButton.BackColor = System.Drawing.Color.FromArgb(64, 64, 64);
@@ -464,9 +477,11 @@ namespace BusBuddy.UI.Forms
         private System.Windows.Forms.Label statsLabel;
         private System.Windows.Forms.Panel mainButtonsPanel;
         private System.Windows.Forms.GroupBox buttonGroupBox1;
-        private System.Windows.Forms.Button startButton;
-        private System.Windows.Forms.Button tripsButton;
+        private System.Windows.Forms.Button routesButton;
+        private System.Windows.Forms.Button activitiesButton;
+        private System.Windows.Forms.Button schedulesButton;
         private System.Windows.Forms.GroupBox buttonGroupBox2;
+        private System.Windows.Forms.Button dataEntryButton;
         private System.Windows.Forms.Button vehiclesButton;
         private System.Windows.Forms.Button fuelButton;
         private System.Windows.Forms.Button maintenanceButton;
@@ -474,7 +489,6 @@ namespace BusBuddy.UI.Forms
         private System.Windows.Forms.GroupBox buttonGroupBox3;
         private System.Windows.Forms.Button reportsButton;
         private System.Windows.Forms.Button settingsButton;
-        private System.Windows.Forms.Button schedulesButton;
         private System.Windows.Forms.Button testDbButton;
         private System.Windows.Forms.StatusStrip statusStrip;
         private new System.Windows.Forms.ToolStripStatusLabel statusLabel;
