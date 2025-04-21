@@ -1,5 +1,10 @@
 // BusBuddy/AppSettings.cs
+using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Text.Json;
+using System.Windows.Forms; // Required for Point and Size
 
 namespace BusBuddy
 {
@@ -50,6 +55,79 @@ namespace BusBuddy
             public static readonly Font ButtonFont = new Font("Segoe UI", 10F, FontStyle.Regular);
             public static readonly Font NavButtonFont = new Font("Segoe UI", 10.5F, FontStyle.Regular);
             public static readonly Font DataFont = new Font("Segoe UI", 9.5F);
+        }
+
+        public static class Layout
+        {
+            private static readonly string LayoutSettingsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.layout.json");
+            private static Dictionary<string, FormLayoutSettings> _formLayouts = new Dictionary<string, FormLayoutSettings>();
+
+            static Layout()
+            {
+                LoadLayoutSettings();
+            }
+
+            public class FormLayoutSettings
+            {
+                public Size FormSize { get; set; }
+                public Dictionary<string, Point> ControlLocations { get; set; } = new Dictionary<string, Point>();
+            }
+
+            public static FormLayoutSettings GetLayout(string formName)
+            {
+                _formLayouts.TryGetValue(formName, out var settings);
+                return settings; // Returns null if not found
+            }
+
+            public static void SaveLayout(string formName, Size formSize, Dictionary<string, Point> controlLocations)
+            {
+                if (string.IsNullOrEmpty(formName)) return;
+
+                var settings = new FormLayoutSettings
+                {
+                    FormSize = formSize,
+                    ControlLocations = controlLocations ?? new Dictionary<string, Point>()
+                };
+                _formLayouts[formName] = settings;
+                SaveLayoutSettingsToFile();
+            }
+
+            private static void LoadLayoutSettings()
+            {
+                try
+                {
+                    if (File.Exists(LayoutSettingsFile))
+                    {
+                        var json = File.ReadAllText(LayoutSettingsFile);
+                        _formLayouts = JsonSerializer.Deserialize<Dictionary<string, FormLayoutSettings>>(json) ?? new Dictionary<string, FormLayoutSettings>();
+                    }
+                    else
+                    {
+                        _formLayouts = new Dictionary<string, FormLayoutSettings>();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log error or handle gracefully - for now, just reset
+                    Console.WriteLine($"Error loading layout settings: {ex.Message}"); // Replace with proper logging if available
+                    _formLayouts = new Dictionary<string, FormLayoutSettings>();
+                }
+            }
+
+            private static void SaveLayoutSettingsToFile()
+            {
+                try
+                {
+                    var options = new JsonSerializerOptions { WriteIndented = true };
+                    var json = JsonSerializer.Serialize(_formLayouts, options);
+                    File.WriteAllText(LayoutSettingsFile, json);
+                }
+                catch (Exception ex)
+                {
+                    // Log error or handle gracefully
+                    Console.WriteLine($"Error saving layout settings: {ex.Message}"); // Replace with proper logging if available
+                }
+            }
         }
     }
 }

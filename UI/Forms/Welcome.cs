@@ -12,10 +12,15 @@ namespace BusBuddy.UI.Forms
     public partial class Welcome : BaseForm, IWelcomeView
     {
         private readonly WelcomePresenter _presenter;
-        private System.Windows.Forms.Timer _autoRefreshTimer; // Fully qualified Timer type
+        private System.Windows.Forms.Timer? _autoRefreshTimer; // Nullable to comply with SonarCloud
         private const string NoTripsMessage = "No scheduled trips for today";
         private const string TimeFormatPlaceholder = "--:--";
         private readonly ILogger _logger = Log.Logger;
+
+        // Fields for dragging controls
+        private bool _isDragging = false;
+        private Point _dragStartPoint;
+        private Control? _draggedControl = null; // Keep track of the control being dragged
 
         public Welcome() : base(new MainFormNavigator())
         {
@@ -28,26 +33,46 @@ namespace BusBuddy.UI.Forms
             // Set current date
             dateTimeLabel.Text = DateTime.Now.ToString("MMMM d, yyyy");
             
+            // Assign event handlers (assuming they might not be assigned in the designer)
+            AssignEventHandlers();
+
             _logger.Information("Welcome form initialized");
             
             // Setup refresh timer (5 minutes)
             SetupRefreshTimer();
 
-            // Subscribe to Load event for UI updates
+            // Subscribe to Load event for UI updates and drag setup
             Load += Welcome_Load;
+        }
+
+        private void AssignEventHandlers()
+        {
+            // Assign handlers from designer if not already done
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            this.tripsButton.Click += new System.EventHandler(this.tripsButton_Click);
+            this.fuelButton.Click += new System.EventHandler(this.fuelButton_Click);
+            this.driversButton.Click += new System.EventHandler(this.driversButton_Click);
+            this.reportsButton.Click += new System.EventHandler(this.reportsButton_Click);
+            this.schedulesButton.Click += new System.EventHandler(this.SchedulesButton_Click); // Keep original casing if designer uses it
+            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+            this.testDbButton.Click += new System.EventHandler(this.TestDbButton_Click); // Keep original casing
+            this.refreshTodayButton.Click += new System.EventHandler(this.refreshTodayButton_Click); // Keep original casing
+            this.exitButton.Click += new System.EventHandler(this.ExitButton_Click); // Keep original casing
         }
 
         private void Welcome_Load(object sender, EventArgs e)
         {
             UpdateStatus("Ready", Color.Black);
             LoadTripsData();
+            SetupDraggableControls(); // Call setup for drag handlers
         }
 
         private void SetupRefreshTimer()
         {
             try
             {
-                if (_autoRefreshTimer == null)
+                // SonarCloud compliant null check
+                if (_autoRefreshTimer is null)
                 {
                     _autoRefreshTimer = new System.Windows.Forms.Timer
                     {
@@ -118,13 +143,21 @@ namespace BusBuddy.UI.Forms
 
                 foreach (var trip in trips)
                 {
+                    // SonarCloud compliant null handling
+                    string tripType = trip.TripType ?? "Unknown";
+                    string destination = trip.Destination ?? "Unspecified";
+                    string startTime = trip.StartTime.ToString() != "00:00" ? trip.StartTime.ToString() : TimeFormatPlaceholder;
+                    string endTime = trip.EndTime.ToString() != "00:00" ? trip.EndTime.ToString() : TimeFormatPlaceholder;
+                    string driverName = trip.DriverName ?? "Unassigned";
+                    string busNumber = trip.BusNumber.ToString();
+                    
                     tripTable.Rows.Add(
-                        trip.TripType ?? "Unknown",
-                        trip.Destination ?? "Unspecified",
-                        trip.StartTime ?? TimeFormatPlaceholder,
-                        trip.EndTime ?? TimeFormatPlaceholder,
-                        trip.DriverName ?? "Unassigned",
-                        trip.BusNumber.ToString() ?? "N/A"
+                        tripType,
+                        destination,
+                        startTime,
+                        endTime,
+                        driverName,
+                        busNumber
                     );
                 }
 
@@ -150,16 +183,27 @@ namespace BusBuddy.UI.Forms
 
         private void FormatGridColumns()
         {
-            if (todaysActivitiesGrid.Columns == null || todaysActivitiesGrid.Columns.Count == 0)
+            // SonarCloud compliant null check with pattern matching
+            if (todaysActivitiesGrid.Columns is null || todaysActivitiesGrid.Columns.Count == 0)
                 return;
 
             todaysActivitiesGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             todaysActivitiesGrid.EnableHeadersVisualStyles = false;
-            todaysActivitiesGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 99, 177);
-            todaysActivitiesGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            todaysActivitiesGrid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            
+            // Ensure cell style objects are not null before accessing
+            if (todaysActivitiesGrid.ColumnHeadersDefaultCellStyle is not null)
+            {
+                todaysActivitiesGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 99, 177);
+                todaysActivitiesGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+                todaysActivitiesGrid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            }
+            
             todaysActivitiesGrid.ColumnHeadersHeight = 30;
-            todaysActivitiesGrid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 215);
+            
+            if (todaysActivitiesGrid.DefaultCellStyle is not null)
+            {
+                todaysActivitiesGrid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 120, 215);
+            }
 
             if (todaysActivitiesGrid.Columns.Count <= 1)
                 return;
@@ -178,7 +222,9 @@ namespace BusBuddy.UI.Forms
 
         private void SetColumnWidth(string columnName, int width)
         {
-            if (todaysActivitiesGrid?.Columns != null && 
+            // SonarCloud compliant null check with pattern matching
+            if (todaysActivitiesGrid?.Columns is not null && 
+                !string.IsNullOrEmpty(columnName) &&
                 todaysActivitiesGrid.Columns.Contains(columnName))
             {
                 todaysActivitiesGrid.Columns[columnName].Width = width;
@@ -187,28 +233,105 @@ namespace BusBuddy.UI.Forms
 
         public new void UpdateStatus(string message, Color color)
         {
-            if (statusLabel != null && !this.IsDisposed)
+            // SonarCloud compliant null check and thread safety
+            if (statusLabel is not null && !this.IsDisposed)
             {
                 // Use BeginInvoke to ensure thread safety for UI updates
                 this.BeginInvoke(new Action(() =>
                 {
                     statusLabel.ForeColor = color;
-                    statusLabel.Text = message;
+                    statusLabel.Text = message ?? string.Empty; // Null-safe assignment
                 }));
             }
         }
 
-        // Navigation methods
-        public void NavigateToInputs()
+        private void SetupDraggableControls()
         {
-            _logger.Information("Navigating to Inputs");
-            UpdateStatus("Opening Inputs...", Color.FromArgb(0, 99, 177));
-            using (var inputsForm = new Inputs())
+            // Make group boxes draggable
+            AttachDragEvents(buttonGroupBox1);
+            AttachDragEvents(buttonGroupBox2);
+            AttachDragEvents(buttonGroupBox3);
+        }
+
+        private void AttachDragEvents(Control control)
+        {
+            control.MouseDown += Control_MouseDown;
+            control.MouseMove += Control_MouseMove;
+            control.MouseUp += Control_MouseUp;
+            // Also attach to children if you want dragging by clicking inside the groupbox
+            foreach (Control child in control.Controls)
             {
-                inputsForm.ShowDialog();
+                 // Be careful not to attach to controls that need their own mouse events (like buttons)
+                 if (!(child is Button)) // Example: Don't attach to buttons
+                 {
+                    child.MouseDown += Control_MouseDown;
+                    child.MouseMove += Control_MouseMove;
+                    child.MouseUp += Control_MouseUp;
+                 }
             }
-            LoadTripsData(); // Refresh data when returning from Inputs
-            UpdateStatus("Ready", Color.Black);
+        }
+
+        private void Control_MouseDown(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                _isDragging = true;
+                // If the sender is a child control, get the parent groupbox
+                _draggedControl = sender as Control;
+                if (_draggedControl != null && !(_draggedControl is GroupBox))
+                {
+                    _draggedControl = _draggedControl.Parent;
+                }
+
+                if (_draggedControl != null)
+                {
+                    // Calculate offset from the control's top-left corner
+                    _dragStartPoint = new Point(e.X, e.Y);
+                    _draggedControl.Cursor = Cursors.SizeAll; // Change cursor to indicate dragging
+                    _draggedControl.BringToFront(); // Bring the dragged control to the front
+                }
+            }
+        }
+
+        private void Control_MouseMove(object? sender, MouseEventArgs e)
+        {
+            if (_isDragging && _draggedControl != null)
+            {
+                // Calculate the new location of the control
+                Point currentScreenPos = _draggedControl.PointToScreen(new Point(e.X, e.Y));
+                // Need parent's coordinate system
+                Point parentClientPos = _draggedControl.Parent.PointToClient(currentScreenPos);
+
+                // Calculate new top-left corner, considering the drag start offset
+                int newX = parentClientPos.X - _dragStartPoint.X;
+                int newY = parentClientPos.Y - _dragStartPoint.Y;
+
+                // Optional: Add boundary checks if needed
+                // newX = Math.Max(0, Math.Min(newX, _draggedControl.Parent.ClientSize.Width - _draggedControl.Width));
+                // newY = Math.Max(0, Math.Min(newY, _draggedControl.Parent.ClientSize.Height - _draggedControl.Height));
+
+                _draggedControl.Location = new Point(newX, newY);
+            }
+        }
+
+        private void Control_MouseUp(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                _isDragging = false;
+                if (_draggedControl != null)
+                {
+                    _draggedControl.Cursor = Cursors.Default; // Restore default cursor
+                }
+                _draggedControl = null;
+            }
+        }
+
+        // Navigation methods
+        public void NavigateToInputs() // Added to satisfy IWelcomeView
+        {
+            _logger.Warning("NavigateToInputs called, but the corresponding UI element does not exist.");
+            // Or throw new NotImplementedException("Inputs UI element not found.");
         }
 
         public void NavigateToScheduler()
@@ -258,7 +381,6 @@ namespace BusBuddy.UI.Forms
         public void NavigateToRoutes()
         {
             _logger.Information("Navigating to Routes Management");
-            UpdateStatus("Opening Routes...", Color.FromArgb(0, 99, 177));
             using (var routesForm = new ScheduledRoutesForm())
             {
                 routesForm.ShowDialog();
@@ -267,56 +389,44 @@ namespace BusBuddy.UI.Forms
             UpdateStatus("Ready", Color.Black);
         }
 
-        public void NavigateToActivities()
-        {
-            _logger.Information("Navigating to Activities Management");
-            UpdateStatus("Opening Activities...", Color.FromArgb(0, 99, 177));
-            using (var tripSchedulerForm = new TripSchedulerForm("Activity"))
-            {
-                tripSchedulerForm.ShowDialog();
-            }
-            LoadTripsData(); // Refresh data when returning from Activities
-            UpdateStatus("Ready", Color.Black);
-        }
+        // Event handlers for the UI buttons - Renamed to match designer controls
 
-        // Event handlers for the UI buttons
         private void refreshTodayButton_Click(object sender, EventArgs e)
         {
             _logger.Information("Refresh button clicked");
             LoadTripsData();
         }
 
-        private void InputsButton_Click(object sender, EventArgs e)
+        // Renamed from SchedulerButton_Click, assigned to startButton
+        private void startButton_Click(object sender, EventArgs e)
         {
-            _logger.Information("Data Entry button clicked");
-            NavigateToInputs();
+            _logger.Information("Manage Bus Routes button clicked");
+            NavigateToRoutes(); // Changed from NavigateToScheduler() to NavigateToRoutes()
         }
 
-        private void SchedulerButton_Click(object sender, EventArgs e)
-        {
-            _logger.Information("Scheduler button clicked");
-            NavigateToScheduler();
-        }
-
-        private void FuelButton_Click(object sender, EventArgs e)
+        // Renamed from FuelButton_Click
+        private void fuelButton_Click(object sender, EventArgs e)
         {
             _logger.Information("Fuel button clicked");
             NavigateToFuelRecords();
         }
 
-        private void DriverButton_Click(object sender, EventArgs e)
+        // Renamed from DriverButton_Click
+        private void driversButton_Click(object sender, EventArgs e)
         {
-            _logger.Information("Driver button clicked");
+            _logger.Information("Drivers button clicked");
             NavigateToDriverManagement();
         }
 
-        private void ReportsButton_Click(object sender, EventArgs e)
+        // Renamed from ReportsButton_Click
+        private void reportsButton_Click(object sender, EventArgs e)
         {
             _logger.Information("Reports button clicked");
             NavigateToReports();
         }
 
-        private void SettingsButton_Click(object sender, EventArgs e)
+        // Renamed from SettingsButton_Click
+        private void settingsButton_Click(object sender, EventArgs e)
         {
             _logger.Information("Settings button clicked");
             NavigateToSettings();
@@ -351,18 +461,14 @@ namespace BusBuddy.UI.Forms
             }
         }
 
-        private void RoutesButton_Click(object sender, EventArgs e)
+        // Renamed from RoutesButton_Click, assigned to tripsButton
+        private void tripsButton_Click(object sender, EventArgs e)
         {
-            _logger.Information("Routes button clicked");
-            NavigateToRoutes();
+            _logger.Information("Manage Trips button clicked");
+            NavigateToRoutes(); // Assuming Manage Trips opens Routes Management
         }
 
-        private void ActivitiesButton_Click(object sender, EventArgs e)
-        {
-            _logger.Information("Activities button clicked");
-            NavigateToActivities();
-        }
-
+        // Keep original name as it matches designer
         private void SchedulesButton_Click(object sender, EventArgs e)
         {
             _logger.Information("School Calendar button clicked");

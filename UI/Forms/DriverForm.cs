@@ -15,8 +15,8 @@ namespace BusBuddy.UI.Forms
 
         public DriverForm() : base(new MainFormNavigator())
         {
-            _dbManager = new DatabaseManager();
             _logger = Log.Logger;
+            _dbManager = new DatabaseManager(_logger);
             InitializeComponent();
             LoadDriversDataGrid();
 
@@ -53,7 +53,7 @@ namespace BusBuddy.UI.Forms
         private async void DriverAddButton_Click(object sender, EventArgs e)
         {
             _logger.Information("Driver Add button clicked.");
-            var driver = new Driver
+            var driver = new BusBuddy.Models.Driver
             {
                 Driver_Name = driverNameTextBox.Text,
                 Address = driverAddressTextBox.Text,
@@ -76,7 +76,7 @@ namespace BusBuddy.UI.Forms
             try
             {
                 UpdateStatus("Adding driver...", AppSettings.Theme.InfoColor);
-                await DataManager.AddRecordAsync(driver, _dbManager.AddDriver, _logger, UpdateStatus);
+                await DataManager.AddDriverAsync(driver, _dbManager, _logger, UpdateStatus);
                 LoadDriversDataGrid();
                 ClearDriverInputs();
                 MessageBox.Show("Driver added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);

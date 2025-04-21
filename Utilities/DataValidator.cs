@@ -13,7 +13,7 @@ namespace BusBuddy
 
             if (string.IsNullOrWhiteSpace(trip.TripType))
                 errors.Add("Trip Type is required.");
-            if (string.IsNullOrWhiteSpace(trip.Date))
+            if (trip.Date == default)
                 errors.Add("Date is required.");
             if (string.IsNullOrWhiteSpace(trip.DriverName))
                 errors.Add("Driver Name is required.");
@@ -23,10 +23,12 @@ namespace BusBuddy
                 errors.Add("Bus Number is required.");
             else if (!busNumbers.Contains(trip.BusNumber))
                 errors.Add("Invalid Bus Number.");
-            if (string.IsNullOrWhiteSpace(trip.StartTime) || !TimeSpan.TryParse(trip.StartTime, out _))
-                errors.Add("Start Time must be in HH:mm format.");
-            if (string.IsNullOrWhiteSpace(trip.EndTime) || !TimeSpan.TryParse(trip.EndTime, out _))
-                errors.Add("End Time must be in HH:mm format.");
+            if (trip.StartTime == default)
+                errors.Add("Start Time is required.");
+            if (trip.EndTime == default)
+                errors.Add("End Time is required.");
+            if (string.IsNullOrWhiteSpace(trip.Destination))
+                errors.Add("Destination is required.");
 
             return (errors.Count == 0, errors);
         }

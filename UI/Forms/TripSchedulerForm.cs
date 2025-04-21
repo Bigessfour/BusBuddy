@@ -33,11 +33,16 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
         private Label destinationLabel;
         private ToolStripStatusLabel statusLabel;
         private string _tripCategory; // "Route" or "Activity"
+        private Label hoursLabel; // For activity trips
+        private TextBox hoursTextBox; // For activity trips
+        private Label milesLabel; // For activity trips with stipend
+        private TextBox milesTextBox; // For activity trips with stipend  
+        private CheckBox cdlRouteCheckBox; // For route trips
 
         public TripSchedulerForm() : base(new MainFormNavigator())
         {
-            _dbManager = new DatabaseManager();
             _logger = Log.Logger;
+            _dbManager = new DatabaseManager(_logger);
             _tripCategory = "Regular";
             InitializeComponent();
 
@@ -47,8 +52,8 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
 
         public TripSchedulerForm(string tripCategory) : base(new MainFormNavigator())
         {
-            _dbManager = new DatabaseManager();
             _logger = Log.Logger;
+            _dbManager = new DatabaseManager(_logger);
             _tripCategory = tripCategory; // "Route" or "Activity"
             InitializeComponent();
 
@@ -90,6 +95,7 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
             dataGridView.Columns.Add("DriverName", "DriverName");
             dataGridView.Columns.Add("StartTime", "StartTime");
             dataGridView.Columns.Add("EndTime", "EndTime");
+            dataGridView.Columns.Add("TotalHours", "Hours"); // Added hours column
             dataGridView.Columns.Add("Destination", "Destination");
             this.Controls.Add(dataGridView);
 
@@ -179,6 +185,38 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
                 Font = AppSettings.Theme.DataFont
             };
 
+            // Added for activity trips
+            hoursLabel = new Label { Text = "Hours Driven:", Location = new System.Drawing.Point(350, 150), AutoSize = true, Font = AppSettings.Theme.LabelFont };
+            hoursTextBox = new TextBox
+            {
+                Location = new System.Drawing.Point(460, 147),
+                Size = new System.Drawing.Size(200, 30),
+                Font = AppSettings.Theme.DataFont,
+                Visible = _tripCategory == "Activity" // Only visible for activity trips
+            };
+            hoursLabel.Visible = _tripCategory == "Activity"; // Only visible for activity trips
+
+            // Added for activity trips with stipend
+            milesLabel = new Label { Text = "Miles Driven:", Location = new System.Drawing.Point(350, 190), AutoSize = true, Font = AppSettings.Theme.LabelFont };
+            milesTextBox = new TextBox
+            {
+                Location = new System.Drawing.Point(460, 187),
+                Size = new System.Drawing.Size(200, 30),
+                Font = AppSettings.Theme.DataFont,
+                Visible = _tripCategory == "Activity" // Only visible for activity trips
+            };
+            milesLabel.Visible = _tripCategory == "Activity"; // Only visible for activity trips
+
+            // Added for route trips
+            cdlRouteCheckBox = new CheckBox
+            {
+                Text = "CDL Required",
+                Location = new System.Drawing.Point(10, 230),
+                AutoSize = true,
+                Font = AppSettings.Theme.LabelFont,
+                Visible = _tripCategory == "Route" // Only visible for route trips
+            };
+
             // Buttons with styles
             addButton = new Button
             {
@@ -229,6 +267,9 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
                 destinationLabel, destinationTextBox,
                 labelStartTime, startTimePicker,
                 labelEndTime, endTimePicker, 
+                hoursLabel, hoursTextBox, // Added for activity trips
+                milesLabel, milesTextBox, // Added for activity trips with stipend
+                cdlRouteCheckBox, // Added for route trips
                 addButton, refreshButton 
             });
 
@@ -325,12 +366,13 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
             var trip = new Trip
             {
                 TripType = tripTypeComboBox.Text,
-                Date = datePicker.Value.ToString("yyyy-MM-dd"),
+                Date = DateOnly.FromDateTime(datePicker.Value),
                 BusNumber = int.TryParse(busNumberComboBox.Text, out int busNumber) ? busNumber : 0,
                 DriverName = driverNameComboBox.Text,
-                StartTime = startTimePicker.Value.ToString("HH:mm"),
-                EndTime = endTimePicker.Value.ToString("HH:mm"),
-                Destination = destinationTextBox.Text
+                StartTime = TimeOnly.FromDateTime(startTimePicker.Value),
+                EndTime = TimeOnly.FromDateTime(endTimePicker.Value),
+                Destination = destinationTextBox.Text,
+                TripCategory = _tripCategory // Set the trip category based on form type
             };
 
             // Validation
@@ -361,15 +403,33 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
                 return;
             }
 
-            // Calculate total hours driven
-            TimeSpan startTime = TimeSpan.Parse(trip.StartTime);
-            TimeSpan endTime = TimeSpan.Parse(trip.EndTime);
-            TimeSpan totalHours = endTime - startTime;
-            if (totalHours.TotalHours < 0)
+            // Set trip-specific fields based on category
+            if (_tripCategory == "Activity")
             {
-                totalHours = totalHours.Add(TimeSpan.FromDays(1));
+                // For Activity trips, get hours from the input field
+                if (!double.TryParse(hoursTextBox.Text, out double hours))
+                {
+                    MessageBox.Show("Please enter a valid number for Hours Driven.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                trip.TotalHoursDriven = hours;
+
+                // For Activity trips, get miles from the input field
+                if (!double.TryParse(milesTextBox.Text, out double miles))
+                {
+                    MessageBox.Show("Please enter a valid number for Miles Driven.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                trip.MilesDriven = miles;
             }
-            trip.Total_Hours_Driven = totalHours.ToString(@"hh\:mm");
+            else // Route trips
+            {
+                // For Route trips, we don't need hours (pay is per trip)
+                trip.TotalHoursDriven = 0;
+                
+                // Set CDL requirement for route trips
+                trip.IsCDLRoute = cdlRouteCheckBox.Checked;
+            }
 
             // Add the trip to the database
             try
@@ -404,6 +464,9 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
             destinationTextBox.Clear();
             startTimePicker.Value = DateTime.Now;
             endTimePicker.Value = DateTime.Now;
+            hoursTextBox.Clear(); // Clear hours input for activity trips
+            milesTextBox.Clear(); // Clear miles input for activity trips
+            cdlRouteCheckBox.Checked = false; // Reset CDL checkbox for route trips
             UpdateStatus("Ready.", AppSettings.Theme.InfoColor);
         }
 
@@ -419,6 +482,16 @@ namespace BusBuddy.UI.Forms // Changed from BusBuddy.Forms to BusBuddy.UI.Forms
             else if (result == DialogResult.No)
             {
                 e.Cancel = true; // Prevent form from closing
+            }
+        }
+
+        private void UpdateStatus(string message, System.Drawing.Color color)
+        {
+            if (statusLabel != null)
+            {
+                statusLabel.Text = message;
+                statusLabel.ForeColor = color;
+                statusStrip.Refresh();
             }
         }
     }

@@ -18,8 +18,8 @@ namespace BusBuddy.UI.Forms
 
         public FuelForm() : base(new MainFormNavigator())
         {
-            _dbManager = new DatabaseManager();
             _logger = Log.Logger;
+            _dbManager = new DatabaseManager(_logger);
             InitializeComponent();
             LoadComboBoxData();
             LoadFuelDataGrid();
@@ -94,7 +94,8 @@ namespace BusBuddy.UI.Forms
             try
             {
                 UpdateStatus("Adding fuel record...", AppSettings.Theme.InfoColor);
-                await DataManager.AddRecordAsync(fuel, _dbManager.AddFuelRecord, _logger, UpdateStatus);
+                // Use the new helper method instead
+                await DataManager.AddFuelRecordAsync(fuel, _dbManager, _logger, UpdateStatus);
                 LoadFuelDataGrid();
                 ClearFuelInputs();
                 MessageBox.Show("Fuel record added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);

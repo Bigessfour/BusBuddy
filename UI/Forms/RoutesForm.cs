@@ -32,14 +32,14 @@ namespace BusBuddy.UI.Forms
         private GroupBox inputGroupBox;
 
         // Data
-        private List<Route> _routes;
+        private List<BusBuddy.Models.Route> _routes;
         private List<string> _drivers;
         private List<int> _busNumbers;
 
         public RoutesForm() : base(new MainFormNavigator())
         {
-            _dbManager = new DatabaseManager();
             _logger = Log.Logger;
+            _dbManager = new DatabaseManager(_logger);
             
             InitializeComponent();
             LoadComboBoxData();
@@ -264,7 +264,7 @@ namespace BusBuddy.UI.Forms
             }
         }
 
-        private void PopulateRouteDetails(Route route)
+        private void PopulateRouteDetails(BusBuddy.Models.Route route)
         {
             routeNameTextBox.Text = route.RouteName;
             descriptionTextBox.Text = route.Description;
@@ -306,7 +306,7 @@ namespace BusBuddy.UI.Forms
                     return;
                 }
 
-                var route = new Route
+                var route = new BusBuddy.Models.Route
                 {
                     RouteName = routeNameTextBox.Text.Trim(),
                     DefaultBusNumber = (int)defaultBusComboBox.SelectedItem,

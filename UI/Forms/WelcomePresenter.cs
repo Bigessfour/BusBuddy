@@ -1,49 +1,58 @@
-using System;
-using System.Collections.Generic;
-using BusBuddy.Data;
-using BusBuddy.Models;
-using BusBuddy.UI.Interfaces;
+// UI/Forms/WelcomePresenter.cs
 using Serilog;
+using BusBuddy.Data;
+using BusBuddy.UI.Interfaces;
+using System.Collections.Generic;
+using BusBuddy.Models;
+using System;
 
-namespace BusBuddy.UI.Forms
+public class WelcomePresenter
 {
-    public class WelcomePresenter
+    private readonly IDatabaseManager _dbManager;
+    private readonly IWelcomeView? _view; // Make nullable with ? operator
+
+    public WelcomePresenter()
     {
-        private readonly IWelcomeView _view;
-        private readonly DatabaseManager _databaseManager;
+        var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+        _dbManager = new DatabaseManager(logger);
+    }
 
-        public WelcomePresenter(IWelcomeView view)
+    public WelcomePresenter(IWelcomeView view)
+    {
+        var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+        _dbManager = new DatabaseManager(logger);
+        _view = view ?? throw new ArgumentNullException(nameof(view));
+    }
+    
+    public List<Trip> GetTodaysTripsData()
+    {
+        try
         {
-            _view = view ?? throw new ArgumentNullException(nameof(view));
-            _databaseManager = new DatabaseManager();
+            return _dbManager.GetTripsByDate(DateOnly.FromDateTime(DateTime.Today));
         }
-
-        public List<Trip> GetTodaysTripsData()
+        catch (Exception ex)
         {
-            try
-            {
-                string today = DateTime.Now.ToString("yyyy-MM-dd");
-                return _databaseManager.GetTripsByDate(today);
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Error retrieving today's trips data: {ErrorMessage}", ex.Message);
-                throw;
-            }
+            // Log error and return empty list
+            Log.Error(ex, "Error getting today's trips data");
+            return new List<Trip>();
         }
-
-        public string GetDashboardStats()
+    }
+    
+    public string GetDashboardStats()
+    {
+        try
         {
-            try
-            {
-                var stats = _databaseManager.GetDatabaseStatistics();
-                return $"Trips: {stats["Trips"]}, Drivers: {stats["Drivers"]}, Buses: {stats["Buses"]}, Fuel Records: {stats["FuelRecords"]}, Activities: {stats["Activities"]}";
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex, "Error retrieving dashboard stats: {ErrorMessage}", ex.Message);
-                throw;
-            }
+            var stats = _dbManager.GetDatabaseStatistics();
+            return $"Drivers: {stats.DriverCount} | " +
+                   $"Buses: {stats.BusCount} | " +
+                   $"Routes: {stats.RouteCount} | " +
+                   $"Trips: {stats.TripCount}";
+        }
+        catch (Exception ex)
+        {
+            // Log error and return empty stats
+            Log.Error(ex, "Error getting dashboard statistics");
+            return "Statistics unavailable";
         }
     }
 }

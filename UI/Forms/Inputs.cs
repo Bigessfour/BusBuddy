@@ -20,8 +20,8 @@ namespace BusBuddy.UI.Forms
 
         public Inputs() : base(new MainFormNavigator())
         {
-            _dbManager = new DatabaseManager();
             _logger = Log.Logger;
+            _dbManager = new DatabaseManager(_logger);
             InitializeComponent();
             
             LoadComboBoxData();
@@ -103,11 +103,11 @@ namespace BusBuddy.UI.Forms
             var trip = new Trip
             {
                 TripType = tripTypeComboBox.Text,
-                Date = tripDatePicker.Value.ToString("yyyy-MM-dd"),
+                Date = DateOnly.FromDateTime(tripDatePicker.Value),
                 BusNumber = int.TryParse(tripBusNumberComboBox.Text, out int busNumber) ? busNumber : 0,
                 DriverName = tripDriverNameComboBox.Text,
-                StartTime = tripStartTimePicker.Value.ToString("HH:mm"),
-                EndTime = tripEndTimePicker.Value.ToString("HH:mm"),
+                StartTime = TimeOnly.FromDateTime(tripStartTimePicker.Value),
+                EndTime = TimeOnly.FromDateTime(tripEndTimePicker.Value),
                 Destination = tripDestinationTextBox.Text
             };
 
@@ -118,13 +118,13 @@ namespace BusBuddy.UI.Forms
                 return;
             }
 
-            TimeSpan startTime = TimeSpan.Parse(trip.StartTime);
-            TimeSpan endTime = TimeSpan.Parse(trip.EndTime);
-            TimeSpan totalHours = endTime - startTime;
+            // Calculate total hours driven
+            TimeSpan totalHours = trip.EndTime.ToTimeSpan() - trip.StartTime.ToTimeSpan();
             if (totalHours.TotalHours < 0)
             {
                 totalHours = totalHours.Add(TimeSpan.FromDays(1));
             }
+            trip.TotalHoursDriven = totalHours.TotalHours;
             trip.Total_Hours_Driven = totalHours.ToString(@"hh\:mm");
 
             try
@@ -284,7 +284,7 @@ namespace BusBuddy.UI.Forms
             try
             {
                 UpdateStatus("Adding fuel record...", AppSettings.Theme.InfoColor);
-                await DataManager.AddRecordAsync(fuel, _dbManager.AddFuelRecord, _logger, UpdateStatus);
+                await DataManager.AddFuelRecordAsync(fuel, _dbManager, _logger, UpdateStatus);
                 LoadFuelDataGrid();
                 ClearFuelInputs();
                 MessageBox.Show("Fuel record added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -340,7 +340,7 @@ namespace BusBuddy.UI.Forms
         {
             _logger.Information("Driver Add button clicked.");
 
-            var driver = new Driver
+            var driver = new BusBuddy.Models.Driver
             {
                 Driver_Name = driverNameTextBox.Text,
                 Address = driverAddressTextBox.Text,
@@ -363,7 +363,7 @@ namespace BusBuddy.UI.Forms
             try
             {
                 UpdateStatus("Adding driver...", AppSettings.Theme.InfoColor);
-                await DataManager.AddRecordAsync(driver, _dbManager.AddDriver, _logger, UpdateStatus);
+                await DataManager.AddDriverAsync(driver, _dbManager, _logger, UpdateStatus);
                 LoadDriversDataGrid();
                 LoadComboBoxData(); // Refresh combo boxes
                 ClearDriverInputs();
@@ -424,6 +424,10 @@ namespace BusBuddy.UI.Forms
         {
             _logger.Information("Activity Add button clicked.");
 
+            // Calculate hours driven from time picker
+            TimeSpan hoursDriven = TimeSpan.FromHours((double)activityHoursNumericUpDown.Value) + 
+                                  TimeSpan.FromMinutes((double)activityMinutesNumericUpDown.Value);
+            
             var activity = new ActivityTrip
             {
                 Date = activityDatePicker.Value.ToString("yyyy-MM-dd"),
@@ -431,7 +435,7 @@ namespace BusBuddy.UI.Forms
                 Destination = activityDestinationTextBox.Text,
                 LeaveTime = activityLeaveTimePicker.Value.ToString("HH:mm"),
                 Driver = activityDriverComboBox.Text,
-                HoursDriven = activityHoursDrivenTextBox.Text,
+                HoursDriven = $"{(int)hoursDriven.TotalHours}:{hoursDriven.Minutes:D2}",
                 StudentsDriven = (int)activityStudentsNumericUpDown.Value
             };
 
@@ -445,7 +449,7 @@ namespace BusBuddy.UI.Forms
             try
             {
                 UpdateStatus("Adding activity...", AppSettings.Theme.InfoColor);
-                await DataManager.AddRecordAsync(activity, _dbManager.AddActivity, _logger, UpdateStatus);
+                await DataManager.AddActivityRecordAsync(activity, _dbManager, _logger, UpdateStatus);
                 LoadActivitiesDataGrid();
                 ClearActivityInputs();
                 MessageBox.Show("Activity added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -471,7 +475,8 @@ namespace BusBuddy.UI.Forms
             activityDestinationTextBox.Clear();
             activityLeaveTimePicker.Value = DateTime.Now;
             activityDriverComboBox.SelectedIndex = -1;
-            activityHoursDrivenTextBox.Clear();
+            activityHoursNumericUpDown.Value = 0;
+            activityMinutesNumericUpDown.Value = 0;
             activityStudentsNumericUpDown.Value = 0;
             UpdateStatus("Activity inputs cleared.", AppSettings.Theme.InfoColor);
         }

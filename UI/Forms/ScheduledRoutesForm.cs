@@ -35,7 +35,7 @@ namespace BusBuddy.UI.Forms
 
         // Data
         private List<ScheduledRoute> _scheduledRoutes;
-        private List<Route> _routes;
+        private List<BusBuddy.Models.Route> _routes;
         private List<string> _drivers;
         private List<int> _busNumbers;
         private SchoolCalendarDay _currentDay;
@@ -43,8 +43,8 @@ namespace BusBuddy.UI.Forms
 
         public ScheduledRoutesForm() : base(new MainFormNavigator())
         {
-            _dbManager = new DatabaseManager();
             _logger = Log.Logger;
+            _dbManager = new DatabaseManager(_logger);
             _selectedDate = DateTime.Today;
 
             InitializeComponent();
@@ -63,7 +63,7 @@ namespace BusBuddy.UI.Forms
         {
             // Form properties
             this.Text = "Scheduled Routes - BusBuddy";
-            this.Size = new Size(900, 600);
+            this.Size = new Size(920, 600); // Increased width from 900 to 920
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -106,7 +106,7 @@ namespace BusBuddy.UI.Forms
             calendarButton = new Button
             {
                 Text = "Open Calendar",
-                Location = new Point(600, 18),
+                Location = new Point(580, 18), // Shifted left from 600
                 Size = new Size(120, 30),
                 BackColor = AppSettings.Theme.PrimaryColor,
                 ForeColor = Color.White
@@ -117,7 +117,7 @@ namespace BusBuddy.UI.Forms
             routesButton = new Button
             {
                 Text = "Manage Routes",
-                Location = new Point(740, 18),
+                Location = new Point(720, 18), // Shifted left from 740
                 Size = new Size(120, 30),
                 BackColor = AppSettings.Theme.PrimaryColor,
                 ForeColor = Color.White
@@ -128,7 +128,7 @@ namespace BusBuddy.UI.Forms
             scheduledRoutesGridView = new DataGridView
             {
                 Location = new Point(20, 60),
-                Size = new Size(840, 250),
+                Size = new Size(860, 250), // Increased width to match form width change
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 AllowUserToAddRows = false,
                 ReadOnly = true,
@@ -142,21 +142,21 @@ namespace BusBuddy.UI.Forms
             {
                 Text = "Edit Scheduled Route",
                 Location = new Point(20, 330),
-                Size = new Size(840, 170)
+                Size = new Size(860, 170) // Increased width to match form width change
             };
 
             // Route name (non-editable)
             routeNameLabel = new Label
             {
                 Text = "Route:",
-                Location = new Point(20, 40),
+                Location = new Point(20, 40), // Standard left margin for labels
                 AutoSize = true,
                 Font = new Font("Segoe UI", 10, FontStyle.Regular)
             };
 
             routeLabel = new Label
             {
-                Location = new Point(150, 40),
+                Location = new Point(140, 40), // Aligned controls start position
                 Size = new Size(300, 20),
                 Font = new Font("Segoe UI", 10, FontStyle.Bold)
             };
@@ -165,14 +165,14 @@ namespace BusBuddy.UI.Forms
             busLabel = new Label
             {
                 Text = "Assigned Bus:",
-                Location = new Point(20, 80),
+                Location = new Point(20, 80), // Standard left margin for labels
                 AutoSize = true,
                 Font = new Font("Segoe UI", 10, FontStyle.Regular)
             };
 
             busComboBox = new ComboBox
             {
-                Location = new Point(150, 80),
+                Location = new Point(140, 80), // Aligned controls start position
                 Size = new Size(150, 26),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
@@ -181,14 +181,14 @@ namespace BusBuddy.UI.Forms
             driverLabel = new Label
             {
                 Text = "Assigned Driver:",
-                Location = new Point(20, 120),
+                Location = new Point(20, 120), // Standard left margin for labels
                 AutoSize = true,
                 Font = new Font("Segoe UI", 10, FontStyle.Regular)
             };
 
             driverComboBox = new ComboBox
             {
-                Location = new Point(150, 120),
+                Location = new Point(140, 120), // Aligned controls start position
                 Size = new Size(300, 26),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
@@ -197,7 +197,7 @@ namespace BusBuddy.UI.Forms
             updateButton = new Button
             {
                 Text = "Update Assignment",
-                Location = new Point(600, 90),
+                Location = new Point(650, 95), // Adjusted position (was 600, 90)
                 Size = new Size(170, 40),
                 BackColor = AppSettings.Theme.SuccessColor,
                 ForeColor = Color.White,

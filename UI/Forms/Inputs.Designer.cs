@@ -104,7 +104,8 @@ namespace BusBuddy.UI.Forms
             this.activityDriverLabel = new System.Windows.Forms.Label();
             this.activityDriverComboBox = new System.Windows.Forms.ComboBox();
             this.activityHoursDrivenLabel = new System.Windows.Forms.Label();
-            this.activityHoursDrivenTextBox = new System.Windows.Forms.TextBox();
+            this.activityHoursNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.activityMinutesNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.activityStudentsLabel = new System.Windows.Forms.Label();
             this.activityStudentsNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.maintenanceAddButton = new System.Windows.Forms.Button();
@@ -118,6 +119,8 @@ namespace BusBuddy.UI.Forms
             ((System.ComponentModel.ISupportInitialize)(this.fuelGallonsNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fuelOdometerNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.activityStudentsNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.activityHoursNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.activityMinutesNumericUpDown)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tripsTabPage.SuspendLayout();
             this.vehiclesTabPage.SuspendLayout();
@@ -130,8 +133,10 @@ namespace BusBuddy.UI.Forms
             // TabControl
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
-            this.tabControl.Size = new System.Drawing.Size(860, 500);
+            this.tabControl.Size = new System.Drawing.Size(976, 650);
             this.tabControl.TabIndex = 0;
+            this.tabControl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.tabControl.Padding = new System.Drawing.Point(12, 4);
             this.tabControl.Controls.Add(this.tripsTabPage);
             this.tabControl.Controls.Add(this.vehiclesTabPage);
             this.tabControl.Controls.Add(this.fuelTabPage);
@@ -158,109 +163,156 @@ namespace BusBuddy.UI.Forms
             this.tripsTabPage.Controls.Add(this.tripAddButton);
             this.tripsTabPage.Controls.Add(this.tripClearButton);
 
-            this.tripsDataGridView.Location = new System.Drawing.Point(10, 10);
-            this.tripsDataGridView.Size = new System.Drawing.Size(840, 200);
+            this.tripsDataGridView.Location = new System.Drawing.Point(20, 20);
+            this.tripsDataGridView.Size = new System.Drawing.Size(930, 250);
             this.tripsDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.tripsDataGridView.ReadOnly = true;
             this.tripsDataGridView.AllowUserToAddRows = false;
             this.tripsDataGridView.Name = "tripsDataGridView";
-            this.tripsDataGridView.Columns.Add("TripID", "TripID");
-            this.tripsDataGridView.Columns.Add("TripType", "TripType");
+            this.tripsDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tripsDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.tripsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.tripsDataGridView.ColumnHeadersHeight = 40;
+            this.tripsDataGridView.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.tripsDataGridView.ColumnHeadersDefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.tripsDataGridView.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
+            this.tripsDataGridView.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(30, 30, 30);
+            this.tripsDataGridView.RowHeadersVisible = false;
+            this.tripsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.tripsDataGridView.AlternatingRowsDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
+            this.tripsDataGridView.Columns.Add("TripID", "Trip ID");
+            this.tripsDataGridView.Columns.Add("TripType", "Trip Type");
             this.tripsDataGridView.Columns.Add("Date", "Date");
-            this.tripsDataGridView.Columns.Add("BusNumber", "BusNumber");
-            this.tripsDataGridView.Columns.Add("DriverName", "DriverName");
-            this.tripsDataGridView.Columns.Add("StartTime", "StartTime");
-            this.tripsDataGridView.Columns.Add("EndTime", "EndTime");
+            this.tripsDataGridView.Columns.Add("BusNumber", "Bus Number");
+            this.tripsDataGridView.Columns.Add("DriverName", "Driver Name");
+            this.tripsDataGridView.Columns.Add("StartTime", "Start Time");
+            this.tripsDataGridView.Columns.Add("EndTime", "End Time");
             this.tripsDataGridView.Columns.Add("Destination", "Destination");
 
+            // Create a panel for the input controls
+            System.Windows.Forms.Panel tripInputPanel = new System.Windows.Forms.Panel();
+            tripInputPanel.Location = new System.Drawing.Point(20, 290);
+            tripInputPanel.Size = new System.Drawing.Size(930, 300);
+            tripInputPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            tripInputPanel.BackColor = System.Drawing.Color.FromArgb(250, 250, 250);
+            this.tripsTabPage.Controls.Add(tripInputPanel);
+
             this.tripTypeLabel.Text = "Trip Type:";
-            this.tripTypeLabel.Location = new System.Drawing.Point(10, 220);
+            this.tripTypeLabel.Location = new System.Drawing.Point(20, 20);
             this.tripTypeLabel.AutoSize = true;
-            this.tripTypeLabel.Font = AppSettings.Theme.LabelFont;
-            this.tripTypeComboBox.Location = new System.Drawing.Point(120, 217);
-            this.tripTypeComboBox.Size = new System.Drawing.Size(150, 28);
+            this.tripTypeLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripTypeLabel);
+            this.tripTypeComboBox.Location = new System.Drawing.Point(150, 18);
+            this.tripTypeComboBox.Size = new System.Drawing.Size(200, 30);
             this.tripTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tripTypeComboBox.Items.AddRange(new object[] { "Route", "Activity" });
             this.tripTypeComboBox.Name = "tripTypeComboBox";
+            this.tripTypeComboBox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripTypeComboBox);
 
             this.tripDateLabel.Text = "Date:";
-            this.tripDateLabel.Location = new System.Drawing.Point(10, 250);
+            this.tripDateLabel.Location = new System.Drawing.Point(20, 60);
             this.tripDateLabel.AutoSize = true;
-            this.tripDateLabel.Font = AppSettings.Theme.LabelFont;
-            this.tripDatePicker.Location = new System.Drawing.Point(120, 247);
-            this.tripDatePicker.Size = new System.Drawing.Size(150, 28);
+            this.tripDateLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripDateLabel);
+            
+            this.tripDatePicker.Location = new System.Drawing.Point(150, 58);
+            this.tripDatePicker.Size = new System.Drawing.Size(200, 30);
             this.tripDatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.tripDatePicker.Name = "tripDatePicker";
+            this.tripDatePicker.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripDatePicker);
 
             this.tripBusNumberLabel.Text = "Bus Number:";
-            this.tripBusNumberLabel.Location = new System.Drawing.Point(10, 280);
+            this.tripBusNumberLabel.Location = new System.Drawing.Point(20, 100);
             this.tripBusNumberLabel.AutoSize = true;
-            this.tripBusNumberLabel.Font = AppSettings.Theme.LabelFont;
-            this.tripBusNumberComboBox.Location = new System.Drawing.Point(120, 277);
-            this.tripBusNumberComboBox.Size = new System.Drawing.Size(150, 28);
+            this.tripBusNumberLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripBusNumberLabel);
+            
+            this.tripBusNumberComboBox.Location = new System.Drawing.Point(150, 98);
+            this.tripBusNumberComboBox.Size = new System.Drawing.Size(200, 30);
             this.tripBusNumberComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tripBusNumberComboBox.Name = "tripBusNumberComboBox";
+            this.tripBusNumberComboBox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripBusNumberComboBox);
 
             this.tripDriverNameLabel.Text = "Driver Name:";
-            this.tripDriverNameLabel.Location = new System.Drawing.Point(10, 310);
+            this.tripDriverNameLabel.Location = new System.Drawing.Point(400, 20);
             this.tripDriverNameLabel.AutoSize = true;
-            this.tripDriverNameLabel.Font = AppSettings.Theme.LabelFont;
-            this.tripDriverNameComboBox.Location = new System.Drawing.Point(120, 307);
-            this.tripDriverNameComboBox.Size = new System.Drawing.Size(150, 28);
+            this.tripDriverNameLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripDriverNameLabel);
+            
+            this.tripDriverNameComboBox.Location = new System.Drawing.Point(530, 18);
+            this.tripDriverNameComboBox.Size = new System.Drawing.Size(200, 30);
             this.tripDriverNameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tripDriverNameComboBox.Name = "tripDriverNameComboBox";
+            this.tripDriverNameComboBox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripDriverNameComboBox);
 
             this.tripStartTimeLabel.Text = "Start Time:";
-            this.tripStartTimeLabel.Location = new System.Drawing.Point(10, 340);
+            this.tripStartTimeLabel.Location = new System.Drawing.Point(400, 60);
             this.tripStartTimeLabel.AutoSize = true;
-            this.tripStartTimeLabel.Font = AppSettings.Theme.LabelFont;
-            this.tripStartTimePicker.Location = new System.Drawing.Point(120, 337);
-            this.tripStartTimePicker.Size = new System.Drawing.Size(150, 28);
+            this.tripStartTimeLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripStartTimeLabel);
+            
+            this.tripStartTimePicker.Location = new System.Drawing.Point(530, 58);
+            this.tripStartTimePicker.Size = new System.Drawing.Size(200, 30);
             this.tripStartTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Time;
             this.tripStartTimePicker.ShowUpDown = true;
             this.tripStartTimePicker.Name = "tripStartTimePicker";
+            this.tripStartTimePicker.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripStartTimePicker);
 
             this.tripEndTimeLabel.Text = "End Time:";
-            this.tripEndTimeLabel.Location = new System.Drawing.Point(10, 370);
+            this.tripEndTimeLabel.Location = new System.Drawing.Point(400, 100);
             this.tripEndTimeLabel.AutoSize = true;
-            this.tripEndTimeLabel.Font = AppSettings.Theme.LabelFont;
-            this.tripEndTimePicker.Location = new System.Drawing.Point(120, 367);
-            this.tripEndTimePicker.Size = new System.Drawing.Size(150, 28);
+            this.tripEndTimeLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripEndTimeLabel);
+            
+            this.tripEndTimePicker.Location = new System.Drawing.Point(530, 98);
+            this.tripEndTimePicker.Size = new System.Drawing.Size(200, 30);
             this.tripEndTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Time;
             this.tripEndTimePicker.ShowUpDown = true;
             this.tripEndTimePicker.Name = "tripEndTimePicker";
+            this.tripEndTimePicker.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripEndTimePicker);
 
             this.tripDestinationLabel.Text = "Destination:";
-            this.tripDestinationLabel.Location = new System.Drawing.Point(10, 400);
+            this.tripDestinationLabel.Location = new System.Drawing.Point(20, 140);
             this.tripDestinationLabel.AutoSize = true;
-            this.tripDestinationLabel.Font = AppSettings.Theme.LabelFont;
-            this.tripDestinationTextBox.Location = new System.Drawing.Point(120, 397);
-            this.tripDestinationTextBox.Size = new System.Drawing.Size(150, 28);
+            this.tripDestinationLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripDestinationLabel);
+            
+            this.tripDestinationTextBox.Location = new System.Drawing.Point(150, 138);
+            this.tripDestinationTextBox.Size = new System.Drawing.Size(580, 30);
             this.tripDestinationTextBox.Name = "tripDestinationTextBox";
+            this.tripDestinationTextBox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            tripInputPanel.Controls.Add(this.tripDestinationTextBox);
 
-            this.tripAddButton.Text = "Add";
-            this.tripAddButton.Location = new System.Drawing.Point(120, 427);
-            this.tripAddButton.Size = new System.Drawing.Size(100, 35);
-            this.tripAddButton.BackColor = AppSettings.Theme.SuccessColor;
-            this.tripAddButton.ForeColor = AppSettings.Theme.TextLightColor;
+            this.tripAddButton.Text = "Add Trip";
+            this.tripAddButton.Location = new System.Drawing.Point(530, 190);
+            this.tripAddButton.Size = new System.Drawing.Size(120, 40);
+            this.tripAddButton.BackColor = System.Drawing.Color.FromArgb(0, 122, 204);
+            this.tripAddButton.ForeColor = System.Drawing.Color.White;
             this.tripAddButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tripAddButton.FlatAppearance.BorderSize = 2;
-            this.tripAddButton.FlatAppearance.BorderColor = AppSettings.Theme.SuccessColor;
-            this.tripAddButton.Font = AppSettings.Theme.ButtonFont;
+            this.tripAddButton.FlatAppearance.BorderSize = 0;
+            this.tripAddButton.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.tripAddButton.Name = "tripAddButton";
             this.tripAddButton.Click += new System.EventHandler(this.TripAddButton_Click);
+            tripInputPanel.Controls.Add(this.tripAddButton);
 
             this.tripClearButton.Text = "Clear";
-            this.tripClearButton.Location = new System.Drawing.Point(230, 427);
-            this.tripClearButton.Size = new System.Drawing.Size(100, 35);
-            this.tripClearButton.BackColor = AppSettings.Theme.InfoColor;
-            this.tripClearButton.ForeColor = AppSettings.Theme.TextLightColor;
+            this.tripClearButton.Location = new System.Drawing.Point(660, 190);
+            this.tripClearButton.Size = new System.Drawing.Size(70, 40);
+            this.tripClearButton.BackColor = System.Drawing.Color.White;
+            this.tripClearButton.ForeColor = System.Drawing.Color.FromArgb(0, 122, 204);
             this.tripClearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tripClearButton.FlatAppearance.BorderSize = 2;
-            this.tripClearButton.FlatAppearance.BorderColor = AppSettings.Theme.InfoColor;
-            this.tripClearButton.Font = AppSettings.Theme.ButtonFont;
+            this.tripClearButton.FlatAppearance.BorderSize = 1;
+            this.tripClearButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(0, 122, 204);
+            this.tripClearButton.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.tripClearButton.Name = "tripClearButton";
             this.tripClearButton.Click += new System.EventHandler(this.TripClearButton_Click);
+            tripInputPanel.Controls.Add(this.tripClearButton);
 
             // Vehicles TabPage
             this.vehiclesTabPage.Text = "Vehicles";
@@ -566,7 +618,8 @@ namespace BusBuddy.UI.Forms
             this.activitiesTabPage.Controls.Add(this.activityDriverLabel);
             this.activitiesTabPage.Controls.Add(this.activityDriverComboBox);
             this.activitiesTabPage.Controls.Add(this.activityHoursDrivenLabel);
-            this.activitiesTabPage.Controls.Add(this.activityHoursDrivenTextBox);
+            this.activitiesTabPage.Controls.Add(this.activityHoursNumericUpDown);
+            this.activitiesTabPage.Controls.Add(this.activityMinutesNumericUpDown);
             this.activitiesTabPage.Controls.Add(this.activityStudentsLabel);
             this.activitiesTabPage.Controls.Add(this.activityStudentsNumericUpDown);
             this.activitiesTabPage.Controls.Add(this.maintenanceAddButton);
@@ -636,9 +689,21 @@ namespace BusBuddy.UI.Forms
             this.activityHoursDrivenLabel.Location = new System.Drawing.Point(10, 370);
             this.activityHoursDrivenLabel.AutoSize = true;
             this.activityHoursDrivenLabel.Font = AppSettings.Theme.LabelFont;
-            this.activityHoursDrivenTextBox.Location = new System.Drawing.Point(120, 367);
-            this.activityHoursDrivenTextBox.Size = new System.Drawing.Size(150, 28);
-            this.activityHoursDrivenTextBox.Name = "activityHoursDrivenTextBox";
+            
+            // Hours numeric up/down
+            this.activityHoursNumericUpDown.Location = new System.Drawing.Point(120, 367);
+            this.activityHoursNumericUpDown.Size = new System.Drawing.Size(70, 28);
+            this.activityHoursNumericUpDown.Name = "activityHoursNumericUpDown";
+            this.activityHoursNumericUpDown.Minimum = 0;
+            this.activityHoursNumericUpDown.Maximum = 24;
+            
+            // Minutes numeric up/down
+            this.activityMinutesNumericUpDown.Location = new System.Drawing.Point(200, 367);
+            this.activityMinutesNumericUpDown.Size = new System.Drawing.Size(70, 28);
+            this.activityMinutesNumericUpDown.Name = "activityMinutesNumericUpDown";
+            this.activityMinutesNumericUpDown.Minimum = 0;
+            this.activityMinutesNumericUpDown.Maximum = 59;
+            this.activityMinutesNumericUpDown.Increment = 5;
 
             this.activityStudentsLabel.Text = "Students Driven:";
             this.activityStudentsLabel.Location = new System.Drawing.Point(10, 400);
@@ -687,11 +752,14 @@ namespace BusBuddy.UI.Forms
             // Form Properties
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 544);
+            this.ClientSize = new System.Drawing.Size(1000, 700);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.statusStrip);
             this.Name = "Inputs";
             this.Text = "Data Entry - BusBuddy";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.MinimumSize = new System.Drawing.Size(1000, 700);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 
             ((System.ComponentModel.ISupportInitialize)(this.tripsDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vehiclesDataGridView)).EndInit();
@@ -701,6 +769,8 @@ namespace BusBuddy.UI.Forms
             ((System.ComponentModel.ISupportInitialize)(this.fuelGallonsNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fuelOdometerNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.activityStudentsNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.activityHoursNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.activityMinutesNumericUpDown)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tripsTabPage.ResumeLayout(false);
             this.tripsTabPage.PerformLayout();
@@ -804,7 +874,8 @@ namespace BusBuddy.UI.Forms
         private System.Windows.Forms.Label activityDriverLabel;
         private System.Windows.Forms.ComboBox activityDriverComboBox;
         private System.Windows.Forms.Label activityHoursDrivenLabel;
-        private System.Windows.Forms.TextBox activityHoursDrivenTextBox;
+        private System.Windows.Forms.NumericUpDown activityHoursNumericUpDown;
+        private System.Windows.Forms.NumericUpDown activityMinutesNumericUpDown;
         private System.Windows.Forms.Label activityStudentsLabel;
         private System.Windows.Forms.NumericUpDown activityStudentsNumericUpDown;
         private System.Windows.Forms.Button maintenanceAddButton;
