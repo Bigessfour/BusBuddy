@@ -1,5 +1,4 @@
 # Copilot Instructions for C# Project
-
 These instructions guide GitHub Copilot Agent when editing or adding features to this C# project. All changes must align with the goal of creating a cutting-edge, professional, and visually appealing user interface (UI) and user experience (UX), as if crafted by an expert UI/UX designer. Adhere to these guidelines for all code modifications, UI enhancements, and new features.
 
 ## General Guidelines
