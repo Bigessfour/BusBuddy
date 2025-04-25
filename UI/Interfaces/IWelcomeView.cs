@@ -7,11 +7,6 @@ namespace BusBuddy.UI.Interfaces
     public interface IWelcomeView
     {
         /// <summary>
-        /// Navigates to the Inputs form.
-        /// </summary>
-        void NavigateToInputs();
-
-        /// <summary>
         /// Navigates to the Reports form.
         /// </summary>
         void NavigateToReports();
@@ -35,5 +30,10 @@ namespace BusBuddy.UI.Interfaces
         /// Navigates to the Driver Management form.
         /// </summary>
         void NavigateToDriverManagement();
+
+        /// <summary>
+        /// Navigates to the Activities form.
+        /// </summary>
+        void NavigateToActivities();
     }
 }

@@ -11,11 +11,15 @@ namespace BusBuddy.Data.Repositories
         /// <summary>
         /// Gets activities by date
         /// </summary>
+#pragma warning disable SA1611 // Element parameters should be documented
         Task<IEnumerable<Activity>> GetActivitiesByDateAsync(string date);
+#pragma warning restore SA1611 // Element parameters should be documented
         
         /// <summary>
         /// Gets activities by bus number
         /// </summary>
+#pragma warning disable SA1611 // Element parameters should be documented
         Task<IEnumerable<Activity>> GetActivitiesByBusAsync(int busNumber);
+#pragma warning restore SA1611 // Element parameters should be documented
     }
 }

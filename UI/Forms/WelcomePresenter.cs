@@ -1,5 +1,5 @@
 // UI/Forms/WelcomePresenter.cs
-using Serilog;
+using Serilog; // Changed back to Serilog
 using BusBuddy.Data;
 using BusBuddy.UI.Interfaces;
 using System.Collections.Generic;
@@ -9,21 +9,17 @@ using System;
 public class WelcomePresenter
 {
     private readonly IDatabaseManager _dbManager;
-    private readonly IWelcomeView? _view; // Make nullable with ? operator
+    private readonly IWelcomeView? _view; // Keep nullable if view is optional or set later
+    private readonly ILogger _logger; // Changed type to Serilog.ILogger
 
-    public WelcomePresenter()
+    // Constructor for DI, injecting IDatabaseManager and ILogger
+    public WelcomePresenter(IDatabaseManager dbManager, ILogger logger, IWelcomeView? view = null) // Changed logger type
     {
-        var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-        _dbManager = new DatabaseManager(logger);
+        _dbManager = dbManager ?? throw new ArgumentNullException(nameof(dbManager));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _view = view; // Assign view if provided
     }
 
-    public WelcomePresenter(IWelcomeView view)
-    {
-        var logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-        _dbManager = new DatabaseManager(logger);
-        _view = view ?? throw new ArgumentNullException(nameof(view));
-    }
-    
     public List<Trip> GetTodaysTripsData()
     {
         try
@@ -32,26 +28,24 @@ public class WelcomePresenter
         }
         catch (Exception ex)
         {
-            // Log error and return empty list
-            Log.Error(ex, "Error getting today's trips data");
+            _logger.Error(ex, "Error getting today's trips data"); // Changed back to Serilog format
             return new List<Trip>();
         }
     }
-    
+
     public string GetDashboardStats()
     {
         try
         {
             var stats = _dbManager.GetDatabaseStatistics();
-            return $"Drivers: {stats.DriverCount} | " +
-                   $"Buses: {stats.BusCount} | " +
-                   $"Routes: {stats.RouteCount} | " +
-                   $"Trips: {stats.TripCount}";
+            return $"Drivers: {stats.TotalDrivers} | " +
+                   $"Routes: {stats.TotalRoutes} | " +
+                   $"Trips: {stats.TotalTrips} | " +
+                   $"Fuel Records: {stats.TotalFuelRecords}";
         }
         catch (Exception ex)
         {
-            // Log error and return empty stats
-            Log.Error(ex, "Error getting dashboard statistics");
+            _logger.Error(ex, "Error getting dashboard statistics"); // Changed back to Serilog format
             return "Statistics unavailable";
         }
     }

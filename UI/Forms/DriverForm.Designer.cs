@@ -1,248 +1,245 @@
-using System.Windows.Forms;
-
+// File: DriverForm.Designer.cs
 namespace BusBuddy.UI.Forms
 {
     partial class DriverForm
     {
         private System.ComponentModel.IContainer components = null;
+        private System.Windows.Forms.DataGridView driversDataGridView;
+        private System.Windows.Forms.GroupBox inputGroupBox;
+        private System.Windows.Forms.Label nameLabel;
+        private System.Windows.Forms.TextBox nameTextBox;
+        private System.Windows.Forms.Label licenseNumberLabel;
+        private System.Windows.Forms.TextBox licenseNumberTextBox;
+        private System.Windows.Forms.Label contactNumberLabel;
+        private System.Windows.Forms.TextBox contactNumberTextBox;
+        private System.Windows.Forms.FlowLayoutPanel buttonPanel;
+        private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.Button editButton;
+        private System.Windows.Forms.Button refreshButton;
+        private System.Windows.Forms.Button deleteButton;
+        private System.Windows.Forms.Button exitButton;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
 
-        protected override void Dispose(bool disposing)
+        /// <summary>
+        ///  Required method for Designer support - do not modify
+        ///  the contents of this method with the code editor.
+        /// </summary>
+        protected void InitializeComponent()
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private void InitializeComponent()
-        {
-            this.components = new System.ComponentModel.Container();
             this.driversDataGridView = new System.Windows.Forms.DataGridView();
-            this.driverNameLabel = new System.Windows.Forms.Label();
-            this.driverNameTextBox = new System.Windows.Forms.TextBox();
-            this.driverAddressLabel = new System.Windows.Forms.Label();
-            this.driverAddressTextBox = new System.Windows.Forms.TextBox();
-            this.driverCityLabel = new System.Windows.Forms.Label();
-            this.driverCityTextBox = new System.Windows.Forms.TextBox();
-            this.driverStateLabel = new System.Windows.Forms.Label();
-            this.driverStateTextBox = new System.Windows.Forms.TextBox();
-            this.driverZipLabel = new System.Windows.Forms.Label();
-            this.driverZipTextBox = new System.Windows.Forms.TextBox();
-            this.driverPhoneLabel = new System.Windows.Forms.Label();
-            this.driverPhoneTextBox = new System.Windows.Forms.TextBox();
-            this.driverEmailLabel = new System.Windows.Forms.Label();
-            this.driverEmailTextBox = new System.Windows.Forms.TextBox();
-            this.driverStipendLabel = new System.Windows.Forms.Label();
-            this.driverStipendComboBox = new System.Windows.Forms.ComboBox();
-            this.driverDLTypeLabel = new System.Windows.Forms.Label();
-            this.driverDLTypeComboBox = new System.Windows.Forms.ComboBox();
-            this.driverAddButton = new System.Windows.Forms.Button();
-            this.driverClearButton = new System.Windows.Forms.Button();
+            this.inputGroupBox = new System.Windows.Forms.GroupBox();
+            this.buttonPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.saveButton = new System.Windows.Forms.Button();
+            this.editButton = new System.Windows.Forms.Button();
+            this.refreshButton = new System.Windows.Forms.Button();
+            this.deleteButton = new System.Windows.Forms.Button();
+            this.exitButton = new System.Windows.Forms.Button();
+            this.nameLabel = new System.Windows.Forms.Label();
+            this.nameTextBox = new System.Windows.Forms.TextBox();
+            this.licenseNumberLabel = new System.Windows.Forms.Label();
+            this.licenseNumberTextBox = new System.Windows.Forms.TextBox();
+            this.contactNumberLabel = new System.Windows.Forms.Label();
+            this.contactNumberTextBox = new System.Windows.Forms.TextBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.inputGroupBox = new System.Windows.Forms.GroupBox();
-
             ((System.ComponentModel.ISupportInitialize)(this.driversDataGridView)).BeginInit();
-            this.statusStrip.SuspendLayout();
             this.inputGroupBox.SuspendLayout();
+            this.buttonPanel.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
-
-            // DataGridView
-            this.driversDataGridView.Location = new System.Drawing.Point(10, 10);
-            this.driversDataGridView.Size = new System.Drawing.Size(760, 200);
-            this.driversDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.driversDataGridView.ReadOnly = true;
+            // 
+            // driversDataGridView
+            // 
             this.driversDataGridView.AllowUserToAddRows = false;
+            this.driversDataGridView.AllowUserToDeleteRows = false;
+            this.driversDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.driversDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.driversDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.driversDataGridView.Location = new System.Drawing.Point(12, 12);
+            this.driversDataGridView.MultiSelect = false;
             this.driversDataGridView.Name = "driversDataGridView";
-            this.driversDataGridView.Columns.Add("DriverID", "Driver ID");
-            this.driversDataGridView.Columns.Add("DriverName", "Driver Name");
-            this.driversDataGridView.Columns.Add("Address", "Address");
-            this.driversDataGridView.Columns.Add("City", "City");
-            this.driversDataGridView.Columns.Add("State", "State");
-            this.driversDataGridView.Columns.Add("ZipCode", "Zip Code");
-            this.driversDataGridView.Columns.Add("PhoneNumber", "Phone Number");
-            this.driversDataGridView.Columns.Add("EmailAddress", "Email Address");
-            this.driversDataGridView.Columns.Add("IsStipendPaid", "Is Stipend Paid");
-            this.driversDataGridView.Columns.Add("DLType", "DL Type");
-
-            // Input GroupBox
-            this.inputGroupBox.Text = "Add New Driver";
-            this.inputGroupBox.Location = new System.Drawing.Point(10, 220);
-            this.inputGroupBox.Size = new System.Drawing.Size(760, 300);
-            this.inputGroupBox.Font = AppSettings.Theme.LabelFont;
-            this.inputGroupBox.Controls.Add(this.driverNameLabel);
-            this.inputGroupBox.Controls.Add(this.driverNameTextBox);
-            this.inputGroupBox.Controls.Add(this.driverAddressLabel);
-            this.inputGroupBox.Controls.Add(this.driverAddressTextBox);
-            this.inputGroupBox.Controls.Add(this.driverCityLabel);
-            this.inputGroupBox.Controls.Add(this.driverCityTextBox);
-            this.inputGroupBox.Controls.Add(this.driverStateLabel);
-            this.inputGroupBox.Controls.Add(this.driverStateTextBox);
-            this.inputGroupBox.Controls.Add(this.driverZipLabel);
-            this.inputGroupBox.Controls.Add(this.driverZipTextBox);
-            this.inputGroupBox.Controls.Add(this.driverPhoneLabel);
-            this.inputGroupBox.Controls.Add(this.driverPhoneTextBox);
-            this.inputGroupBox.Controls.Add(this.driverEmailLabel);
-            this.inputGroupBox.Controls.Add(this.driverEmailTextBox);
-            this.inputGroupBox.Controls.Add(this.driverStipendLabel);
-            this.inputGroupBox.Controls.Add(this.driverStipendComboBox);
-            this.inputGroupBox.Controls.Add(this.driverDLTypeLabel);
-            this.inputGroupBox.Controls.Add(this.driverDLTypeComboBox);
-            this.inputGroupBox.Controls.Add(this.driverAddButton);
-            this.inputGroupBox.Controls.Add(this.driverClearButton);
-
-            this.driverNameLabel.Text = "Driver Name:";
-            this.driverNameLabel.Location = new System.Drawing.Point(10, 30);
-            this.driverNameLabel.AutoSize = true;
-            this.driverNameLabel.Font = AppSettings.Theme.LabelFont;
-            this.driverNameTextBox.Location = new System.Drawing.Point(120, 27);
-            this.driverNameTextBox.Size = new System.Drawing.Size(150, 28);
-            this.driverNameTextBox.Name = "driverNameTextBox";
-
-            this.driverAddressLabel.Text = "Address:";
-            this.driverAddressLabel.Location = new System.Drawing.Point(10, 60);
-            this.driverAddressLabel.AutoSize = true;
-            this.driverAddressLabel.Font = AppSettings.Theme.LabelFont;
-            this.driverAddressTextBox.Location = new System.Drawing.Point(120, 57);
-            this.driverAddressTextBox.Size = new System.Drawing.Size(150, 28);
-            this.driverAddressTextBox.Name = "driverAddressTextBox";
-
-            this.driverCityLabel.Text = "City:";
-            this.driverCityLabel.Location = new System.Drawing.Point(10, 90);
-            this.driverCityLabel.AutoSize = true;
-            this.driverCityLabel.Font = AppSettings.Theme.LabelFont;
-            this.driverCityTextBox.Location = new System.Drawing.Point(120, 87);
-            this.driverCityTextBox.Size = new System.Drawing.Size(150, 28);
-            this.driverCityTextBox.Name = "driverCityTextBox";
-
-            this.driverStateLabel.Text = "State:";
-            this.driverStateLabel.Location = new System.Drawing.Point(10, 120);
-            this.driverStateLabel.AutoSize = true;
-            this.driverStateLabel.Font = AppSettings.Theme.LabelFont;
-            this.driverStateTextBox.Location = new System.Drawing.Point(120, 117);
-            this.driverStateTextBox.Size = new System.Drawing.Size(150, 28);
-            this.driverStateTextBox.Name = "driverStateTextBox";
-
-            this.driverZipLabel.Text = "Zip Code:";
-            this.driverZipLabel.Location = new System.Drawing.Point(10, 150);
-            this.driverZipLabel.AutoSize = true;
-            this.driverZipLabel.Font = AppSettings.Theme.LabelFont;
-            this.driverZipTextBox.Location = new System.Drawing.Point(120, 147);
-            this.driverZipTextBox.Size = new System.Drawing.Size(150, 28);
-            this.driverZipTextBox.Name = "driverZipTextBox";
-
-            this.driverPhoneLabel.Text = "Phone Number:";
-            this.driverPhoneLabel.Location = new System.Drawing.Point(10, 180);
-            this.driverPhoneLabel.AutoSize = true;
-            this.driverPhoneLabel.Font = AppSettings.Theme.LabelFont;
-            this.driverPhoneTextBox.Location = new System.Drawing.Point(120, 177);
-            this.driverPhoneTextBox.Size = new System.Drawing.Size(150, 28);
-            this.driverPhoneTextBox.Name = "driverPhoneTextBox";
-
-            this.driverEmailLabel.Text = "Email Address:";
-            this.driverEmailLabel.Location = new System.Drawing.Point(10, 210);
-            this.driverEmailLabel.AutoSize = true;
-            this.driverEmailLabel.Font = AppSettings.Theme.LabelFont;
-            this.driverEmailTextBox.Location = new System.Drawing.Point(120, 207);
-            this.driverEmailTextBox.Size = new System.Drawing.Size(150, 28);
-            this.driverEmailTextBox.Name = "driverEmailTextBox";
-
-            this.driverStipendLabel.Text = "Is Stipend Paid:";
-            this.driverStipendLabel.Location = new System.Drawing.Point(10, 240);
-            this.driverStipendLabel.AutoSize = true;
-            this.driverStipendLabel.Font = AppSettings.Theme.LabelFont;
-            this.driverStipendComboBox.Location = new System.Drawing.Point(120, 237);
-            this.driverStipendComboBox.Size = new System.Drawing.Size(150, 28);
-            this.driverStipendComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.driverStipendComboBox.Items.AddRange(new object[] { "Yes", "No" });
-            this.driverStipendComboBox.Name = "driverStipendComboBox";
-
-            this.driverDLTypeLabel.Text = "DL Type:";
-            this.driverDLTypeLabel.Location = new System.Drawing.Point(10, 270);
-            this.driverDLTypeLabel.AutoSize = true;
-            this.driverDLTypeLabel.Font = AppSettings.Theme.LabelFont;
-            this.driverDLTypeComboBox.Location = new System.Drawing.Point(120, 267);
-            this.driverDLTypeComboBox.Size = new System.Drawing.Size(150, 28);
-            this.driverDLTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.driverDLTypeComboBox.Items.AddRange(new object[] { "CDL", "Regular" });
-            this.driverDLTypeComboBox.Name = "driverDLTypeComboBox";
-
-            this.driverAddButton.Text = "Add";
-            this.driverAddButton.Location = new System.Drawing.Point(120, 297);
-            this.driverAddButton.Size = new System.Drawing.Size(100, 35);
-            this.driverAddButton.BackColor = AppSettings.Theme.SuccessColor;
-            this.driverAddButton.ForeColor = AppSettings.Theme.TextLightColor;
-            this.driverAddButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.driverAddButton.FlatAppearance.BorderSize = 2;
-            this.driverAddButton.FlatAppearance.BorderColor = AppSettings.Theme.SuccessColor;
-            this.driverAddButton.Font = AppSettings.Theme.ButtonFont;
-            this.driverAddButton.Name = "driverAddButton";
-            this.driverAddButton.Click += new System.EventHandler(this.DriverAddButton_Click);
-
-            this.driverClearButton.Text = "Clear";
-            this.driverClearButton.Location = new System.Drawing.Point(230, 297);
-            this.driverClearButton.Size = new System.Drawing.Size(100, 35);
-            this.driverClearButton.BackColor = AppSettings.Theme.InfoColor;
-            this.driverClearButton.ForeColor = AppSettings.Theme.TextLightColor;
-            this.driverClearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.driverClearButton.FlatAppearance.BorderSize = 2;
-            this.driverClearButton.FlatAppearance.BorderColor = AppSettings.Theme.InfoColor;
-            this.driverClearButton.Font = AppSettings.Theme.ButtonFont;
-            this.driverClearButton.Name = "driverClearButton";
-            this.driverClearButton.Click += new System.EventHandler(this.DriverClearButton_Click);
-
-            // Status Strip
-            this.statusStrip.Location = new System.Drawing.Point(0, 568);
-            this.statusStrip.Size = new System.Drawing.Size(784, 22);
-            this.statusStrip.SizingGrip = false;
-            this.statusStrip.Name = "statusStrip";
+            this.driversDataGridView.ReadOnly = true;
+            this.driversDataGridView.RowHeadersWidth = 51;
+            this.driversDataGridView.RowTemplate.Height = 24;
+            this.driversDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.driversDataGridView.Size = new System.Drawing.Size(776, 250);
+            this.driversDataGridView.TabIndex = 0;
+            this.driversDataGridView.SelectionChanged += new System.EventHandler(this.DriversDataGridView_SelectionChanged);
+            // 
+            // inputGroupBox
+            // 
+            this.inputGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.inputGroupBox.Controls.Add(this.contactNumberTextBox);
+            this.inputGroupBox.Controls.Add(this.contactNumberLabel);
+            this.inputGroupBox.Controls.Add(this.licenseNumberTextBox);
+            this.inputGroupBox.Controls.Add(this.licenseNumberLabel);
+            this.inputGroupBox.Controls.Add(this.nameTextBox);
+            this.inputGroupBox.Controls.Add(this.nameLabel);
+            this.inputGroupBox.Controls.Add(this.buttonPanel);
+            this.inputGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.inputGroupBox.Location = new System.Drawing.Point(12, 270);
+            this.inputGroupBox.Name = "inputGroupBox";
+            this.inputGroupBox.Size = new System.Drawing.Size(776, 200);
+            this.inputGroupBox.TabIndex = 1;
+            this.inputGroupBox.TabStop = false;
+            this.inputGroupBox.Text = "Driver Details";
+            // 
+            // buttonPanel
+            // 
+            this.buttonPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPanel.Controls.Add(this.saveButton);
+            this.buttonPanel.Controls.Add(this.editButton);
+            this.buttonPanel.Controls.Add(this.refreshButton);
+            this.buttonPanel.Controls.Add(this.deleteButton);
+            this.buttonPanel.Controls.Add(this.exitButton);
+            this.buttonPanel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.buttonPanel.Location = new System.Drawing.Point(500, 150);
+            this.buttonPanel.Name = "buttonPanel";
+            this.buttonPanel.Size = new System.Drawing.Size(270, 40);
+            this.buttonPanel.TabIndex = 6;
+            // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(165, 3);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(100, 35);
+            this.saveButton.TabIndex = 0;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.SaveButton_Click);
+            // 
+            // editButton
+            // 
+            this.editButton.Location = new System.Drawing.Point(59, 3);
+            this.editButton.Name = "editButton";
+            this.editButton.Size = new System.Drawing.Size(100, 35);
+            this.editButton.TabIndex = 1;
+            this.editButton.Text = "Edit";
+            this.editButton.UseVisualStyleBackColor = true;
+            this.editButton.Click += new System.EventHandler(this.EditButton_Click);
+            // 
+            // refreshButton
+            // 
+            this.refreshButton.Location = new System.Drawing.Point(3, 3);
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(100, 35);
+            this.refreshButton.TabIndex = 2;
+            this.refreshButton.Text = "Refresh";
+            this.refreshButton.UseVisualStyleBackColor = true;
+            this.refreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
+            // 
+            // deleteButton
+            // 
+            this.deleteButton.Location = new System.Drawing.Point(3, 3);
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(100, 35);
+            this.deleteButton.TabIndex = 3;
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
+            // 
+            // exitButton
+            // 
+            this.exitButton.Location = new System.Drawing.Point(3, 3);
+            this.exitButton.Name = "exitButton";
+            this.exitButton.Size = new System.Drawing.Size(50, 35);
+            this.exitButton.TabIndex = 4;
+            this.exitButton.Text = "Exit";
+            this.exitButton.UseVisualStyleBackColor = true;
+            this.exitButton.Click += new System.EventHandler(this.ExitButton_Click);
+            // 
+            // nameLabel
+            // 
+            this.nameLabel.AutoSize = true;
+            this.nameLabel.Location = new System.Drawing.Point(20, 30);
+            this.nameLabel.Name = "nameLabel";
+            this.nameLabel.Size = new System.Drawing.Size(50, 19);
+            this.nameLabel.TabIndex = 0;
+            this.nameLabel.Text = "Name:";
+            // 
+            // nameTextBox
+            // 
+            this.nameTextBox.Location = new System.Drawing.Point(120, 27);
+            this.nameTextBox.Name = "nameTextBox";
+            this.nameTextBox.Size = new System.Drawing.Size(200, 25);
+            this.nameTextBox.TabIndex = 1;
+            // 
+            // licenseNumberLabel
+            // 
+            this.licenseNumberLabel.AutoSize = true;
+            this.licenseNumberLabel.Location = new System.Drawing.Point(20, 60);
+            this.licenseNumberLabel.Name = "licenseNumberLabel";
+            this.licenseNumberLabel.Size = new System.Drawing.Size(90, 19);
+            this.licenseNumberLabel.TabIndex = 2;
+            this.licenseNumberLabel.Text = "License #:";
+            // 
+            // licenseNumberTextBox
+            // 
+            this.licenseNumberTextBox.Location = new System.Drawing.Point(120, 57);
+            this.licenseNumberTextBox.Name = "licenseNumberTextBox";
+            this.licenseNumberTextBox.Size = new System.Drawing.Size(200, 25);
+            this.licenseNumberTextBox.TabIndex = 3;
+            // 
+            // contactNumberLabel
+            // 
+            this.contactNumberLabel.AutoSize = true;
+            this.contactNumberLabel.Location = new System.Drawing.Point(20, 90);
+            this.contactNumberLabel.Name = "contactNumberLabel";
+            this.contactNumberLabel.Size = new System.Drawing.Size(100, 19);
+            this.contactNumberLabel.TabIndex = 4;
+            this.contactNumberLabel.Text = "Contact #:";
+            // 
+            // contactNumberTextBox
+            // 
+            this.contactNumberTextBox.Location = new System.Drawing.Point(120, 87);
+            this.contactNumberTextBox.Name = "contactNumberTextBox";
+            this.contactNumberTextBox.Size = new System.Drawing.Size(200, 25);
+            this.contactNumberTextBox.TabIndex = 5;
+            // 
+            // statusStrip
+            // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.statusLabel });
-
+            this.statusStrip.Location = new System.Drawing.Point(0, 488);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(800, 22);
+            this.statusStrip.SizingGrip = false;
+            this.statusStrip.TabIndex = 2;
+            this.statusStrip.Text = "statusStrip";
+            // 
+            // statusLabel
+            // 
             this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(39, 17);
             this.statusLabel.Text = "Ready.";
-
-            // Form Properties
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            // 
+            // DriverForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 590);
-            this.Controls.Add(this.driversDataGridView);
-            this.Controls.Add(this.inputGroupBox);
+            this.ClientSize = new System.Drawing.Size(800, 510);
             this.Controls.Add(this.statusStrip);
+            this.Controls.Add(this.inputGroupBox);
+            this.Controls.Add(this.driversDataGridView);
             this.Name = "DriverForm";
             this.Text = "Driver Management - BusBuddy";
-
             ((System.ComponentModel.ISupportInitialize)(this.driversDataGridView)).EndInit();
-            this.statusStrip.ResumeLayout(false);
-            this.statusStrip.PerformLayout();
             this.inputGroupBox.ResumeLayout(false);
             this.inputGroupBox.PerformLayout();
+            this.buttonPanel.ResumeLayout(false);
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
         }
 
-        private System.Windows.Forms.DataGridView driversDataGridView;
-        private System.Windows.Forms.Label driverNameLabel;
-        private System.Windows.Forms.TextBox driverNameTextBox;
-        private System.Windows.Forms.Label driverAddressLabel;
-        private System.Windows.Forms.TextBox driverAddressTextBox;
-        private System.Windows.Forms.Label driverCityLabel;
-        private System.Windows.Forms.TextBox driverCityTextBox;
-        private System.Windows.Forms.Label driverStateLabel;
-        private System.Windows.Forms.TextBox driverStateTextBox;
-        private System.Windows.Forms.Label driverZipLabel;
-        private System.Windows.Forms.TextBox driverZipTextBox;
-        private System.Windows.Forms.Label driverPhoneLabel;
-        private System.Windows.Forms.TextBox driverPhoneTextBox;
-        private System.Windows.Forms.Label driverEmailLabel;
-        private System.Windows.Forms.TextBox driverEmailTextBox;
-        private System.Windows.Forms.Label driverStipendLabel;
-        private System.Windows.Forms.ComboBox driverStipendComboBox;
-        private System.Windows.Forms.Label driverDLTypeLabel;
-        private System.Windows.Forms.ComboBox driverDLTypeComboBox;
-        private System.Windows.Forms.Button driverAddButton;
-        private System.Windows.Forms.Button driverClearButton;
-        private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.GroupBox inputGroupBox;
+        private void SaveButton_Click(object sender, EventArgs e) => SaveRecord();
+        private void EditButton_Click(object sender, EventArgs e) => EditRecord();
+        private void RefreshButton_Click(object sender, EventArgs e) => RefreshData();
+        private void DeleteButton_Click(object sender, EventArgs e) => DeleteRecord();
+        private void ExitButton_Click(object sender, EventArgs e) => Close();
+        private void DriversDataGridView_SelectionChanged(object sender, EventArgs e) { /* TODO: Implement or leave empty for now */ }
     }
 }

@@ -1,0 +1,68 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/BusBuddy.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile",
+      "detail": "Build the BusBuddy project"
+    },
+    {
+      "label": "terminate-busbuddy",
+      "type": "shell",
+      "command": "taskkill /IM BusBuddy.exe /F; if ($LASTEXITCODE -eq 128 -or $LASTEXITCODE -eq 0) { exit 0 } else { exit $LASTEXITCODE }",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "check-database",
+      "type": "shell",
+      "command": "if (Test-Path '${workspaceFolder}/bin/Debug/net9.0-windows/WileySchool.db') { Write-Output 'Database exists.' } else { Write-Output 'Database not found, creating...'; sqlite3 '${workspaceFolder}/bin/Debug/net9.0-windows/WileySchool.db' 'VACUUM;' }",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "init-database",
+      "type": "shell",
+      "command": "sqlite3 '${workspaceFolder}/bin/Debug/net9.0-windows/WileySchool.db' < '${workspaceFolder}/init-db.sql'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "dependsOn": ["check-database"]
+    }
+  ]
+}

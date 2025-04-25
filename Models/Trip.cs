@@ -53,25 +53,26 @@ namespace BusBuddy.Models
         /// For activity trips: Total hours driven for the trip.
         /// </summary>
         public double TotalHoursDriven { get; set; }
-        
+
         /// <summary>
         /// String representation of total hours driven (for compatibility)
         /// </summary>
         public string Total_Hours_Driven { get; set; } = string.Empty;
-        
+
         /// <summary>
         /// For activity trips with stipend drivers: Total miles driven.
         /// </summary>
         public double MilesDriven { get; set; }
-        
+
         /// <summary>
         /// For route trips: Whether this is a CDL route (higher pay) or not.
         /// </summary>
         public bool IsCDLRoute { get; set; }
-        
+
         /// <summary>
         /// Category of the trip: "Route" or "Activity"
         /// </summary>
         public string TripCategory { get; set; } = "Route";
-    }
+    public object DriverID { get; internal set; }
+  }
 }

@@ -1,222 +1,213 @@
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace BusBuddy
+namespace BusBuddy.Utilities
 {
-    /// <summary>
-    /// Utility class to apply consistent styling to forms and controls
-    /// </summary>
     public static class FormStyler
     {
-        /// <summary>
-        /// Apply base styling to a form
-        /// </summary>
+        // Theme colors
+        public static readonly Color PrimaryColor = Color.FromArgb(65, 139, 202);      // Main blue
+        public static readonly Color SecondaryColor = Color.FromArgb(41, 98, 155);     // Darker blue for hover/focus
+        public static readonly Color AccentColor = Color.FromArgb(245, 247, 250);      // Very light blue for backgrounds
+        public static readonly Color NeutralColor = Color.FromArgb(88, 88, 88);        // Dark gray for text
+        public static readonly Color WarningColor = Color.FromArgb(211, 84, 0);        // Orange-red for warning/delete
+
         public static void ApplyFormStyle(Form form)
         {
-            form.BackColor = AppSettings.Theme.BackgroundColor;
-            form.Font = AppSettings.Theme.NormalFont;
-            form.ForeColor = AppSettings.Theme.TextColor;
+            if (form == null) return;
+            
             form.FormBorderStyle = FormBorderStyle.FixedSingle;
-            form.MaximizeBox = false;
+            form.MaximizeBox = true; // Allow maximizing for better usability
             form.StartPosition = FormStartPosition.CenterScreen;
-
-            // Apply styling to any status strip if present
-            foreach (Control control in form.Controls)
-            {
-                if (control is StatusStrip statusStrip)
-                {
-                    statusStrip.BackColor = AppSettings.Theme.PrimaryColor;
-                    statusStrip.ForeColor = AppSettings.Theme.TextLightColor;
-                    statusStrip.Font = AppSettings.Theme.NormalFont;
-                    statusStrip.SizingGrip = false;
-
-                    foreach (ToolStripItem item in statusStrip.Items)
-                    {
-                        if (item is ToolStripStatusLabel label)
-                        {
-                            label.ForeColor = AppSettings.Theme.TextLightColor;
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Style a TabControl to use modern flat styling
-        /// </summary>
-        public static void StyleTabControl(TabControl tabControl)
-        {
-            tabControl.Appearance = TabAppearance.FlatButtons;
-            tabControl.SizeMode = TabSizeMode.Fixed;
-            tabControl.ItemSize = new Size(150, 40);
-            tabControl.Font = AppSettings.Theme.SubheaderFont;
+            form.BackColor = AccentColor;
+            form.Font = new Font("Segoe UI", 10f);
             
-            foreach (TabPage tab in tabControl.TabPages)
-            {
-                tab.BackColor = AppSettings.Theme.BackgroundColor;
-                tab.BorderStyle = BorderStyle.None;
-                tab.Padding = new Padding(10);
-            }
-        }
-
-        /// <summary>
-        /// Style a DataGridView with modern appearance
-        /// </summary>
-        public static void StyleDataGridView(DataGridView dataGridView)
-        {
-            dataGridView.EnableHeadersVisualStyles = false;
-            dataGridView.BackgroundColor = AppSettings.Theme.BackgroundColor;
-            dataGridView.BorderStyle = BorderStyle.None;
-            dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dataGridView.GridColor = AppSettings.Theme.BorderColor;
-            dataGridView.RowHeadersVisible = false;
-            dataGridView.AllowUserToAddRows = false;
-            dataGridView.AllowUserToDeleteRows = false;
-            dataGridView.AllowUserToResizeRows = false;
-            dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView.MultiSelect = false;
-            dataGridView.RowTemplate.Height = 30;
-            dataGridView.Font = AppSettings.Theme.DataFont;
-            dataGridView.DefaultCellStyle.SelectionBackColor = AppSettings.Theme.SecondaryColor;
-            dataGridView.DefaultCellStyle.SelectionForeColor = AppSettings.Theme.TextLightColor;
-            dataGridView.DefaultCellStyle.BackColor = AppSettings.Theme.CardColor;
-            dataGridView.DefaultCellStyle.ForeColor = AppSettings.Theme.TextColor;
-            dataGridView.DefaultCellStyle.Padding = new Padding(3);
-
-            dataGridView.ColumnHeadersDefaultCellStyle.BackColor = AppSettings.Theme.PrimaryColor;
-            dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = AppSettings.Theme.TextLightColor;
-            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font(AppSettings.Theme.DataFont, FontStyle.Bold);
-            dataGridView.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView.ColumnHeadersDefaultCellStyle.Padding = new Padding(5);
-            dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridView.ColumnHeadersHeight = 40;
+            // Add a subtle border effect to the form
+            form.Padding = new Padding(3);
             
-            dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(250, 250, 250);
+            // Style the form's header text
+            if (form.Text.Length > 0)
+            {
+                form.ForeColor = NeutralColor;
+            }
+            
+            // Force a refresh to ensure styles are applied
+            form.Refresh();
         }
-        
-        /// <summary>
-        /// Apply modern styling to a Button
-        /// </summary>
+
         public static void StyleButton(Button button, bool isPrimary = true)
         {
-            button.FlatStyle = FlatStyle.Flat;
-            button.Font = AppSettings.Theme.ButtonFont;
-            button.FlatAppearance.BorderSize = 0;
-            button.Padding = new Padding(5);
-            button.Cursor = Cursors.Hand;
+            if (button == null) return;
             
-            if (isPrimary)
+            // Remove default visual styles that might override our custom styling
+            button.UseVisualStyleBackColor = false;
+            
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderSize = 1;
+            button.FlatAppearance.BorderColor = isPrimary ? PrimaryColor : WarningColor;
+            button.Padding = new Padding(8, 5, 8, 5);
+            button.Margin = new Padding(5);
+            button.Cursor = Cursors.Hand;
+            button.BackColor = isPrimary ? PrimaryColor : Color.White;
+            button.ForeColor = isPrimary ? Color.White : WarningColor;
+            
+            // Preserve existing size if it's already set, otherwise use default size
+            if (button.Size.Width < 100 || button.Size.Height < 30)
             {
-                button.BackColor = AppSettings.Theme.PrimaryColor;
-                button.ForeColor = AppSettings.Theme.TextLightColor;
+                button.Size = new Size(120, 40);
+            }
+            
+            button.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+
+            // Clear existing event handlers to prevent duplicates
+            // We need to do this more carefully since Button doesn't have GetInvocationList
+            button.MouseEnter -= Button_MouseEnter;
+            button.MouseLeave -= Button_MouseLeave;
+            
+            // Add hover effect handler
+            button.MouseEnter += Button_MouseEnter;
+            button.MouseLeave += Button_MouseLeave;
+            
+            // Store button type as tag for the event handlers
+            button.Tag = isPrimary;
+        }
+        
+        private static void Button_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                bool isPrimary = btn.Tag is bool ? (bool)btn.Tag : true;
+                btn.BackColor = isPrimary ? SecondaryColor : Color.FromArgb(252, 235, 233);
+            }
+        }
+        
+        private static void Button_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                bool isPrimary = btn.Tag is bool ? (bool)btn.Tag : true;
+                btn.BackColor = isPrimary ? PrimaryColor : Color.White;
+            }
+        }
+
+        public static void StyleDataGridView(DataGridView grid)
+        {
+            if (grid == null) return;
+            
+            grid.BorderStyle = BorderStyle.None;
+            grid.BackgroundColor = AccentColor;
+            grid.GridColor = Color.FromArgb(230, 230, 230);
+            grid.EnableHeadersVisualStyles = false;
+            
+            // Style the column headers
+            grid.ColumnHeadersDefaultCellStyle.BackColor = PrimaryColor;
+            grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10f, FontStyle.Regular);
+            grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            grid.ColumnHeadersHeight = 35;
+            
+            // Style alternating rows
+            grid.RowsDefaultCellStyle.BackColor = Color.White;
+            grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 247, 252);
+            grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(182, 214, 237);
+            grid.DefaultCellStyle.SelectionForeColor = Color.Black;
+            
+            // Ensure the grid is refreshed with new styling
+            grid.Refresh();
+        }
+
+        public static void StyleGroupBox(GroupBox groupBox)
+        {
+            if (groupBox == null) return;
+            
+            groupBox.FlatStyle = FlatStyle.Flat;
+            groupBox.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
+            groupBox.ForeColor = PrimaryColor;
+            groupBox.BackColor = Color.White;
+            groupBox.Padding = new Padding(10);
+        }
+
+        public static void StyleLabel(Label label, bool isHeading = false)
+        {
+            if (label == null) return;
+            
+            if (isHeading)
+            {
+                label.Font = new Font("Segoe UI", 12f, FontStyle.Bold);
+                label.ForeColor = PrimaryColor;
             }
             else
             {
-                button.BackColor = AppSettings.Theme.SecondaryColor;
-                button.ForeColor = AppSettings.Theme.TextLightColor;
+                label.Font = new Font("Segoe UI", 9.5f);
+                label.ForeColor = NeutralColor;
             }
         }
-        
-        /// <summary>
-        /// Style an action button (Add, Save, etc.)
-        /// </summary>
-        public static void StyleActionButton(Button button)
-        {
-            StyleButton(button);
-            button.Size = new Size(120, 40);
-            button.FlatAppearance.BorderSize = 0;
-        }
-        
-        /// <summary>
-        /// Style a secondary button (Cancel, Clear, etc.)
-        /// </summary>
-        public static void StyleSecondaryButton(Button button)
-        {
-            StyleButton(button, false);
-            button.BackColor = AppSettings.Theme.SecondaryColor;
-            button.Size = new Size(120, 40);
-        }
-        
-        /// <summary>
-        /// Style input controls for consistent look
-        /// </summary>
+
         public static void StyleInputControls(Control container)
         {
+            if (container == null || container.Controls == null) return;
+            
             foreach (Control control in container.Controls)
             {
-                // Style labels
-                if (control is Label label)
-                {
-                    label.Font = AppSettings.Theme.LabelFont;
-                    label.ForeColor = AppSettings.Theme.TextColor;
-                }
-                // Style text boxes
-                else if (control is TextBox textBox)
+                if (control is TextBox textBox)
                 {
                     textBox.BorderStyle = BorderStyle.FixedSingle;
-                    textBox.Font = AppSettings.Theme.NormalFont;
-                    textBox.BackColor = AppSettings.Theme.CardColor;
+                    textBox.Font = new Font("Segoe UI", 9.5f);
+                    textBox.BackColor = Color.White;
+                    textBox.Padding = new Padding(3);
                 }
-                // Style combo boxes
-                else if (control is ComboBox comboBox)
+                else if (control is Button button)
                 {
-                    comboBox.Font = AppSettings.Theme.NormalFont;
-                    comboBox.FlatStyle = FlatStyle.Flat;
-                    comboBox.BackColor = AppSettings.Theme.CardColor;
+                    StyleButton(button, !button.Name.Contains("Delete") && !button.Name.Contains("Cancel"));
                 }
-                // Style numeric up down controls
-                else if (control is NumericUpDown numericUpDown)
+                else if (control is Label label)
                 {
-                    numericUpDown.Font = AppSettings.Theme.NormalFont;
-                    numericUpDown.BorderStyle = BorderStyle.FixedSingle;
-                    numericUpDown.BackColor = AppSettings.Theme.CardColor;
+                    StyleLabel(label, label.Name.Contains("Header") || label.Name.Contains("Title") || label.Font.Bold);
                 }
-                // Style date time pickers
-                else if (control is DateTimePicker dateTimePicker)
-                {
-                    dateTimePicker.Font = AppSettings.Theme.NormalFont;
-                    dateTimePicker.CalendarFont = AppSettings.Theme.NormalFont;
-                    dateTimePicker.CalendarTitleBackColor = AppSettings.Theme.PrimaryColor;
-                    dateTimePicker.CalendarTitleForeColor = AppSettings.Theme.TextLightColor;
-                }
-                // Process tab controls
-                else if (control is TabControl tabControl)
-                {
-                    StyleTabControl(tabControl);
-                }
-                // Process tab pages and group boxes
-                else if (control is TabPage tabPage || control is GroupBox groupBox)
-                {
-                    StyleInputControls(control);
-                }
-                // Style data grids
                 else if (control is DataGridView dataGridView)
                 {
                     StyleDataGridView(dataGridView);
                 }
-                // Style buttons
-                else if (control is Button button)
+                else if (control is GroupBox groupBox)
                 {
-                    if (button.Name.Contains("Add") || button.Name.Contains("Save") || button.Name.Contains("Update"))
-                    {
-                        StyleActionButton(button);
-                    }
-                    else if (button.Name.Contains("Clear") || button.Name.Contains("Cancel") || button.Name.Contains("Delete"))
-                    {
-                        StyleSecondaryButton(button);
-                    }
-                    else
-                    {
-                        StyleButton(button);
-                    }
+                    StyleGroupBox(groupBox);
+                    
+                    // Process the controls inside the group box recursively
+                    StyleInputControls(groupBox);
                 }
-                // Process panel and other containers recursively
                 else if (control.Controls.Count > 0)
                 {
                     StyleInputControls(control);
                 }
+                
+                // Special case for panels - preserve their transparency but style children
+                if (control is Panel panel)
+                {
+                    panel.BackColor = Color.Transparent;
+                    StyleInputControls(panel);
+                }
+            }
+        }
+
+        public static void ApplyControlStyles(Form form)
+        {
+            // Apply form basic style
+            ApplyFormStyle(form);
+            
+            try
+            {
+                // Style all controls recursively
+                StyleInputControls(form);
+                
+                // Force refresh to ensure styling is displayed
+                form.PerformLayout();
+                form.Refresh();
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't crash the application
+                System.Diagnostics.Debug.WriteLine($"Error applying styles: {ex.Message}");
             }
         }
     }

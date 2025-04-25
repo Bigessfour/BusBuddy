@@ -1,0 +1,514 @@
+2025-04-21 05:53:17.884 -06:00 [INF] Starting BusBuddy application
+2025-04-21 05:53:18.197 -06:00 [INF] Welcome form initialized
+2025-04-21 05:53:18.199 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 05:53:18.344 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 05:53:18.345 -06:00 [INF] Loading today's trips data
+2025-04-21 05:53:18.465 -06:00 [INF] No scheduled trips found for today
+2025-04-21 05:53:18.471 -06:00 [INF] Loading today's trips data
+2025-04-21 05:53:18.477 -06:00 [INF] No scheduled trips found for today
+2025-04-21 05:53:21.607 -06:00 [INF] Manage Bus Routes button clicked
+2025-04-21 05:53:21.608 -06:00 [INF] Navigating to Routes Management
+2025-04-21 05:53:21.638 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 05:53:21.677 -06:00 [WRN] GroupBox found without a Name property on . Its position cannot be saved.
+2025-04-21 05:53:21.677 -06:00 [WRN] Form ScheduledRoutesForm does not have a Name property set. Layout cannot be loaded.
+2025-04-21 05:58:15.749 -06:00 [INF] Loading today's trips data
+2025-04-21 05:58:15.756 -06:00 [INF] No scheduled trips found for today
+2025-04-21 05:58:25.337 -06:00 [WRN] Form ScheduledRoutesForm does not have a Name property set. Layout cannot be saved.
+2025-04-21 05:58:25.355 -06:00 [INF] Loading today's trips data
+2025-04-21 05:58:25.359 -06:00 [INF] No scheduled trips found for today
+2025-04-21 05:58:27.971 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 06:24:15.014 -06:00 [INF] Starting BusBuddy application
+2025-04-21 06:24:15.435 -06:00 [INF] Welcome form initialized
+2025-04-21 06:24:15.436 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 06:24:15.580 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 06:24:15.581 -06:00 [INF] Loading today's trips data
+2025-04-21 06:24:15.702 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:24:15.708 -06:00 [INF] Loading today's trips data
+2025-04-21 06:24:15.713 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:24:17.512 -06:00 [INF] Drivers button clicked
+2025-04-21 06:24:17.512 -06:00 [INF] Navigating to Driver Management
+2025-04-21 06:24:17.521 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 06:24:17.536 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 06:24:17.665 -06:00 [INF] Loaded layout settings for DriverForm
+2025-04-21 06:24:30.012 -06:00 [INF] Attempting to delete driver with ID: 1
+2025-04-21 06:24:30.035 -06:00 [INF] Driver deleted successfully: 1
+2025-04-21 06:25:14.853 -06:00 [INF] Adding new driver.
+2025-04-21 06:29:13.151 -06:00 [INF] Starting BusBuddy application
+2025-04-21 06:29:13.489 -06:00 [INF] Welcome form initialized
+2025-04-21 06:29:13.490 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 06:29:13.637 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 06:29:13.638 -06:00 [INF] Loading today's trips data
+2025-04-21 06:29:13.748 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:29:13.754 -06:00 [INF] Loading today's trips data
+2025-04-21 06:29:13.759 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:29:15.742 -06:00 [INF] Drivers button clicked
+2025-04-21 06:29:15.742 -06:00 [INF] Navigating to Driver Management
+2025-04-21 06:29:15.750 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 06:29:15.764 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 06:29:15.894 -06:00 [INF] Loaded layout settings for DriverForm
+2025-04-21 06:29:24.343 -06:00 [INF] Updating driver with ID: 0
+2025-04-21 06:29:24.359 -06:00 [INF] Driver updated successfully: 0
+2025-04-21 06:34:07.010 -06:00 [INF] Starting BusBuddy application
+2025-04-21 06:34:07.352 -06:00 [INF] Welcome form initialized
+2025-04-21 06:34:07.354 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 06:34:07.535 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 06:34:07.536 -06:00 [INF] Loading today's trips data
+2025-04-21 06:34:07.656 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:34:07.662 -06:00 [INF] Loading today's trips data
+2025-04-21 06:34:07.669 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:34:09.756 -06:00 [INF] Drivers button clicked
+2025-04-21 06:34:09.757 -06:00 [INF] Navigating to Driver Management
+2025-04-21 06:34:09.766 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 06:34:09.780 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 06:34:09.911 -06:00 [INF] Loaded layout settings for DriverForm
+2025-04-21 06:34:28.535 -06:00 [INF] Saved layout settings for DriverForm
+2025-04-21 06:34:29.969 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 06:36:02.396 -06:00 [INF] Starting BusBuddy application
+2025-04-21 06:36:02.752 -06:00 [INF] Welcome form initialized
+2025-04-21 06:36:02.753 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 06:36:02.924 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 06:36:02.925 -06:00 [INF] Loading today's trips data
+2025-04-21 06:36:03.032 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:36:03.037 -06:00 [INF] Loading today's trips data
+2025-04-21 06:36:03.042 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:36:04.899 -06:00 [INF] Drivers button clicked
+2025-04-21 06:36:04.899 -06:00 [INF] Navigating to Driver Management
+2025-04-21 06:36:04.909 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 06:36:04.923 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 06:36:05.054 -06:00 [INF] Loaded layout settings for DriverForm
+2025-04-21 06:36:08.869 -06:00 [INF] Exit button clicked. Closing DriverForm.
+2025-04-21 06:36:08.888 -06:00 [INF] Saved layout settings for DriverForm
+2025-04-21 06:36:48.350 -06:00 [INF] Starting BusBuddy application
+2025-04-21 06:36:48.682 -06:00 [INF] Welcome form initialized
+2025-04-21 06:36:48.683 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 06:36:48.823 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 06:36:48.824 -06:00 [INF] Loading today's trips data
+2025-04-21 06:36:48.928 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:36:48.934 -06:00 [INF] Loading today's trips data
+2025-04-21 06:36:48.939 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:41:48.689 -06:00 [INF] Loading today's trips data
+2025-04-21 06:41:48.695 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:46:48.643 -06:00 [INF] Loading today's trips data
+2025-04-21 06:46:48.650 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:52:54.026 -06:00 [INF] Starting BusBuddy application
+2025-04-21 06:52:54.427 -06:00 [INF] Welcome form initialized
+2025-04-21 06:52:54.428 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 06:52:54.598 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 06:52:54.599 -06:00 [INF] Loading today's trips data
+2025-04-21 06:52:54.712 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:52:54.717 -06:00 [INF] Loading today's trips data
+2025-04-21 06:52:54.722 -06:00 [INF] No scheduled trips found for today
+2025-04-21 06:54:24.566 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 07:41:23.807 -06:00 [INF] Starting BusBuddy application
+2025-04-21 07:41:23.998 -06:00 [INF] Welcome form initialized
+2025-04-21 07:41:23.999 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 07:41:24.110 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 07:41:24.111 -06:00 [INF] Loading today's trips data
+2025-04-21 07:41:24.191 -06:00 [INF] No scheduled trips found for today
+2025-04-21 07:41:24.198 -06:00 [INF] Loading today's trips data
+2025-04-21 07:41:24.204 -06:00 [INF] No scheduled trips found for today
+2025-04-21 07:41:28.203 -06:00 [INF] Drivers button clicked
+2025-04-21 07:41:28.204 -06:00 [INF] Navigating to Driver Management
+2025-04-21 07:41:28.212 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:41:28.226 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:41:28.362 -06:00 [INF] Loaded layout settings for DriverForm
+2025-04-21 07:41:35.413 -06:00 [INF] Exit button clicked. Closing DriverForm.
+2025-04-21 07:41:35.426 -06:00 [INF] Saved layout settings for DriverForm
+2025-04-21 07:41:37.000 -06:00 [INF] Fuel button clicked
+2025-04-21 07:41:37.000 -06:00 [INF] Navigating to Fuel Records
+2025-04-21 07:41:37.008 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:41:37.014 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:41:37.014 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:41:37.019 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:41:37.079 -06:00 [WRN] GroupBox found without a Name property on FuelForm. Its position cannot be saved.
+2025-04-21 07:41:37.080 -06:00 [INF] No saved layout settings found for FuelForm, using default layout.
+2025-04-21 07:41:43.965 -06:00 [INF] Saved layout settings for FuelForm
+2025-04-21 07:45:06.446 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 07:52:22.810 -06:00 [INF] Starting BusBuddy application
+2025-04-21 07:52:23.143 -06:00 [INF] Welcome form initialized
+2025-04-21 07:52:23.145 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 07:52:23.328 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 07:52:23.329 -06:00 [INF] Loading today's trips data
+2025-04-21 07:52:23.435 -06:00 [INF] No scheduled trips found for today
+2025-04-21 07:52:23.441 -06:00 [INF] Loading today's trips data
+2025-04-21 07:52:23.446 -06:00 [INF] No scheduled trips found for today
+2025-04-21 07:52:26.744 -06:00 [INF] Fuel button clicked
+2025-04-21 07:52:26.744 -06:00 [INF] Navigating to Fuel Records
+2025-04-21 07:52:26.760 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:52:26.766 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:52:26.767 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:52:26.779 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:52:26.869 -06:00 [WRN] GroupBox found without a Name property on FuelForm. Its position cannot be saved.
+2025-04-21 07:52:26.870 -06:00 [INF] Loaded layout settings for FuelForm
+2025-04-21 07:52:29.967 -06:00 [INF] Saved layout settings for FuelForm
+2025-04-21 07:52:31.291 -06:00 [INF] Drivers button clicked
+2025-04-21 07:52:31.291 -06:00 [INF] Navigating to Driver Management
+2025-04-21 07:52:31.299 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:52:31.306 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 07:52:31.419 -06:00 [INF] Loaded layout settings for DriverForm
+2025-04-21 08:06:12.593 -06:00 [INF] Starting BusBuddy application
+2025-04-21 08:06:13.040 -06:00 [INF] Welcome form initialized
+2025-04-21 08:06:13.042 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 08:06:13.212 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 08:06:13.213 -06:00 [INF] Loading today's trips data
+2025-04-21 08:06:13.329 -06:00 [INF] No scheduled trips found for today
+2025-04-21 08:06:13.335 -06:00 [INF] Loading today's trips data
+2025-04-21 08:06:13.340 -06:00 [INF] No scheduled trips found for today
+2025-04-21 08:06:16.408 -06:00 [INF] Fuel button clicked
+2025-04-21 08:06:16.408 -06:00 [INF] Navigating to Fuel Records
+2025-04-21 08:06:16.424 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:06:16.430 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:06:16.430 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:06:16.442 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:06:16.443 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:06:16.530 -06:00 [WRN] GroupBox found without a Name property on FuelForm. Its position cannot be saved.
+2025-04-21 08:06:16.530 -06:00 [INF] Loaded layout settings for FuelForm
+2025-04-21 08:06:19.686 -06:00 [INF] Saved layout settings for FuelForm
+2025-04-21 08:06:26.908 -06:00 [INF] Exit button clicked
+2025-04-21 08:06:28.304 -06:00 [INF] Exiting application
+2025-04-21 08:06:28.307 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 08:17:43.277 -06:00 [INF] Starting BusBuddy application
+2025-04-21 08:17:43.636 -06:00 [INF] Welcome form initialized
+2025-04-21 08:17:43.638 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 08:17:43.779 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 08:17:43.780 -06:00 [INF] Loading today's trips data
+2025-04-21 08:17:43.886 -06:00 [INF] No scheduled trips found for today
+2025-04-21 08:17:43.892 -06:00 [INF] Loading today's trips data
+2025-04-21 08:17:43.898 -06:00 [INF] No scheduled trips found for today
+2025-04-21 08:17:47.188 -06:00 [INF] Fuel button clicked
+2025-04-21 08:17:47.188 -06:00 [INF] Navigating to Fuel Records
+2025-04-21 08:17:47.204 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:17:47.210 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:17:47.211 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:17:47.222 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:17:47.223 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:17:47.316 -06:00 [WRN] GroupBox found without a Name property on FuelForm. Its position cannot be saved.
+2025-04-21 08:17:47.316 -06:00 [INF] Loaded layout settings for FuelForm
+2025-04-21 08:17:49.485 -06:00 [INF] Saved layout settings for FuelForm
+2025-04-21 08:17:51.676 -06:00 [INF] Drivers button clicked
+2025-04-21 08:17:51.677 -06:00 [INF] Navigating to Driver Management
+2025-04-21 08:17:51.683 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:17:51.690 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 08:17:51.804 -06:00 [INF] Loaded layout settings for DriverForm
+2025-04-21 08:17:53.838 -06:00 [INF] Exit button clicked. Closing DriverForm.
+2025-04-21 08:17:53.840 -06:00 [INF] Saved layout settings for DriverForm
+2025-04-21 08:17:58.851 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 13:22:02.715 -06:00 [INF] Starting BusBuddy application
+2025-04-21 13:22:02.857 -06:00 [INF] Added sample vehicles.
+2025-04-21 13:22:02.864 -06:00 [INF] Added sample maintenance record.
+2025-04-21 13:22:02.973 -06:00 [INF] Welcome form initialized
+2025-04-21 13:22:02.974 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 13:22:03.103 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 13:22:03.104 -06:00 [INF] Loading today's trips data
+2025-04-21 13:22:03.196 -06:00 [INF] No scheduled trips found for today
+2025-04-21 13:22:03.201 -06:00 [INF] Loading today's trips data
+2025-04-21 13:22:03.206 -06:00 [INF] No scheduled trips found for today
+2025-04-21 13:22:04.662 -06:00 [INF] Vehicles button clicked
+2025-04-21 13:22:04.662 -06:00 [INF] Navigating to Vehicle Management
+2025-04-21 13:22:04.675 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:04.694 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:04.695 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:04.779 -06:00 [INF] No saved layout settings found for VehiclesForm, using default layout.
+2025-04-21 13:22:10.166 -06:00 [INF] Saved layout settings for VehiclesForm
+2025-04-21 13:22:11.332 -06:00 [INF] Fuel button clicked
+2025-04-21 13:22:11.332 -06:00 [INF] Navigating to Fuel Records
+2025-04-21 13:22:11.337 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:11.343 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:11.344 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:11.348 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:11.348 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:11.414 -06:00 [INF] Loaded layout settings for FuelForm
+2025-04-21 13:22:19.613 -06:00 [INF] Saved layout settings for FuelForm
+2025-04-21 13:22:20.592 -06:00 [INF] Maintenance button clicked
+2025-04-21 13:22:20.592 -06:00 [INF] Navigating to Maintenance Records
+2025-04-21 13:22:20.596 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:20.600 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:20.600 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:20.617 -06:00 [ERR] Error converting maintenance record data from database for ID 1
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot implicitly convert type 'long' to 'int'. An explicit conversion exists (are you missing a cast?)
+   at CallSite.Target(Closure, CallSite, Object)
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at BusBuddy.Data.DatabaseManager.<GetMaintenanceRecords>b__11_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 300
+2025-04-21 13:22:20.633 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:20.633 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:20.685 -06:00 [INF] No saved layout settings found for MaintenanceForm, using default layout.
+2025-04-21 13:22:30.755 -06:00 [ERR] Unhandled UI thread exception
+System.NotImplementedException: The method or operation is not implemented.
+   at BusBuddy.UI.Forms.MaintenanceForm.SaveRecord() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\MaintenanceForm.cs:line 120
+   at BusBuddy.UI.Forms.MaintenanceForm.SaveButton_Click(Object sender, EventArgs e) in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\MaintenanceForm.Designer.cs:line 269
+   at System.Windows.Forms.Button.OnClick(EventArgs e)
+   at System.Windows.Forms.Button.OnMouseUp(MouseEventArgs mevent)
+   at System.Windows.Forms.Control.WmMouseUp(Message& m, MouseButtons button, Int32 clicks)
+   at System.Windows.Forms.Control.WndProc(Message& m)
+   at System.Windows.Forms.ButtonBase.WndProc(Message& m)
+   at System.Windows.Forms.NativeWindow.Callback(HWND hWnd, MessageId msg, WPARAM wparam, LPARAM lparam)
+2025-04-21 13:22:37.080 -06:00 [INF] Saved layout settings for MaintenanceForm
+2025-04-21 13:22:39.151 -06:00 [INF] View Activities button clicked
+2025-04-21 13:22:39.151 -06:00 [INF] Navigating to Activities Management
+2025-04-21 13:22:39.230 -06:00 [INF] No saved layout settings found for ActivityForm, using default layout.
+2025-04-21 13:22:39.230 -06:00 [INF] ActivityForm loading.
+2025-04-21 13:22:39.245 -06:00 [INF] ActivityForm loaded successfully.
+2025-04-21 13:22:51.244 -06:00 [INF] Exit button clicked on Activity form. Closing form.
+2025-04-21 13:22:51.246 -06:00 [INF] Saved layout settings for ActivityForm
+2025-04-21 13:22:53.391 -06:00 [INF] Vehicles button clicked
+2025-04-21 13:22:53.392 -06:00 [INF] Navigating to Vehicle Management
+2025-04-21 13:22:53.394 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:53.399 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:53.399 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 13:22:53.464 -06:00 [INF] Loaded layout settings for VehiclesForm
+2025-04-21 13:22:57.917 -06:00 [INF] Vehicle deleted successfully: ID 1
+2025-04-21 13:23:06.249 -06:00 [INF] Vehicle deleted successfully: ID 2
+2025-04-21 13:23:20.373 -06:00 [INF] Vehicle deleted successfully: ID 3
+2025-04-21 13:24:36.248 -06:00 [INF] Saved layout settings for VehiclesForm
+2025-04-21 13:25:31.483 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 14:11:21.120 -06:00 [INF] Starting BusBuddy application
+2025-04-21 14:11:21.242 -06:00 [INF] Added sample vehicles.
+2025-04-21 14:11:21.341 -06:00 [INF] Welcome form initialized
+2025-04-21 14:11:21.343 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 14:11:21.458 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 14:11:21.459 -06:00 [INF] Loading today's trips data
+2025-04-21 14:11:21.547 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:11:21.553 -06:00 [INF] Loading today's trips data
+2025-04-21 14:11:21.557 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:11:24.088 -06:00 [INF] Vehicles button clicked
+2025-04-21 14:11:24.088 -06:00 [INF] Navigating to Vehicle Management
+2025-04-21 14:11:24.102 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:11:24.119 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:11:24.119 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:11:24.203 -06:00 [INF] Loaded layout settings for VehiclesForm
+2025-04-21 14:11:34.706 -06:00 [INF] Vehicle deleted successfully: ID 4
+2025-04-21 14:11:40.567 -06:00 [INF] Vehicle deleted successfully: ID 5
+2025-04-21 14:11:46.424 -06:00 [INF] Vehicle deleted successfully: ID 6
+2025-04-21 14:16:21.298 -06:00 [INF] Loading today's trips data
+2025-04-21 14:16:21.305 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:16:56.893 -06:00 [INF] Vehicle added successfully: BusNumber 9
+2025-04-21 14:18:03.290 -06:00 [INF] Vehicle updated successfully: ID 7
+2025-04-21 14:18:08.001 -06:00 [INF] Saved layout settings for VehiclesForm
+2025-04-21 14:18:09.130 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 14:18:21.394 -06:00 [INF] Starting BusBuddy application
+2025-04-21 14:18:21.579 -06:00 [INF] Welcome form initialized
+2025-04-21 14:18:21.580 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 14:18:21.697 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 14:18:21.698 -06:00 [INF] Loading today's trips data
+2025-04-21 14:18:21.777 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:18:21.782 -06:00 [INF] Loading today's trips data
+2025-04-21 14:18:21.786 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:18:23.674 -06:00 [INF] Vehicles button clicked
+2025-04-21 14:18:23.674 -06:00 [INF] Navigating to Vehicle Management
+2025-04-21 14:18:23.688 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:18:23.704 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:18:23.705 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:18:23.784 -06:00 [INF] Loaded layout settings for VehiclesForm
+2025-04-21 14:20:37.491 -06:00 [INF] Saved layout settings for VehiclesForm
+2025-04-21 14:20:39.053 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 14:27:53.557 -06:00 [INF] Starting BusBuddy application
+2025-04-21 14:27:53.769 -06:00 [INF] Welcome form initialized
+2025-04-21 14:27:53.770 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 14:27:53.903 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 14:27:53.904 -06:00 [INF] Loading today's trips data
+2025-04-21 14:27:53.984 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:27:53.989 -06:00 [INF] Loading today's trips data
+2025-04-21 14:27:53.994 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:27:55.971 -06:00 [INF] Vehicles button clicked
+2025-04-21 14:27:55.971 -06:00 [INF] Navigating to Vehicle Management
+2025-04-21 14:27:55.986 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:27:55.992 -06:00 [ERR] Required column PlateNumber is missing in table Vehicles.
+2025-04-21 14:27:55.992 -06:00 [ERR] Vehicles table schema is invalid. Returning empty list.
+2025-04-21 14:27:55.996 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:27:55.996 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:27:56.094 -06:00 [INF] Loaded layout settings for VehiclesForm
+2025-04-21 14:30:19.716 -06:00 [WRN] Attempt 1 failed for add vehicle: SQL logic error
+table Vehicles has no column named PlateNumber. Retrying...
+2025-04-21 14:30:20.722 -06:00 [WRN] Attempt 2 failed for add vehicle: SQL logic error
+table Vehicles has no column named PlateNumber. Retrying...
+2025-04-21 14:30:22.729 -06:00 [WRN] Attempt 3 failed for add vehicle: SQL logic error
+table Vehicles has no column named PlateNumber. Retrying...
+2025-04-21 14:30:25.749 -06:00 [ERR] Failed to add vehicle after 3 attempts.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+table Vehicles has no column named PlateNumber
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.<>c__DisplayClass8_0.<AddVehicle>b__0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 268
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 902
+2025-04-21 14:30:25.768 -06:00 [ERR] Error adding vehicle: One or more errors occurred. (Failed to add vehicle)
+System.AggregateException: One or more errors occurred. (Failed to add vehicle)
+ ---> System.InvalidOperationException: Failed to add vehicle
+ ---> code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+table Vehicles has no column named PlateNumber
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.<>c__DisplayClass8_0.<AddVehicle>b__0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 268
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 902
+   --- End of inner exception stack trace ---
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 914
+   at BusBuddy.Data.DatabaseManager.AddVehicle(Vehicle vehicle) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 264
+   at BusBuddy.UI.Forms.VehiclesForm.<>c__DisplayClass9_0.<SaveRecord>b__1() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\VehiclesForm.cs:line 150
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at BusBuddy.UI.Forms.VehiclesForm.SaveRecord() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\VehiclesForm.cs:line 150
+2025-04-21 14:30:31.542 -06:00 [INF] Saved layout settings for VehiclesForm
+2025-04-21 14:30:33.483 -06:00 [INF] Saved layout settings for Welcome
+2025-04-21 14:30:49.034 -06:00 [INF] Starting BusBuddy application
+2025-04-21 14:30:49.381 -06:00 [INF] Welcome form initialized
+2025-04-21 14:30:49.382 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 14:30:49.532 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 14:30:49.533 -06:00 [INF] Loading today's trips data
+2025-04-21 14:30:49.649 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:30:49.655 -06:00 [INF] Loading today's trips data
+2025-04-21 14:30:49.660 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:30:50.850 -06:00 [INF] Vehicles button clicked
+2025-04-21 14:30:50.850 -06:00 [INF] Navigating to Vehicle Management
+2025-04-21 14:30:50.867 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:30:50.873 -06:00 [ERR] Required column PlateNumber is missing in table Vehicles.
+2025-04-21 14:30:50.873 -06:00 [ERR] Vehicles table schema is invalid. Returning empty list.
+2025-04-21 14:30:50.878 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:30:50.878 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:30:50.992 -06:00 [INF] Loaded layout settings for VehiclesForm
+2025-04-21 14:31:07.734 -06:00 [WRN] Attempt 1 failed for add vehicle: SQL logic error
+table Vehicles has no column named PlateNumber. Retrying...
+2025-04-21 14:31:08.803 -06:00 [WRN] Attempt 2 failed for add vehicle: SQL logic error
+table Vehicles has no column named PlateNumber. Retrying...
+2025-04-21 14:31:10.869 -06:00 [WRN] Attempt 3 failed for add vehicle: SQL logic error
+table Vehicles has no column named PlateNumber. Retrying...
+2025-04-21 14:31:13.929 -06:00 [ERR] Failed to add vehicle after 3 attempts.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+table Vehicles has no column named PlateNumber
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.<>c__DisplayClass8_0.<AddVehicle>b__0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 268
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 902
+2025-04-21 14:31:14.111 -06:00 [ERR] Error adding vehicle: One or more errors occurred. (Failed to add vehicle)
+System.AggregateException: One or more errors occurred. (Failed to add vehicle)
+ ---> System.InvalidOperationException: Failed to add vehicle
+ ---> code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+table Vehicles has no column named PlateNumber
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.<>c__DisplayClass8_0.<AddVehicle>b__0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 268
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 902
+   --- End of inner exception stack trace ---
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 914
+   at BusBuddy.Data.DatabaseManager.AddVehicle(Vehicle vehicle) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 264
+   at BusBuddy.UI.Forms.VehiclesForm.<>c__DisplayClass9_0.<SaveRecord>b__1() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\VehiclesForm.cs:line 150
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at BusBuddy.UI.Forms.VehiclesForm.SaveRecord() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\VehiclesForm.cs:line 150
+2025-04-21 14:39:56.925 -06:00 [INF] Starting BusBuddy application
+2025-04-21 14:39:57.140 -06:00 [INF] Welcome form initialized
+2025-04-21 14:39:57.141 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-21 14:39:57.255 -06:00 [INF] Loaded layout settings for Welcome
+2025-04-21 14:39:57.255 -06:00 [INF] Loading today's trips data
+2025-04-21 14:39:57.335 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:39:57.342 -06:00 [INF] Loading today's trips data
+2025-04-21 14:39:57.347 -06:00 [INF] No scheduled trips found for today
+2025-04-21 14:39:59.819 -06:00 [INF] Vehicles button clicked
+2025-04-21 14:39:59.819 -06:00 [INF] Navigating to Vehicle Management
+2025-04-21 14:39:59.825 -06:00 [INF] Current database schema version: 0
+2025-04-21 14:39:59.825 -06:00 [WRN] Migrations directory not found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\Migrations. Skipping migration check.
+2025-04-21 14:39:59.838 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:39:59.843 -06:00 [ERR] Required column PlateNumber is missing in table Vehicles.
+2025-04-21 14:39:59.843 -06:00 [ERR] Vehicles table schema is invalid. Returning empty list.
+2025-04-21 14:39:59.847 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:39:59.848 -06:00 [WRN] Cannot update status: Form handle not created yet. Deferring update.
+2025-04-21 14:39:59.942 -06:00 [INF] Loaded layout settings for VehiclesForm
+2025-04-21 14:41:40.032 -06:00 [WRN] Attempt 1 failed for add vehicle: SQL logic error
+table Vehicles has no column named PlateNumber. Retrying...
+2025-04-21 14:41:41.054 -06:00 [WRN] Attempt 2 failed for add vehicle: SQL logic error
+table Vehicles has no column named PlateNumber. Retrying...
+2025-04-21 14:41:43.064 -06:00 [WRN] Attempt 3 failed for add vehicle: SQL logic error
+table Vehicles has no column named PlateNumber. Retrying...
+2025-04-21 14:41:46.076 -06:00 [ERR] Failed to add vehicle after 3 attempts.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+table Vehicles has no column named PlateNumber
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.<>c__DisplayClass9_0.<AddVehicle>b__0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 272
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 999
+2025-04-21 14:41:46.094 -06:00 [ERR] Error adding vehicle: One or more errors occurred. (Failed to add vehicle)
+System.AggregateException: One or more errors occurred. (Failed to add vehicle)
+ ---> System.InvalidOperationException: Failed to add vehicle
+ ---> code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+table Vehicles has no column named PlateNumber
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.<>c__DisplayClass9_0.<AddVehicle>b__0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 272
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 999
+   --- End of inner exception stack trace ---
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 1011
+   at BusBuddy.Data.DatabaseManager.AddVehicle(Vehicle vehicle) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 268
+   at BusBuddy.UI.Forms.VehiclesForm.<>c__DisplayClass9_0.<SaveRecord>b__1() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\VehiclesForm.cs:line 150
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at BusBuddy.UI.Forms.VehiclesForm.SaveRecord() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\VehiclesForm.cs:line 150

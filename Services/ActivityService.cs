@@ -76,10 +76,10 @@ namespace BusBuddy.Services
             try
             {
                 // Validate activity data
-                if (string.IsNullOrWhiteSpace(activity.Name))
+                if (string.IsNullOrWhiteSpace(activity.Title))
                 {
-                    _logger.Warning("Activity validation failed: Name is required");
-                    return (false, "Activity name is required", 0);
+                    _logger.Warning("Activity validation failed: Title is required");
+                    return (false, "Activity title is required", 0);
                 }
                 
                 // Add the activity

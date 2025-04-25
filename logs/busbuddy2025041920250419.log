@@ -1,0 +1,404 @@
+2025-04-19 18:37:36.011 -06:00 [INF] Starting BusBuddy application
+2025-04-19 18:37:36.162 -06:00 [ERR] Unexpected error loading drivers or bus numbers.
+System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+   at System.Windows.Forms.Control.MarshaledInvoke(Control caller, Delegate method, Object[] args, Boolean synchronous)
+   at System.Windows.Forms.Control.BeginInvoke(Delegate method, Object[] args)
+   at BusBuddy.UI.Forms.BaseForm.UpdateStatus(String message, Color color) in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\BaseForm.cs:line 25
+   at BusBuddy.Forms.TripSchedulerForm.LoadDriversAndBuses() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\TripSchedulerForm.cs:line 193
+2025-04-19 18:37:36.178 -06:00 [ERR] Application failed to start properly
+System.InvalidOperationException: Invoke or BeginInvoke cannot be called on a control until the window handle has been created.
+   at System.Windows.Forms.Control.MarshaledInvoke(Control caller, Delegate method, Object[] args, Boolean synchronous)
+   at System.Windows.Forms.Control.BeginInvoke(Delegate method, Object[] args)
+   at BusBuddy.UI.Forms.BaseForm.UpdateStatus(String message, Color color) in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\BaseForm.cs:line 25
+   at BusBuddy.Forms.TripSchedulerForm.LoadDriversAndBuses() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\TripSchedulerForm.cs:line 208
+   at BusBuddy.Forms.TripSchedulerForm..ctor() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\TripSchedulerForm.cs:line 37
+   at BusBuddy.Program.Main() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Program.cs:line 42
+2025-04-19 18:38:03.080 -06:00 [INF] Database cleanup performed (no-op for SQLite).
+2025-04-19 18:40:24.067 -06:00 [INF] Starting BusBuddy application
+2025-04-19 18:42:55.481 -06:00 [INF] Starting BusBuddy application
+2025-04-19 18:42:55.648 -06:00 [INF] Welcome form initialized
+2025-04-19 18:42:55.649 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-19 18:42:55.671 -06:00 [INF] Loading today's trips data
+2025-04-19 18:42:55.671 -06:00 [INF] Fetching trips for date: 2025-04-19
+2025-04-19 18:42:55.755 -06:00 [INF] Found 0 trips for today
+2025-04-19 18:42:55.779 -06:00 [INF] No scheduled trips found for today
+2025-04-19 18:42:58.083 -06:00 [INF] Scheduler button clicked
+2025-04-19 18:42:58.084 -06:00 [INF] Navigating to Trip Scheduler
+2025-04-19 18:43:15.253 -06:00 [INF] Loading today's trips data
+2025-04-19 18:43:15.253 -06:00 [INF] Fetching trips for date: 2025-04-19
+2025-04-19 18:43:15.256 -06:00 [INF] Found 0 trips for today
+2025-04-19 18:43:15.257 -06:00 [INF] No scheduled trips found for today
+2025-04-19 18:43:17.385 -06:00 [INF] Test Database button clicked
+2025-04-19 18:43:21.412 -06:00 [INF] Settings button clicked
+2025-04-19 18:43:21.412 -06:00 [INF] Navigating to Settings
+2025-04-19 18:43:21.413 -06:00 [INF] Settings form initialized
+2025-04-19 18:43:24.811 -06:00 [INF] Opening Table Column Manager
+2025-04-19 18:43:24.811 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 18:43:29.615 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 18:43:35.226 -06:00 [INF] Data Entry button clicked
+2025-04-19 18:43:35.226 -06:00 [INF] Navigating to Inputs
+2025-04-19 18:43:35.234 -06:00 [INF] API controls initialized successfully
+2025-04-19 18:43:51.148 -06:00 [INF] Loading today's trips data
+2025-04-19 18:43:51.148 -06:00 [INF] Fetching trips for date: 2025-04-19
+2025-04-19 18:43:51.152 -06:00 [INF] Found 0 trips for today
+2025-04-19 18:43:51.153 -06:00 [INF] No scheduled trips found for today
+2025-04-19 18:47:55.650 -06:00 [INF] Loading today's trips data
+2025-04-19 18:47:55.650 -06:00 [INF] Fetching trips for date: 2025-04-19
+2025-04-19 18:47:55.655 -06:00 [INF] Found 0 trips for today
+2025-04-19 18:47:55.656 -06:00 [INF] No scheduled trips found for today
+2025-04-19 18:51:42.703 -06:00 [INF] Exit button clicked
+2025-04-19 18:51:44.737 -06:00 [INF] Exiting application
+2025-04-19 18:51:44.765 -06:00 [INF] Database cleanup performed (no-op for SQLite).
+2025-04-19 19:06:52.650 -06:00 [INF] Starting BusBuddy application
+2025-04-19 19:06:52.809 -06:00 [INF] Welcome form initialized
+2025-04-19 19:06:52.811 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-19 19:06:52.831 -06:00 [INF] Loading today's trips data
+2025-04-19 19:06:52.832 -06:00 [INF] Fetching trips for date: 2025-04-19
+2025-04-19 19:06:52.913 -06:00 [INF] Found 0 trips for today
+2025-04-19 19:06:52.937 -06:00 [INF] No scheduled trips found for today
+2025-04-19 19:06:55.073 -06:00 [INF] Data Entry button clicked
+2025-04-19 19:06:55.073 -06:00 [INF] Navigating to Inputs
+2025-04-19 19:06:55.098 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.107 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.107 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.110 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.110 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.113 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.113 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.117 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.117 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.122 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:06:55.180 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:07:31.740 -06:00 [INF] Loading today's trips data
+2025-04-19 19:07:31.740 -06:00 [INF] Fetching trips for date: 2025-04-19
+2025-04-19 19:07:31.744 -06:00 [INF] Found 0 trips for today
+2025-04-19 19:07:31.745 -06:00 [INF] No scheduled trips found for today
+2025-04-19 19:07:34.130 -06:00 [INF] Database cleanup performed (no-op for SQLite).
+2025-04-19 19:56:07.113 -06:00 [INF] Starting BusBuddy application
+2025-04-19 19:56:07.275 -06:00 [INF] Welcome form initialized
+2025-04-19 19:56:07.276 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-19 19:56:07.297 -06:00 [INF] Loading today's trips data
+2025-04-19 19:56:07.404 -06:00 [INF] No scheduled trips found for today
+2025-04-19 19:56:08.438 -06:00 [ERR] Failed to retrieve database statistics after 3 attempts.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+2025-04-19 19:56:08.456 -06:00 [ERR] Error retrieving dashboard stats: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetDatabaseStatistics() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 177
+   at BusBuddy.UI.Forms.WelcomePresenter.GetDashboardStats() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\WelcomePresenter.cs:line 39
+2025-04-19 19:56:08.457 -06:00 [ERR] Error loading trips data: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetDatabaseStatistics() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 177
+   at BusBuddy.UI.Forms.WelcomePresenter.GetDashboardStats() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\WelcomePresenter.cs:line 39
+   at BusBuddy.UI.Forms.Welcome.LoadTripsData() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\Welcome.cs:line 83
+2025-04-19 19:56:10.165 -06:00 [INF] Data Entry button clicked
+2025-04-19 19:56:10.166 -06:00 [INF] Navigating to Inputs
+2025-04-19 19:56:10.192 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.201 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.202 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.205 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.205 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.207 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.208 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.211 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.212 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.216 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:10.216 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:11.255 -06:00 [ERR] Failed to retrieve activities after 3 attempts.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior) in /_/Dapper/SqlMapper.cs:line 1156
+   at Dapper.SqlMapper.QueryImpl[T](IDbConnection cnn, CommandDefinition command, Type effectiveType)+MoveNext() in /_/Dapper/SqlMapper.cs:line 1184
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at Dapper.SqlMapper.Query[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Boolean buffered, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 815
+   at BusBuddy.Data.DatabaseManager.<>c.<GetActivities>b__22_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 280
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+2025-04-19 19:56:11.257 -06:00 [ERR] Error loading activities data: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior) in /_/Dapper/SqlMapper.cs:line 1156
+   at Dapper.SqlMapper.QueryImpl[T](IDbConnection cnn, CommandDefinition command, Type effectiveType)+MoveNext() in /_/Dapper/SqlMapper.cs:line 1184
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at Dapper.SqlMapper.Query[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Boolean buffered, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 815
+   at BusBuddy.Data.DatabaseManager.<>c.<GetActivities>b__22_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 280
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetActivities() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 278
+   at BusBuddy.UI.Forms.Inputs.LoadActivitiesDataGrid() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\Inputs.cs:line 406
+2025-04-19 19:56:11.258 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:19.232 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 19:56:28.322 -06:00 [INF] Loading today's trips data
+2025-04-19 19:56:28.327 -06:00 [INF] No scheduled trips found for today
+2025-04-19 19:56:29.355 -06:00 [ERR] Failed to retrieve database statistics after 3 attempts.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+2025-04-19 19:56:29.356 -06:00 [ERR] Error retrieving dashboard stats: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetDatabaseStatistics() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 177
+   at BusBuddy.UI.Forms.WelcomePresenter.GetDashboardStats() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\WelcomePresenter.cs:line 39
+2025-04-19 19:56:29.356 -06:00 [ERR] Error loading trips data: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetDatabaseStatistics() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 177
+   at BusBuddy.UI.Forms.WelcomePresenter.GetDashboardStats() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\WelcomePresenter.cs:line 39
+   at BusBuddy.UI.Forms.Welcome.LoadTripsData() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\Welcome.cs:line 83
+2025-04-19 19:56:29.969 -06:00 [INF] Exit button clicked
+2025-04-19 19:56:31.858 -06:00 [INF] Exiting application
+2025-04-19 19:56:31.883 -06:00 [INF] Database cleanup performed (no-op for SQLite).
+2025-04-19 20:00:14.847 -06:00 [INF] Starting BusBuddy application
+2025-04-19 20:00:15.020 -06:00 [INF] Welcome form initialized
+2025-04-19 20:00:15.021 -06:00 [INF] Auto refresh timer started with interval 300000ms
+2025-04-19 20:00:15.043 -06:00 [INF] Loading today's trips data
+2025-04-19 20:00:15.153 -06:00 [INF] No scheduled trips found for today
+2025-04-19 20:00:16.182 -06:00 [ERR] Failed to retrieve database statistics after 3 attempts.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+2025-04-19 20:00:16.204 -06:00 [ERR] Error retrieving dashboard stats: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetDatabaseStatistics() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 177
+   at BusBuddy.UI.Forms.WelcomePresenter.GetDashboardStats() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\WelcomePresenter.cs:line 39
+2025-04-19 20:00:16.204 -06:00 [ERR] Error loading trips data: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetDatabaseStatistics() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 177
+   at BusBuddy.UI.Forms.WelcomePresenter.GetDashboardStats() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\WelcomePresenter.cs:line 39
+   at BusBuddy.UI.Forms.Welcome.LoadTripsData() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\Welcome.cs:line 83
+2025-04-19 20:00:18.125 -06:00 [INF] Data Entry button clicked
+2025-04-19 20:00:18.125 -06:00 [INF] Navigating to Inputs
+2025-04-19 20:00:18.151 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.160 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.161 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.164 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.164 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.166 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.167 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.170 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.171 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.175 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:18.175 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:00:19.204 -06:00 [ERR] Failed to retrieve activities after 3 attempts.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior) in /_/Dapper/SqlMapper.cs:line 1156
+   at Dapper.SqlMapper.QueryImpl[T](IDbConnection cnn, CommandDefinition command, Type effectiveType)+MoveNext() in /_/Dapper/SqlMapper.cs:line 1184
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at Dapper.SqlMapper.Query[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Boolean buffered, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 815
+   at BusBuddy.Data.DatabaseManager.<>c.<GetActivities>b__22_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 280
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+2025-04-19 20:00:19.207 -06:00 [ERR] Error loading activities data: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Dapper.SqlMapper.ExecuteReaderWithFlagsFallback(IDbCommand cmd, Boolean wasClosed, CommandBehavior behavior) in /_/Dapper/SqlMapper.cs:line 1156
+   at Dapper.SqlMapper.QueryImpl[T](IDbConnection cnn, CommandDefinition command, Type effectiveType)+MoveNext() in /_/Dapper/SqlMapper.cs:line 1184
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at Dapper.SqlMapper.Query[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Boolean buffered, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 815
+   at BusBuddy.Data.DatabaseManager.<>c.<GetActivities>b__22_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 280
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetActivities() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 278
+   at BusBuddy.UI.Forms.Inputs.LoadActivitiesDataGrid() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\Inputs.cs:line 406
+2025-04-19 20:00:19.208 -06:00 [WRN] Cannot update status: statusLabel is null or form is disposed.
+2025-04-19 20:05:15.017 -06:00 [INF] Loading today's trips data
+2025-04-19 20:05:15.023 -06:00 [INF] No scheduled trips found for today
+2025-04-19 20:05:16.048 -06:00 [ERR] Failed to retrieve database statistics after 3 attempts.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+2025-04-19 20:05:16.048 -06:00 [ERR] Error retrieving dashboard stats: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetDatabaseStatistics() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 177
+   at BusBuddy.UI.Forms.WelcomePresenter.GetDashboardStats() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\WelcomePresenter.cs:line 39
+2025-04-19 20:05:16.049 -06:00 [ERR] Error loading trips data: SQL logic error
+no such table: Activities
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+no such table: Activities
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteScalar()
+   at Dapper.SqlMapper.ExecuteScalarImpl[T](IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 2994
+   at Dapper.SqlMapper.ExecuteScalar[T](IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 568
+   at BusBuddy.Data.DatabaseManager.<>c.<GetDatabaseStatistics>b__12_0(SQLiteConnection connection) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 179
+   at BusBuddy.Data.DatabaseManager.ExecuteWithRetry[T](Func`2 operation, String operationName) in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 115
+   at BusBuddy.Data.DatabaseManager.GetDatabaseStatistics() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 177
+   at BusBuddy.UI.Forms.WelcomePresenter.GetDashboardStats() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\WelcomePresenter.cs:line 39
+   at BusBuddy.UI.Forms.Welcome.LoadTripsData() in C:\Users\steve.mckitrick\Desktop\BusBuddy\UI\Forms\Welcome.cs:line 83

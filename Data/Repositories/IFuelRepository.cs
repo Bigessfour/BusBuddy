@@ -10,6 +10,33 @@ namespace BusBuddy.Data.Repositories
         /// <summary>
         /// Gets fuel records by bus number
         /// </summary>
+#pragma warning disable SA1611 // Element parameters should be documented
         Task<IEnumerable<FuelRecord>> GetFuelRecordsByBusAsync(int busNumber);
+#pragma warning restore SA1611 // Element parameters should be documented
+
+        /// <summary>
+        /// Gets all bus numbers
+        /// </summary>
+        List<int> GetBusNumbers();
+        
+        /// <summary>
+        /// Gets all fuel records (synchronous version)
+        /// </summary>
+        List<FuelRecord> GetAll();
+        
+        /// <summary>
+        /// Adds a new fuel record (synchronous version)
+        /// </summary>
+        int Add(FuelRecord entity);
+        
+        /// <summary>
+        /// Updates an existing fuel record
+        /// </summary>
+        bool Update(FuelRecord entity);
+        
+        /// <summary>
+        /// Deletes a fuel record by ID
+        /// </summary>
+        bool Delete(int id);
     }
 }

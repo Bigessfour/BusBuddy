@@ -77,7 +77,7 @@ namespace BusBuddy.Services
             try
             {
                 // Validate driver data
-                if (string.IsNullOrWhiteSpace(driver.Name))
+                if (string.IsNullOrWhiteSpace(driver.DriverName))
                 {
                     _logger.Warning("Driver validation failed: Name is required");
                     return (false, "Driver name is required", 0);

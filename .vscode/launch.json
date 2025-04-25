@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (Windows Forms)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/bin/Debug/net9.0-windows/BusBuddy.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "externalTerminal",
+            "internalConsoleOptions": "openOnSessionStart",
+            "justMyCode": false,
+            "requireExactSource": false,
+            "enableStepFiltering": true,
+            "logging": {
+                "moduleLoad": false,
+                "exceptions": true,
+                "diagnosticsLog": {
+                    "protocolMessages": false
+                }
+            }
+        }
+    ]
+}

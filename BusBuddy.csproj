@@ -1,88 +1,49 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
+    <PropertyGroup>
+      <OutputType>WinExe</OutputType>
+      <TargetFramework>net9.0-windows</TargetFramework>
+      <Nullable>enable</Nullable>
+      <UseWindowsForms>true</UseWindowsForms>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <WarningLevel>4</WarningLevel>
+      <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <AnalysisLevel>none</AnalysisLevel>
+      <NoWarn>$(NoWarn);1591;8603;8618;1998;8602;8600;8601;8604;8605;8622;0414</NoWarn>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.35" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Serilog" Version="3.1.1" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
-  </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.1.35" />
+      <PackageReference Include="MaterialSkin.2" Version="2.3.1" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="8.*" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="Serilog" Version="4.2.0" />
+      <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+      <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+      <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Data\DatabaseManager.cs" />
-    <Compile Include="Data\IDatabaseManager.cs" />
-    <Compile Include="Data\Repositories\ActivityRepository.cs" />
-    <Compile Include="Data\Repositories\DriverRepository.cs" />
-    <Compile Include="Data\Repositories\FuelRepository.cs" />
-    <Compile Include="Data\Repositories\IActivityRepository.cs" />
-    <Compile Include="Data\Repositories\IDriverRepository.cs" />
-    <Compile Include="Data\Repositories\IFuelRepository.cs" />
-    <Compile Include="Data\Repositories\IRepository.cs" />
-    <Compile Include="Data\Repositories\IRouteRepository.cs" />
-    <Compile Include="Data\Repositories\ISchoolCalendarRepository.cs" />
-    <Compile Include="Data\Repositories\ITripRepository.cs" />
-    <Compile Include="Data\Repositories\RouteRepository.cs" />
-    <Compile Include="Data\Repositories\SchoolCalendarRepository.cs" />
-    <Compile Include="Data\Repositories\TripRepository.cs" />
-    <Compile Include="Models\ActivityTrip.cs" />
-    <Compile Include="Models\Driver.cs" />
-    <Compile Include="Models\Fuel.cs" />
-    <Compile Include="Models\Route.cs" />
-    <Compile Include="Models\ScheduledRoute.cs" />
-    <Compile Include="Models\SchoolCalendarDay.cs" />
-    <Compile Include="Models\Trip.cs" />
-    <Compile Include="Models\Activity.cs" />
-    <Compile Include="Models\FuelRecord.cs" />
-    <Compile Include="UI\Forms\BaseForm.cs" />
-    <Compile Include="UI\Forms\DriverForm.cs" />
-    <Compile Include="UI\Forms\DriverForm.Designer.cs" />
-    <Compile Include="UI\Forms\FuelForm.cs" />
-    <Compile Include="UI\Forms\FuelForm.Designer.cs" />
-    <Compile Include="UI\Forms\Inputs.cs" />
-    <Compile Include="UI\Forms\Inputs.Designer.cs" />
-    <Compile Include="UI\Forms\RoutesForm.cs" />
-    <Compile Include="UI\Forms\ScheduledRoutesForm.cs" />
-    <Compile Include="UI\Forms\SchoolCalendarForm.cs" />
-    <Compile Include="UI\Forms\Settings.cs" />
-    <Compile Include="UI\Forms\TableColumnManager.cs" />
-    <Compile Include="UI\Forms\TripSchedulerForm.cs" />
-    <Compile Include="UI\Forms\Welcome.cs" />
-    <Compile Include="UI\Forms\Welcome.Designer.cs" />
-    <Compile Include="UI\Forms\WelcomePresenter.cs" />
-    <Compile Include="UI\Interfaces\IWelcomeView.cs" />
-    <Compile Include="UI\Interfaces\IFormNavigator.cs" />
-    <Compile Include="UI\Interfaces\MainFormNavigator.cs" />
-    <Compile Include="API\ApiClient.cs" />
-    <Compile Include="Utilities\AppSettings.cs" />
-    <Compile Include="Utilities\DataManager.cs" />
-    <Compile Include="Utilities\DataValidator.cs" />
-    <Compile Include="Utilities\FormFactory.cs" />
-    <Compile Include="Utilities\FormStyler.cs" />
-  </ItemGroup>
-
-
-
-  <ItemGroup>
-    <None Update="app.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+      <None Update="app.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="WileySchool.db">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="init-db.sql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 
 </Project>

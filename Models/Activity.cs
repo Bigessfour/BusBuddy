@@ -5,35 +5,30 @@ namespace BusBuddy.Models
 {
     public class Activity
     {
-        // Primary properties
+        public string Title { get; set; } = string.Empty;
+
         public int ActivityID { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Date { get; set; } = string.Empty;
+        public string ActivityDate { get; set; } = string.Empty; // 'YYYY-MM-DD'
         public int BusNumber { get; set; }
         public string Destination { get; set; } = string.Empty;
         public string LeaveTime { get; set; } = string.Empty;
-        public string Driver { get; set; } = string.Empty;
+        public int DriverID { get; set; }
         public double HoursDriven { get; set; }
         public int StudentsDriven { get; set; }
-        
-        // Aliases for DatabaseManager
-        public int ActivityId { get => ActivityID; set => ActivityID = value; }
-        
+        public string? Name { get; internal set; }
+
         // Conversion methods
         public static Activity FromActivityTrip(ActivityTrip trip)
         {
             return new Activity
             {
                 ActivityID = trip.ActivityID,
-                Name = trip.Destination,
-                Description = $"Bus: {trip.BusNumber}, Driver: {trip.Driver}",
-                Date = trip.Date,
+                ActivityDate = trip.ActivityDate,
                 BusNumber = trip.BusNumber,
                 Destination = trip.Destination,
                 LeaveTime = trip.LeaveTime,
-                Driver = trip.Driver,
-                HoursDriven = Convert.ToDouble(trip.HoursDriven),
+                DriverID = trip.DriverID,
+                HoursDriven = trip.HoursDriven,
                 StudentsDriven = trip.StudentsDriven
             };
         }

@@ -1,13 +1,19 @@
+// Copyright (c) YourCompanyName. All rights reserved.
 // BusBuddy/Data/Repositories/SchoolCalendarRepository.cs
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BusBuddy.Models;
-using Serilog;
-
 namespace BusBuddy.Data.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using BusBuddy.Models;
+    using Serilog;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+    /// <summary>
+    /// Repository for school calendar operations.
+    /// </summary>
     public class SchoolCalendarRepository : ISchoolCalendarRepository
     {
         private readonly IDatabaseManager _dbManager;
@@ -19,6 +25,7 @@ namespace BusBuddy.Data.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         
+#pragma warning disable CS8603 // Possible null reference return.
         public async Task<IEnumerable<SchoolCalendarDay>> GetAllAsync()
         {
             try
@@ -130,5 +137,27 @@ namespace BusBuddy.Data.Repositories
                 throw;
             }
         }
+        
+        /// <summary>
+        /// Updates a scheduled route.
+        /// </summary>
+        /// <param name="scheduledRoute">The scheduled route to update.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateScheduledRouteAsync(ScheduledRoute scheduledRoute)
+        {
+            try
+            {
+                _dbManager.UpdateScheduledRoute(scheduledRoute);
+                await Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error updating scheduled route {ScheduledRouteId}", scheduledRoute.ScheduledRouteId);
+                throw;
+            }
+        }
+#pragma warning restore CS8603
     }
+
+#pragma warning restore CS1591
 }

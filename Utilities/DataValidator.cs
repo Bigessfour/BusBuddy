@@ -33,21 +33,21 @@ namespace BusBuddy
             return (errors.Count == 0, errors);
         }
 
-        public static (bool IsValid, List<string> Errors) ValidateFuel(Fuel fuel, List<int> busNumbers)
+        public static (bool IsValid, List<string> Errors) ValidateFuel(FuelRecord fuelRecord, List<int> busNumbers)
         {
             var errors = new List<string>();
 
-            if (fuel.Bus_Number == 0)
+            if (fuelRecord.BusNumber == 0)
                 errors.Add("Bus Number is required.");
-            else if (!busNumbers.Contains(fuel.Bus_Number))
+            else if (!busNumbers.Contains(fuelRecord.BusNumber))
                 errors.Add("Invalid Bus Number.");
-            if (fuel.Fuel_Gallons <= 0)
+            if (fuelRecord.Gallons <= 0)
                 errors.Add("Fuel Gallons must be a positive number.");
-            if (string.IsNullOrWhiteSpace(fuel.Fuel_Date))
+            if (string.IsNullOrWhiteSpace(fuelRecord.FuelDate))
                 errors.Add("Fuel Date is required.");
-            if (string.IsNullOrWhiteSpace(fuel.Fuel_Type))
+            if (string.IsNullOrWhiteSpace(fuelRecord.FuelType))
                 errors.Add("Fuel Type is required.");
-            if (fuel.Odometer_Reading < 0)
+            if (fuelRecord.Odometer < 0)
                 errors.Add("Odometer Reading must be a non-negative number.");
 
             return (errors.Count == 0, errors);
@@ -57,9 +57,9 @@ namespace BusBuddy
         {
             var errors = new List<string>();
 
-            if (string.IsNullOrWhiteSpace(driver.Driver_Name))
+            if (string.IsNullOrWhiteSpace(driver.DriverName))
                 errors.Add("Driver Name is required.");
-            if (string.IsNullOrWhiteSpace(driver.DL_Type))
+            if (string.IsNullOrWhiteSpace(driver.DLType))
                 errors.Add("DL Type is required.");
 
             return (errors.Count == 0, errors);
@@ -69,7 +69,7 @@ namespace BusBuddy
         {
             var errors = new List<string>();
 
-            if (string.IsNullOrWhiteSpace(activity.Date))
+            if (string.IsNullOrWhiteSpace(activity.ActivityDate))
                 errors.Add("Date is required.");
             if (activity.BusNumber == 0)
                 errors.Add("Bus Number is required.");
@@ -79,12 +79,10 @@ namespace BusBuddy
                 errors.Add("Destination is required.");
             if (string.IsNullOrWhiteSpace(activity.LeaveTime) || !TimeSpan.TryParse(activity.LeaveTime, out _))
                 errors.Add("Leave Time must be in HH:mm format.");
-            if (string.IsNullOrWhiteSpace(activity.Driver))
+            if (activity.DriverID == 0)
                 errors.Add("Driver is required.");
-            else if (!drivers.Contains(activity.Driver))
-                errors.Add("Invalid Driver Name.");
-            if (string.IsNullOrWhiteSpace(activity.HoursDriven) || !TimeSpan.TryParse(activity.HoursDriven, out _))
-                errors.Add("Hours Driven must be in HH:mm format.");
+            if (activity.HoursDriven <= 0)
+                errors.Add("Hours Driven must be a positive number.");
             if (activity.StudentsDriven < 0)
                 errors.Add("Students Driven must be a non-negative number.");
 

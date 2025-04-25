@@ -63,7 +63,7 @@ namespace BusBuddy.Services
             try
             {
                 // Validate fuel record data
-                if (fuelRecord.Bus_Number <= 0)
+                if (fuelRecord.BusNumber <= 0)
                 {
                     _logger.Warning("Fuel record validation failed: Bus number is required");
                     return (false, "Bus number is required", 0);
@@ -81,12 +81,12 @@ namespace BusBuddy.Services
             }
         }
         
-        public async Task<(bool Success, string Message, int FuelId)> AddFuelRecordFromFuelAsync(Fuel fuel)
+        public async Task<(bool Success, string Message, int FuelId)> AddFuelRecordFromFuelAsync(FuelRecord fuel)
         {
             try
             {
-                // Convert Fuel to FuelRecord
-                var fuelRecord = FuelRecord.FromFuel(fuel);
+                // No need to convert since we're already using FuelRecord
+                var fuelRecord = fuel.Clone();
                 
                 // Add the fuel record
                 return await AddFuelRecordAsync(fuelRecord);
@@ -95,6 +95,136 @@ namespace BusBuddy.Services
             {
                 _logger.Error(ex, "Error adding fuel record from fuel");
                 return (false, $"Error adding fuel record from fuel: {ex.Message}", 0);
+            }
+        }
+
+        /// <summary>
+        /// Gets all bus numbers
+        /// </summary>
+        public List<int> GetBusNumbers()
+        {
+            try
+            {
+                return _fuelRepository.GetBusNumbers();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting bus numbers");
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// Gets all fuel records (synchronous version)
+        /// </summary>
+        public List<FuelRecord> GetFuelRecords()
+        {
+            try
+            {
+                return _fuelRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting all fuel records");
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// Adds a new fuel record (synchronous version)
+        /// </summary>
+        public bool AddFuelRecord(FuelRecord fuelRecord)
+        {
+            try
+            {
+                // Validate fuel record data
+                if (fuelRecord.BusNumber <= 0)
+                {
+                    _logger.Warning("Fuel record validation failed: Bus number is required");
+                    return false;
+                }
+                
+                // Add the fuel record
+                int fuelId = _fuelRepository.Add(fuelRecord);
+                _logger.Information("Fuel record added successfully with ID {FuelId}", fuelId);
+                return fuelId > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error adding fuel record");
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// Updates an existing fuel record
+        /// </summary>
+        public bool UpdateFuelRecord(FuelRecord fuelRecord)
+        {
+            try
+            {
+                // Validate fuel record data
+                if (fuelRecord.FuelID <= 0)
+                {
+                    _logger.Warning("Fuel record validation failed: Fuel ID is required for updates");
+                    return false;
+                }
+                
+                if (fuelRecord.BusNumber <= 0)
+                {
+                    _logger.Warning("Fuel record validation failed: Bus number is required");
+                    return false;
+                }
+                
+                // Update the fuel record
+                bool result = _fuelRepository.Update(fuelRecord);
+                if (result)
+                {
+                    _logger.Information("Fuel record updated successfully with ID {FuelId}", fuelRecord.FuelID);
+                }
+                else
+                {
+                    _logger.Warning("Failed to update fuel record with ID {FuelId}", fuelRecord.FuelID);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error updating fuel record with ID {FuelId}", fuelRecord.FuelID);
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// Deletes a fuel record by ID
+        /// </summary>
+        public bool DeleteFuelRecord(int fuelId)
+        {
+            try
+            {
+                // Validate fuel ID
+                if (fuelId <= 0)
+                {
+                    _logger.Warning("Fuel record validation failed: Valid Fuel ID is required for deletion");
+                    return false;
+                }
+                
+                // Delete the fuel record
+                bool result = _fuelRepository.Delete(fuelId);
+                if (result)
+                {
+                    _logger.Information("Fuel record deleted successfully with ID {FuelId}", fuelId);
+                }
+                else
+                {
+                    _logger.Warning("Failed to delete fuel record with ID {FuelId}", fuelId);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error deleting fuel record with ID {FuelId}", fuelId);
+                return false;
             }
         }
     }

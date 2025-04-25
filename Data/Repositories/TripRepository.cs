@@ -1,4 +1,5 @@
 // BusBuddy/Data/Repositories/TripRepository.cs
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace BusBuddy.Data.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         
+#pragma warning disable CS8603 // Possible null reference return.
         public async Task<IEnumerable<Trip>> GetAllAsync()
         {
             try
@@ -130,5 +132,7 @@ namespace BusBuddy.Data.Repositories
                 throw;
             }
         }
+#pragma warning restore CS8603
     }
 }
+#pragma warning restore CS1591

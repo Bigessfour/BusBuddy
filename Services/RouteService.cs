@@ -63,7 +63,7 @@ namespace BusBuddy.Services
             try
             {
                 // Validate route data
-                if (string.IsNullOrWhiteSpace(route.Name))
+                if (string.IsNullOrWhiteSpace(route.RouteName))
                 {
                     _logger.Warning("Route validation failed: Name is required");
                     return (false, "Route name is required", 0);
@@ -86,7 +86,7 @@ namespace BusBuddy.Services
             try
             {
                 // Validate route data
-                if (string.IsNullOrWhiteSpace(route.Name))
+                if (string.IsNullOrWhiteSpace(route.RouteName))
                 {
                     _logger.Warning("Route validation failed: Name is required");
                     return (false, "Route name is required");

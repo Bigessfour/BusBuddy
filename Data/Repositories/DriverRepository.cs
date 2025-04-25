@@ -1,4 +1,5 @@
 // BusBuddy/Data/Repositories/DriverRepository.cs
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace BusBuddy.Data.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         
+#pragma warning disable CS8603 // Possible null reference return.
         public async Task<IEnumerable<Driver>> GetAllAsync()
         {
             try
@@ -64,9 +66,9 @@ namespace BusBuddy.Data.Repositories
         {
             try
             {
-                // Implement update logic when available in DatabaseManager
-                _logger.Warning("Driver update not implemented in DatabaseManager");
-                return await Task.FromResult(false);
+                _logger.Information("Updating driver with ID {DriverId}", entity.DriverID);
+                var result = _dbManager.UpdateDriver(entity);
+                return await Task.FromResult(result);
             }
             catch (Exception ex)
             {
@@ -79,9 +81,9 @@ namespace BusBuddy.Data.Repositories
         {
             try
             {
-                // Implement delete logic when available in DatabaseManager
-                _logger.Warning("Driver deletion not implemented in DatabaseManager");
-                return await Task.FromResult(false);
+                _logger.Information("Deleting driver with ID {DriverId}", id);
+                var result = _dbManager.DeleteDriver(id);
+                return await Task.FromResult(result);
             }
             catch (Exception ex)
             {
@@ -108,7 +110,11 @@ namespace BusBuddy.Data.Repositories
             try
             {
                 var drivers = _dbManager.GetDrivers();
-                return await Task.FromResult(drivers.FirstOrDefault(d => d.Driver_Name == name));
+                // Support both DriverName and Name properties
+                return await Task.FromResult(drivers.FirstOrDefault(d => 
+                    (d.Name != null && d.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) || 
+                    (d.DriverName != null && d.DriverName.Equals(name, StringComparison.OrdinalIgnoreCase))
+                ));
             }
             catch (Exception ex)
             {
@@ -116,5 +122,7 @@ namespace BusBuddy.Data.Repositories
                 throw;
             }
         }
+#pragma warning restore CS8603
     }
 }
+#pragma warning restore CS1591

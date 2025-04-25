@@ -1,399 +1,777 @@
-using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using Dapper;
-using Serilog;
-using BusBuddy.Models;
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8601 // Possible null reference assignment.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8603 // Possible null reference return.
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8605 // Unboxing a possibly null value.
 
 namespace BusBuddy.Data
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.Common;
+    using System.Data.SQLite;
+    using System.IO;
+    using System.Linq;
+    using BusBuddy.Data.Exceptions;
+    using BusBuddy.Models;
+    using Dapper;
+    using Serilog;
+
+    public static class FuelSchema
+    {
+        public const string TableName = "Fuel";
+        public const string FuelID = "FuelID";
+        public const string FuelDate = "FuelDate";
+        public const string BusNumber = "BusNumber";
+        public const string Gallons = "FuelGallons";
+        public const string Odometer = "OdometerReading";
+        public const string Notes = "Notes";
+    }
+
     public class DatabaseManager : IDatabaseManager
     {
-        private readonly ILogger _logger;
-        private readonly string _connectionString = "Data Source=WileySchool.db;Version=3;";
+        private readonly Serilog.ILogger _logger;
+        private readonly string _dbFilePath;
+        private readonly string _connectionString;
+        private readonly string _initDbScriptPath;
+        
+        private const string DefaultDbFileName = "WileySchool.db";
+        private const string DefaultInitScriptName = "init-db.sql";
 
-        public DatabaseManager(ILogger logger)
+        private readonly Dictionary<string, List<string>> _requiredTableSchema = new Dictionary<string, List<string>>
+        {
+            { "Fuel", new List<string> { FuelSchema.FuelID, FuelSchema.FuelDate, FuelSchema.BusNumber, FuelSchema.Gallons, FuelSchema.Odometer, FuelSchema.Notes } }
+        };
+
+        private readonly SortedDictionary<int, Action<SQLiteConnection, SQLiteTransaction>> _migrations = new SortedDictionary<int, Action<SQLiteConnection, SQLiteTransaction>>
+        {
+            { 1, (conn, trans) =>
+                {
+                    conn.Execute(@"
+                        DROP TABLE IF EXISTS SchemaVersion;
+                        CREATE TABLE SchemaVersion (
+                            RowId INTEGER PRIMARY KEY,
+                            Version INTEGER NOT NULL DEFAULT 0
+                        );
+                        INSERT OR IGNORE INTO SchemaVersion (RowId, Version) VALUES (1, 1);
+                    ", transaction: trans);
+                }
+            },
+            { 2, (conn, trans) =>
+                {
+                    // Ensure Routes table exists
+                    var tableExists = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Routes';", transaction: trans) > 0;
+                    if (!tableExists)
+                    {
+                        conn.Execute(@"
+                            CREATE TABLE Routes (
+                                RouteID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                RouteName TEXT NOT NULL,
+                                DefaultBusNumber INTEGER,
+                                DefaultDriverID INTEGER,
+                                Description TEXT,
+                                StartTime TEXT NOT NULL,
+                                EndTime TEXT NOT NULL,
+                                FOREIGN KEY (DefaultBusNumber) REFERENCES Vehicles (BusNumber),
+                                FOREIGN KEY (DefaultDriverID) REFERENCES Drivers (DriverID)
+                            );", transaction: trans);
+                    }
+
+                    var vehicleColumns = conn.Query<string>("SELECT name FROM pragma_table_info('Vehicles')", transaction: trans).ToList();
+                    if (!vehicleColumns.Contains("PurchaseDate"))
+                        conn.Execute("ALTER TABLE Vehicles ADD COLUMN PurchaseDate TEXT;", transaction: trans);
+                    if (!vehicleColumns.Contains("PlateNumber"))
+                        conn.Execute("ALTER TABLE Vehicles ADD COLUMN PlateNumber TEXT;", transaction: trans);
+
+                    var routeColumns = conn.Query<string>("SELECT name FROM pragma_table_info('Routes')", transaction: trans).ToList();
+                    if (!routeColumns.Contains("RouteName"))
+                        conn.Execute("ALTER TABLE Routes ADD COLUMN RouteName TEXT;", transaction: trans);
+
+                    conn.Execute("UPDATE SchemaVersion SET Version = 2 WHERE RowId = 1;", transaction: trans);
+                }
+            },
+            { 3, (conn, trans) =>
+                {
+                    var tripColumns = conn.Query<string>("SELECT name FROM pragma_table_info('Trips')", transaction: trans).ToList();
+                    if (!tripColumns.Contains("TripID"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN TripID INTEGER PRIMARY KEY AUTOINCREMENT;", transaction: trans);
+                    if (!tripColumns.Contains("TripType"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN TripType TEXT;", transaction: trans);
+                    if (!tripColumns.Contains("Date"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN Date TEXT;", transaction: trans);
+                    if (!tripColumns.Contains("BusNumber"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN BusNumber INTEGER;", transaction: trans);
+                    if (!tripColumns.Contains("DriverName"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN DriverName TEXT;", transaction: trans);
+                    if (!tripColumns.Contains("StartTime"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN StartTime TEXT;", transaction: trans);
+                    if (!tripColumns.Contains("EndTime"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN EndTime TEXT;", transaction: trans);
+                    if (!tripColumns.Contains("Total_Hours_Driven"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN Total_Hours_Driven REAL;", transaction: trans);
+                    if (!tripColumns.Contains("Destination"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN Destination TEXT;", transaction: trans);
+
+                    var driverColumns = conn.Query<string>("SELECT name FROM pragma_table_info('Drivers')", transaction: trans).ToList();
+                    if (!driverColumns.Contains("DriverID"))
+                        conn.Execute("ALTER TABLE Drivers ADD COLUMN DriverID INTEGER PRIMARY KEY AUTOINCREMENT;", transaction: trans);
+                    if (!driverColumns.Contains("DriverName"))
+                        conn.Execute("ALTER TABLE Drivers ADD COLUMN DriverName TEXT;", transaction: trans);
+                    if (!driverColumns.Contains("PhoneNumber"))
+                        conn.Execute("ALTER TABLE Drivers ADD COLUMN PhoneNumber TEXT;", transaction: trans);
+                    if (!driverColumns.Contains("EmailAddress"))
+                        conn.Execute("ALTER TABLE Drivers ADD COLUMN EmailAddress TEXT;", transaction: trans);
+                    if (!driverColumns.Contains("IsStipendPaid"))
+                        conn.Execute("ALTER TABLE Drivers ADD COLUMN IsStipendPaid BOOLEAN;", transaction: trans);
+                    if (!driverColumns.Contains("DLType"))
+                        conn.Execute("ALTER TABLE Drivers ADD COLUMN DLType TEXT;", transaction: trans);
+
+                    var vehicleColumns3 = conn.Query<string>("SELECT name FROM pragma_table_info('Vehicles')", transaction: trans).ToList();
+                    if (!vehicleColumns3.Contains("Make"))
+                        conn.Execute("ALTER TABLE Vehicles ADD COLUMN Make TEXT;", transaction: trans);
+                    if (!vehicleColumns3.Contains("Model"))
+                        conn.Execute("ALTER TABLE Vehicles ADD COLUMN Model TEXT;", transaction: trans);
+                    if (!vehicleColumns3.Contains("ModelYear"))
+                        conn.Execute("ALTER TABLE Vehicles ADD COLUMN ModelYear INTEGER;", transaction: trans);
+                    if (!vehicleColumns3.Contains("SeatingCapacity"))
+                        conn.Execute("ALTER TABLE Vehicles ADD COLUMN SeatingCapacity INTEGER;", transaction: trans);
+                    if (!vehicleColumns3.Contains("IsOperational"))
+                        conn.Execute("ALTER TABLE Vehicles ADD COLUMN IsOperational INTEGER DEFAULT 1;", transaction: trans);
+
+                    var maintenanceTableExists = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Maintenance';", transaction: trans) > 0;
+                    
+                    if (!maintenanceTableExists)
+                    {
+                        conn.Execute(@"
+                            CREATE TABLE Maintenance (
+                                MaintenanceID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                BusNumber INTEGER NOT NULL,
+                                DatePerformed TEXT NOT NULL,
+                                Description TEXT NOT NULL,
+                                Cost REAL DEFAULT 0,
+                                OdometerReading INTEGER DEFAULT 0,
+                                FOREIGN KEY (BusNumber) REFERENCES Vehicles (BusNumber)
+                            );", transaction: trans);
+                    }
+                    else
+                    {
+                        var maintenanceColumns = conn.Query<string>("SELECT name FROM pragma_table_info('Maintenance')", transaction: trans).ToList();
+                        if (!maintenanceColumns.Contains("MaintenanceID"))
+                            conn.Execute("ALTER TABLE Maintenance ADD COLUMN MaintenanceID INTEGER PRIMARY KEY AUTOINCREMENT;", transaction: trans);
+                        if (!maintenanceColumns.Contains("BusNumber"))
+                            conn.Execute("ALTER TABLE Maintenance ADD COLUMN BusNumber INTEGER NOT NULL DEFAULT 0;", transaction: trans);
+                        if (!maintenanceColumns.Contains("DatePerformed"))
+                            conn.Execute("ALTER TABLE Maintenance ADD COLUMN DatePerformed TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP;", transaction: trans);
+                        if (!maintenanceColumns.Contains("Description"))
+                            conn.Execute("ALTER TABLE Maintenance ADD COLUMN Description TEXT NOT NULL DEFAULT '';", transaction: trans);
+                        if (!maintenanceColumns.Contains("Cost"))
+                            conn.Execute("ALTER TABLE Maintenance ADD COLUMN Cost REAL DEFAULT 0;", transaction: trans);
+                        if (!maintenanceColumns.Contains("OdometerReading"))
+                            conn.Execute("ALTER TABLE Maintenance ADD COLUMN OdometerReading INTEGER DEFAULT 0;", transaction: trans);
+                        
+                        if (maintenanceColumns.Contains("ID") && !maintenanceColumns.Contains("MaintenanceID"))
+                            conn.Execute("ALTER TABLE Maintenance RENAME COLUMN ID TO MaintenanceID;", transaction: trans);
+                        if (maintenanceColumns.Contains("Bus Number") && !maintenanceColumns.Contains("BusNumber"))
+                            conn.Execute("ALTER TABLE Maintenance RENAME COLUMN \"Bus Number\" TO BusNumber;", transaction: trans);
+                        if (maintenanceColumns.Contains("Date of Service") && !maintenanceColumns.Contains("DatePerformed"))
+                            conn.Execute("ALTER TABLE Maintenance RENAME COLUMN \"Date of Service\" TO DatePerformed;", transaction: trans);
+                        if (maintenanceColumns.Contains("Service Done") && !maintenanceColumns.Contains("Description"))
+                            conn.Execute("ALTER TABLE Maintenance RENAME COLUMN \"Service Done\" TO Description;", transaction: trans);
+                        if (maintenanceColumns.Contains("Mileage") && !maintenanceColumns.Contains("OdometerReading"))
+                            conn.Execute("ALTER TABLE Maintenance RENAME COLUMN Mileage TO OdometerReading;", transaction: trans);
+                    }
+
+                    conn.Execute("UPDATE SchemaVersion SET Version = 3 WHERE RowId = 1;", transaction: trans);
+                }
+            },
+            { 4, (conn, trans) =>
+                {
+                    // Update column names to new schema
+                    var tripColumns4 = conn.Query<string>("SELECT name FROM pragma_table_info('Trips')", transaction: trans).ToList();
+                    if (tripColumns4.Contains("Date") && !tripColumns4.Contains("TripDate"))
+                        conn.Execute("ALTER TABLE Trips RENAME COLUMN Date TO TripDate;", transaction: trans);
+                    if (tripColumns4.Contains("Total_Hours_Driven") && !tripColumns4.Contains("TotalHoursDriven"))
+                        conn.Execute("ALTER TABLE Trips RENAME COLUMN Total_Hours_Driven TO TotalHoursDriven;", transaction: trans);
+                    if (tripColumns4.Contains("AM_Begin_Mileage") && !tripColumns4.Contains("AMBeginMileage"))
+                        conn.Execute("ALTER TABLE Trips RENAME COLUMN AM_Begin_Mileage TO AMBeginMileage;", transaction: trans);
+                    if (tripColumns4.Contains("AM_End_Mileage") && !tripColumns4.Contains("AMEndMileage"))
+                        conn.Execute("ALTER TABLE Trips RENAME COLUMN AM_End_Mileage TO AMEndMileage;", transaction: trans);
+                    if (tripColumns4.Contains("PM_Start_Mileage") && !tripColumns4.Contains("PMStartMileage"))
+                        conn.Execute("ALTER TABLE Trips RENAME COLUMN PM_Start_Mileage TO PMStartMileage;", transaction: trans);
+                    if (tripColumns4.Contains("PM_Ending_Mileage") && !tripColumns4.Contains("PMEndingMileage"))
+                        conn.Execute("ALTER TABLE Trips RENAME COLUMN PM_Ending_Mileage TO PMEndingMileage;", transaction: trans);
+                    if (tripColumns4.Contains("Num_Riders") && !tripColumns4.Contains("NumRiders"))
+                        conn.Execute("ALTER TABLE Trips RENAME COLUMN Num_Riders TO NumRiders;", transaction: trans);
+                    if (tripColumns4.Contains("Num_PM_Riders") && !tripColumns4.Contains("NumPMRiders"))
+                        conn.Execute("ALTER TABLE Trips RENAME COLUMN Num_PM_Riders TO NumPMRiders;", transaction: trans);
+                    if (!tripColumns4.Contains("DriverID"))
+                        conn.Execute("ALTER TABLE Trips ADD COLUMN DriverID INTEGER;", transaction: trans);
+
+                    var driverColumns4 = conn.Query<string>("SELECT name FROM pragma_table_info('Drivers')", transaction: trans).ToList();
+                    if (driverColumns4.Contains("Driver Name") && !driverColumns4.Contains("DriverName"))
+                        conn.Execute("ALTER TABLE Drivers RENAME COLUMN \"Driver Name\" TO DriverName;", transaction: trans);
+                    if (driverColumns4.Contains("Phone Number") && !driverColumns4.Contains("PhoneNumber"))
+                        conn.Execute("ALTER TABLE Drivers RENAME COLUMN \"Phone Number\" TO PhoneNumber;", transaction: trans);
+                    if (driverColumns4.Contains("Email Address") && !driverColumns4.Contains("EmailAddress"))
+                        conn.Execute("ALTER TABLE Drivers RENAME COLUMN \"Email Address\" TO EmailAddress;", transaction: trans);
+                    if (driverColumns4.Contains("Zip Code") && !driverColumns4.Contains("ZipCode"))
+                        conn.Execute("ALTER TABLE Drivers RENAME COLUMN \"Zip Code\" TO ZipCode;", transaction: trans);
+                    if (driverColumns4.Contains("Is Stipend Paid") && !driverColumns4.Contains("IsStipendPaid"))
+                        conn.Execute("ALTER TABLE Drivers RENAME COLUMN \"Is Stipend Paid\" TO IsStipendPaid;", transaction: trans);
+                    if (driverColumns4.Contains("DL Type") && !driverColumns4.Contains("DLType"))
+                        conn.Execute("ALTER TABLE Drivers RENAME COLUMN \"DL Type\" TO DLType;", transaction: trans);
+
+                    var vehicleColumns4 = conn.Query<string>("SELECT name FROM pragma_table_info('Vehicles')", transaction: trans).ToList();
+                    if (vehicleColumns4.Contains("Bus Number") && !vehicleColumns4.Contains("BusNumber"))
+                        conn.Execute("ALTER TABLE Vehicles RENAME COLUMN \"Bus Number\" TO BusNumber;", transaction: trans);
+                    if (vehicleColumns4.Contains("Model Year") && !vehicleColumns4.Contains("ModelYear"))
+                        conn.Execute("ALTER TABLE Vehicles RENAME COLUMN \"Model Year\" TO ModelYear;", transaction: trans);
+                    if (vehicleColumns4.Contains("Seating Capacity") && !vehicleColumns4.Contains("SeatingCapacity"))
+                        conn.Execute("ALTER TABLE Vehicles RENAME COLUMN \"Seating Capacity\" TO SeatingCapacity;", transaction: trans);
+                    if (!vehicleColumns4.Contains("PurchasePrice"))
+                        conn.Execute("ALTER TABLE Vehicles ADD COLUMN PurchasePrice REAL;", transaction: trans);
+                    if (!vehicleColumns4.Contains("AnnualInspection"))
+                        conn.Execute("ALTER TABLE Vehicles ADD COLUMN AnnualInspection TEXT;", transaction: trans);
+
+                    var fuelColumns = conn.Query<string>("SELECT name FROM pragma_table_info('Fuel')", transaction: trans).ToList();
+                    if (fuelColumns.Contains("Fuel_ID") && !fuelColumns.Contains("FuelID"))
+                        conn.Execute("ALTER TABLE Fuel RENAME COLUMN Fuel_ID TO FuelID;", transaction: trans);
+                    if (fuelColumns.Contains("Bus Number") && !fuelColumns.Contains("BusNumber"))
+                        conn.Execute("ALTER TABLE Fuel RENAME COLUMN \"Bus Number\" TO BusNumber;", transaction: trans);
+                    if (fuelColumns.Contains("Fuel Date") && !fuelColumns.Contains("FuelDate"))
+                        conn.Execute("ALTER TABLE Fuel RENAME COLUMN \"Fuel Date\" TO FuelDate;", transaction: trans);
+                    if (fuelColumns.Contains("Fuel Gallons") && !fuelColumns.Contains("FuelGallons"))
+                        conn.Execute("ALTER TABLE Fuel RENAME COLUMN \"Fuel Gallons\" TO FuelGallons;", transaction: trans);
+                    if (fuelColumns.Contains("Odometer Reading") && !fuelColumns.Contains("OdometerReading"))
+                        conn.Execute("ALTER TABLE Fuel RENAME COLUMN \"Odometer Reading\" TO OdometerReading;", transaction: trans);
+
+                    var activityColumns = conn.Query<string>("SELECT name FROM pragma_table_info('Activities')", transaction: trans).ToList();
+                    if (activityColumns.Contains("Date") && !activityColumns.Contains("ActivityDate"))
+                        conn.Execute("ALTER TABLE Activities RENAME COLUMN Date TO ActivityDate;", transaction: trans);
+                    if (!activityColumns.Contains("DriverID"))
+                        conn.Execute("ALTER TABLE Activities ADD COLUMN DriverID INTEGER;", transaction: trans);
+
+                    var routeColumns4 = conn.Query<string>("SELECT name FROM pragma_table_info('Routes')", transaction: trans).ToList();
+                    if (!routeColumns4.Contains("DefaultDriverID"))
+                        conn.Execute("ALTER TABLE Routes ADD COLUMN DefaultDriverID INTEGER;", transaction: trans);
+
+                    var calendarColumns = conn.Query<string>("SELECT name FROM pragma_table_info('SchoolCalendarDays')", transaction: trans).ToList();
+                    if (calendarColumns.Contains("Date") && !calendarColumns.Contains("CalendarDate"))
+                        conn.Execute("ALTER TABLE SchoolCalendarDays RENAME COLUMN Date TO CalendarDate;", transaction: trans);
+                    if (calendarColumns.Contains("CalendarDayId") && !calendarColumns.Contains("CalendarDayID"))
+                        conn.Execute("ALTER TABLE SchoolCalendarDays RENAME COLUMN CalendarDayId TO CalendarDayID;", transaction: trans);
+
+                    var scheduledRouteColumns = conn.Query<string>("SELECT name FROM pragma_table_info('ScheduledRoutes')", transaction: trans).ToList();
+                    if (scheduledRouteColumns.Contains("ScheduledRouteId") && !scheduledRouteColumns.Contains("ScheduledRouteID"))
+                        conn.Execute("ALTER TABLE ScheduledRoutes RENAME COLUMN ScheduledRouteId TO ScheduledRouteID;", transaction: trans);
+                    if (scheduledRouteColumns.Contains("CalendarDayId") && !scheduledRouteColumns.Contains("CalendarDayID"))
+                        conn.Execute("ALTER TABLE ScheduledRoutes RENAME COLUMN CalendarDayId TO CalendarDayID;", transaction: trans);
+                    if (scheduledRouteColumns.Contains("RouteId") && !scheduledRouteColumns.Contains("RouteID"))
+                        conn.Execute("ALTER TABLE ScheduledRoutes RENAME COLUMN RouteId TO RouteID;", transaction: trans);
+                    if (!scheduledRouteColumns.Contains("AssignedDriverID"))
+                        conn.Execute("ALTER TABLE ScheduledRoutes ADD COLUMN AssignedDriverID INTEGER;", transaction: trans);
+
+                    // Update SchemaVersion
+                    conn.Execute("UPDATE SchemaVersion SET Version = 4 WHERE RowId = 1;", transaction: trans);
+                }
+            }
+        };
+
+        public DatabaseManager(Serilog.ILogger logger, Microsoft.Extensions.Configuration.IConfiguration? configuration = null)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            
+            string dbFileName = DefaultDbFileName;
+            string initScriptName = DefaultInitScriptName;
+            if (configuration != null)
+            {
+                var section = configuration.GetSection("Database");
+                string? fileName = section["FileName"];
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    dbFileName = fileName;
+                }
+                string? scriptName = section["InitScript"];
+                if (!string.IsNullOrEmpty(scriptName))
+                {
+                    initScriptName = scriptName;
+                }
+            }
+            _dbFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFileName);
+            _initDbScriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, initScriptName);
+            
+            _connectionString = $"Data Source={_dbFilePath};Version=3;";
+            InitializeDatabase();
+        }
+
+        private void InitializeDatabase()
+        {
+            try
+            {
+                bool dbExists = File.Exists(_dbFilePath);
+                if (!dbExists)
+                {
+                    _logger.Information("Database file not found at {Path}. Creating...", _dbFilePath);
+                    SQLiteConnection.CreateFile(_dbFilePath);
+                    _logger.Information("Database file created.");
+
+                    using var connection = new SQLiteConnection(_connectionString);
+                    connection.Open();
+                    if (!File.Exists(_initDbScriptPath))
+                    {
+                        _logger.Warning("init-db.sql not found at {Path}.", _initDbScriptPath);
+                        throw new FileNotFoundException("init-db.sql not found.", _initDbScriptPath);
+                    }
+                    string script = File.ReadAllText(_initDbScriptPath);
+                    connection.Execute(script);
+                    _logger.Information("Database initialized with init-db.sql.");
+                }
+
+                using var migrationConnection = new SQLiteConnection(_connectionString);
+                migrationConnection.Open();
+                ApplyPendingMigrations(migrationConnection);
+                Cleanup(migrationConnection);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "A critical error occurred during database initialization.");
+                throw;
+            }
+        }
+
+        private void ApplyPendingMigrations(SQLiteConnection connection)
+        {
+            using (var transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    var schemaVersionRowCount = connection.ExecuteScalar<int>(
+                        "SELECT COUNT(*) FROM SchemaVersion WHERE RowId = 1;", transaction: transaction);
+                    if (schemaVersionRowCount == 0)
+                    {
+                        connection.Execute("INSERT INTO SchemaVersion (RowId, Version) VALUES (1, 0);", transaction: transaction);
+                        _logger.Information("Initialized SchemaVersion with version 0.");
+                    }
+
+                    int currentVersion = connection.ExecuteScalar<int>(
+                        "SELECT Version FROM SchemaVersion WHERE RowId = 1;", transaction: transaction);
+                    _logger.Information("Current database schema version: {Version}", currentVersion);
+
+                    var pendingMigrations = _migrations.Where(m => m.Key > currentVersion).ToList();
+                    if (!pendingMigrations.Any())
+                    {
+                        _logger.Information("No pending migrations.");
+                        transaction.Commit();
+                        return;
+                    }
+
+                    _logger.Information("Found {Count} pending migrations.", pendingMigrations.Count);
+
+                    foreach (var migration in pendingMigrations)
+                    {
+                        _logger.Information("Applying migration {Version}...", migration.Key);
+                        migration.Value(connection, transaction);
+                        int newVersion = connection.ExecuteScalar<int>(
+                            "SELECT Version FROM SchemaVersion WHERE RowId = 1;", transaction: transaction);
+                        _logger.Information("Successfully applied migration {Version}. New schema version: {NewVersion}", migration.Key, newVersion);
+                        currentVersion = newVersion;
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    _logger.Error(ex, "Failed to apply migrations.");
+                    throw;
+                }
+            }
+        }
+
+        public void Cleanup(SQLiteConnection connection)
+        {
+            _logger.Information("Running database cleanup...");
+            var tableExists = connection.ExecuteScalar<int>(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Fuel';") > 0;
+            if (tableExists)
+            {
+                try
+                {
+                    connection.Execute(
+                        "DELETE FROM Fuel WHERE FuelDate < date('now', '-1 year');" +
+                        "VACUUM;");
+                    _logger.Information("Successfully cleaned up old Fuel records and vacuumed database.");
+                }
+                catch (SQLiteException ex)
+                {
+                    _logger.Error(ex, "Error during database cleanup.");
+                }
+            }
+            else
+            {
+                _logger.Warning("Fuel table does not exist. Skipping cleanup.");
+            }
+        }
+
+        protected virtual T ExecuteWithRetry<T>(Func<IDbConnection, T> action, string operationName, int retries = 3, T defaultValue = default, bool failSilently = false)
+        {
+            for (int i = 0; i <= retries; i++)
+            {
+                try
+                {
+                    using (var connection = new SQLiteConnection(_connectionString))
+                    {
+                        connection.Open();
+                        return action(connection);
+                    }
+                }
+                catch (SQLiteException ex) when (ex.ErrorCode == (int)SQLiteErrorCode.Busy || ex.ErrorCode == (int)SQLiteErrorCode.Locked)
+                {
+                    if (i == retries)
+                    {
+                        if (failSilently) return defaultValue;
+                        throw;
+                    }
+                    System.Threading.Thread.Sleep(100 * (i + 1));
+                }
+                catch (SQLiteException ex) when (ex.Message.Contains("no such table") || ex.Message.Contains("no such column"))
+                {
+                    if (failSilently) return defaultValue;
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Error during {Operation}", operationName);
+                    if (failSilently) return defaultValue;
+                    throw;
+                }
+            }
+            throw new InvalidOperationException("Should not reach here.");
+        }
+
+        protected virtual List<T> ExecuteWithRetryList<T>(Func<IDbConnection, List<T>> action, string operationName, int retries = 3, List<T>? defaultValue = null, bool failSilently = false)
+        {
+            return ExecuteWithRetry(action, operationName, retries, defaultValue ?? new List<T>(), failSilently);
+        }
+
+        protected virtual bool ExecuteWithRetryValue(Func<IDbConnection, bool> action, string operationName, int retries = 3, bool defaultValue = false, bool failSilently = false)
+        {
+            return ExecuteWithRetry(action, operationName, retries, defaultValue, failSilently);
         }
 
         public List<Trip> GetTrips()
         {
-            return ExecuteWithRetry(connection =>
-            {
-                var requiredColumns = new List<string>
-                {
-                    "TripID", "TripType", "Date", "BusNumber", "DriverName", "StartTime", "EndTime", "TotalHoursDriven", "Destination"
-                };
-
-                if (!ValidateTableSchema(connection, "Trips", requiredColumns))
-                {
-                    _logger.Error("Trips table schema is invalid. Returning empty list.");
-                    return new List<Trip>();
-                }
-
-                // Query raw data from database
-                var rawTrips = connection.Query<dynamic>("SELECT * FROM Trips").ToList();
-                var trips = new List<Trip>();
-                
-                // Convert string dates and times to appropriate types
-                foreach (var rawTrip in rawTrips)
-                {
-                    try
-                    {
-                        var trip = new Trip
-                        {
-                            TripID = rawTrip.TripID,
-                            TripType = rawTrip.TripType,
-                            BusNumber = rawTrip.BusNumber,
-                            DriverName = rawTrip.DriverName,
-                            TotalHoursDriven = rawTrip.TotalHoursDriven,
-                            Destination = rawTrip.Destination,
-                            // Initialize with default values to avoid unassigned variables
-                            Date = new DateOnly(),
-                            StartTime = new TimeOnly(), 
-                            EndTime = new TimeOnly(),
-                            // Add support for new payment-related fields
-                            MilesDriven = rawTrip.MilesDriven != null ? (double)rawTrip.MilesDriven : 0,
-                            TripCategory = rawTrip.TripCategory != null ? (string)rawTrip.TripCategory : "Route"
-                        };
-
-                        // Convert IsCDLRoute from integer to boolean
-                        if (rawTrip.IsCDLRoute != null)
-                        {
-                            trip.IsCDLRoute = Convert.ToInt32(rawTrip.IsCDLRoute) != 0;
-                        }
-                        
-                        // Parse date from string
-                        DateOnly date = DateOnly.FromDateTime(DateTime.Today); // Default value
-                        if (rawTrip.Date != null && DateOnly.TryParse(rawTrip.Date.ToString(), out date))
-                        {
-                            trip.Date = date;
-                        }
-                        else
-                        {
-                            trip.Date = date; // Use default if parsing fails
-                        }
-                        
-                        // Parse start time from string
-                        TimeOnly startTime = new TimeOnly(0, 0); // Default value
-                        if (rawTrip.StartTime != null && TimeOnly.TryParse(rawTrip.StartTime.ToString(), out startTime))
-                        {
-                            trip.StartTime = startTime;
-                        }
-                        else
-                        {
-                            trip.StartTime = startTime; // Use default if parsing fails
-                        }
-                        
-                        // Parse end time from string
-                        TimeOnly endTime = new TimeOnly(0, 0); // Default value
-                        if (rawTrip.EndTime != null && TimeOnly.TryParse(rawTrip.EndTime.ToString(), out endTime))
-                        {
-                            trip.EndTime = endTime;
-                        }
-                        else
-                        {
-                            trip.EndTime = endTime; // Use default if parsing fails
-                        }
-                        
-                        trips.Add(trip);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ex, "Error converting trip data from database");
-                    }
-                }
-
-                return trips;
-            }, "fetch trips");
+            return ExecuteWithRetryList(conn =>
+                conn.Query<Trip>(@"SELECT 
+                    TripID, 
+                    TripType, 
+                    TripDate, 
+                    StartTime, 
+                    EndTime, 
+                    Destination, 
+                    BusNumber, 
+                    DriverID, 
+                    AMBeginMileage, 
+                    AMEndMileage, 
+                    NumRiders, 
+                    PMStartMileage, 
+                    PMEndingMileage, 
+                    NumPMRiders, 
+                    TotalHoursDriven
+                FROM Trips ORDER BY StartTime").ToList(),
+                "GetTrips");
         }
 
         public List<string> GetDriverNames()
         {
-            return ExecuteWithRetry(connection =>
-            {
-                // Check if the table exists
-                var tableExists = connection.ExecuteScalar<int>(
-                    "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Drivers'") > 0;
-                
-                if (!tableExists)
-                {
-                    _logger.Error("Drivers table does not exist.");
-                    return new List<string>();
-                }
-                
-                // Get column names to determine which one to use
-                var columnInfo = connection.Query<dynamic>("PRAGMA table_info(Drivers)").ToList();
-                var columns = columnInfo.Select(row => (string)row.name).ToList();
-                
-                // Log column information instead of using Console.WriteLine
-                _logger.Debug("Drivers table columns: {Columns}", string.Join(", ", columns));
-                
-                string query;
-                if (columns.Contains("Driver_Name"))
-                {
-                    query = "SELECT Driver_Name FROM Drivers";
-                }
-                else if (columns.Contains("Name"))
-                {
-                    query = "SELECT Name FROM Drivers";
-                }
-                else
-                {
-                    _logger.Error("Neither Name nor Driver_Name column found in Drivers table.");
-                    return new List<string>();
-                }
-                
-                return connection.Query<string>(query).ToList();
-            }, "fetch driver names");
+            return ExecuteWithRetryList(conn =>
+                conn.Query<string>("SELECT DriverName FROM Drivers ORDER BY DriverName").ToList(),
+                "GetDriverNames");
         }
 
         public List<int> GetBusNumbers()
         {
-            return ExecuteWithRetry(connection =>
+            return ExecuteWithRetryList(conn =>
+                conn.Query<int>("SELECT BusNumber FROM Vehicles ORDER BY BusNumber").ToList(),
+                "GetBusNumbers");
+        }
+
+        public List<Vehicle> GetVehicles()
+        {
+            try
             {
-                return connection.Query<int>("SELECT BusNumber FROM Buses").ToList();
-            }, "fetch bus numbers");
+                return ExecuteWithRetryList(conn =>
+                    conn.Query<Vehicle>(@"SELECT 
+                        VehicleID, 
+                        BusNumber, 
+                        ModelYear AS Year, 
+                        VIN, 
+                        Make, 
+                        Model, 
+                        SeatingCapacity AS Capacity
+                    FROM Vehicles ORDER BY BusNumber").ToList(),
+                    "GetVehicles");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error mapping Vehicle data. Check DB column types and model properties.");
+                throw;
+            }
+        }
+
+        public bool UpdateVehicle(Vehicle vehicle)
+        {
+            return ExecuteWithRetryValue(conn =>
+            {
+                var sql = @"
+                    UPDATE Vehicles 
+                    SET BusNumber = @BusNumber, 
+                        Make = @Make, 
+                        Model = @Model, 
+                        ModelYear = @Year, 
+                        VIN = @VIN, 
+                        PlateNumber = @PlateNumber, 
+                        SeatingCapacity = @Capacity, 
+                        IsOperational = @IsOperational, 
+                        PurchaseDate = @PurchaseDate, 
+                        LastInspectionDate = @LastInspectionDate, 
+                        CurrentOdometer = @CurrentOdometer 
+                    WHERE VehicleID = @VehicleID";
+                return conn.Execute(sql, vehicle) > 0;
+            }, "UpdateVehicle");
+        }
+
+        public bool AddVehicle(Vehicle vehicle)
+        {
+            return ExecuteWithRetryValue(conn =>
+            {
+                var sql = @"
+                    INSERT INTO Vehicles (
+                        BusNumber, Make, Model, ModelYear, VIN, PlateNumber, 
+                        SeatingCapacity, IsOperational, PurchaseDate, LastInspectionDate, CurrentOdometer
+                    ) VALUES (
+                        @BusNumber, @Make, @Model, @Year, @VIN, @PlateNumber, 
+                        @Capacity, @IsOperational, @PurchaseDate, @LastInspectionDate, @CurrentOdometer
+                    )";
+                return conn.Execute(sql, vehicle) > 0;
+            }, "AddVehicle");
+        }
+
+        public bool DeleteVehicle(int vehicleId)
+        {
+            return ExecuteWithRetryValue(conn =>
+                conn.Execute("DELETE FROM Vehicles WHERE VehicleID = @VehicleID", new { VehicleID = vehicleId }) > 0,
+                "DeleteVehicle");
         }
 
         public List<Route> GetRoutes()
         {
-            return ExecuteWithRetry(connection =>
+            try
             {
-                // Check if the table exists
-                var tableExists = connection.ExecuteScalar<int>(
-                    "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Routes'") > 0;
-                
-                if (!tableExists)
-                {
-                    _logger.Error("Routes table does not exist.");
-                    return new List<Route>();
-                }
-                
-                // Get column names to determine which ones to use
-                var columnInfo = connection.Query<dynamic>("PRAGMA table_info(Routes)").ToList();
-                var columns = columnInfo.Select(row => (string)row.name).ToList();
-                
-                // Log column information instead of using Console.WriteLine
-                _logger.Debug("Routes table columns: {Columns}", string.Join(", ", columns));
-                
-                // Check if the Name column exists
-                if (!columns.Contains("Name"))
-                {
-                    _logger.Error("Name column not found in Routes table.");
-                    return new List<Route>();
-                }
-                
-                var query = @"SELECT RouteId, Name as RouteName, Description";
-                
-                // Add DefaultBusNumber and DefaultDriverName if they exist
-                if (columns.Contains("DefaultBusNumber"))
-                {
-                    query += ", DefaultBusNumber";
-                }
-                else
-                {
-                    query += ", 0 as DefaultBusNumber";
-                }
-                
-                if (columns.Contains("DefaultDriverName"))
-                {
-                    query += ", DefaultDriverName";
-                }
-                else
-                {
-                    query += ", '' as DefaultDriverName";
-                }
-                
-                query += " FROM Routes";
-                
-                return connection.Query<Route>(query).ToList();
-            }, "fetch routes");
+                return ExecuteWithRetryList(conn =>
+                    conn.Query<Route>(@"SELECT 
+                        RouteID, 
+                        RouteName, 
+                        Description, 
+                        StartTime, 
+                        EndTime, 
+                        CAST(DefaultBusNumber AS INTEGER) AS DefaultBusNumber
+                    FROM Routes ORDER BY RouteName").ToList(),
+                    "GetRoutes");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error mapping Route data. Check DB column types and model properties.");
+                throw;
+            }
         }
 
-        public void AddFuelRecord(BusBuddy.Models.FuelRecord record)
+        public bool AddFuelRecord(FuelRecord record)
         {
-            ExecuteWithRetry(connection =>
+            return ExecuteWithRetryValue(conn =>
             {
-                var sql = @"INSERT INTO FuelRecords (RecordId, BusNumber, Date, Gallons, Cost)
-                            VALUES (@RecordId, @BusNumber, @Date, @Gallons, @Cost)";
-                connection.Execute(sql, record);
-                return 0;
-            }, "add fuel record");
+                var sql = $@"INSERT INTO {FuelSchema.TableName} 
+                    ({FuelSchema.FuelDate}, {FuelSchema.BusNumber}, 
+                    {FuelSchema.Gallons}, {FuelSchema.Odometer}, {FuelSchema.Notes})
+                    VALUES (@FuelDate, @BusNumber, @Gallons, @Odometer, @Notes)";
+                return conn.Execute(sql, record) > 0;
+            }, "AddFuelRecord");
         }
 
-        public List<BusBuddy.Models.Driver> GetDrivers()
+        public List<Driver> GetDrivers()
         {
-            return ExecuteWithRetry(connection =>
-            {
-                return connection.Query<BusBuddy.Models.Driver>("SELECT * FROM Drivers").ToList();
-            }, "fetch drivers");
+            return ExecuteWithRetryList(conn =>
+                conn.Query<Driver>(@"SELECT 
+                    DriverID, 
+                    DriverName AS Name, 
+                    Address, 
+                    City, 
+                    State, 
+                    ZipCode, 
+                    PhoneNumber, 
+                    EmailAddress, 
+                    IsStipendPaid, 
+                    DLType
+                FROM Drivers ORDER BY DriverName").ToList(),
+                "GetDrivers");
         }
 
         public void AddOrUpdateCalendarDay(SchoolCalendarDay day)
         {
-            ExecuteWithRetry(connection =>
+            ExecuteWithRetry(conn =>
             {
-                // Begin transaction to ensure both operations succeed or fail together
-                using (var transaction = connection.BeginTransaction())
+                var sql = @"
+                    INSERT INTO SchoolCalendarDays (CalendarDate, IsSchoolDay, DayType, Notes)
+                    VALUES (@DateStr, @IsSchoolDay, @DayTypeStr, @Notes)
+                    ON CONFLICT(CalendarDate) DO UPDATE SET
+                        IsSchoolDay = excluded.IsSchoolDay,
+                        DayType = excluded.DayType,
+                        Notes = excluded.Notes";
+                
+                var parameters = new
+                {
+                    DateStr = day.Date.ToString("yyyy-MM-dd"),
+                    day.IsSchoolDay,
+                    DayTypeStr = day.DayType.ToString(),
+                    day.Notes
+                };
+
+                var calendarDayId = conn.ExecuteScalar<int>(sql + "; SELECT last_insert_rowid();", parameters);
+                return calendarDayId;
+            }, "AddOrUpdateCalendarDay");
+        }
+
+        public void AddOrUpdateCalendarDays(IEnumerable<SchoolCalendarDay> days)
+        {
+            ExecuteWithRetry(conn =>
+            {
+                using (var transaction = conn.BeginTransaction())
                 {
                     try
                     {
-                        // First, insert or update the calendar day
-                        var sql = @"INSERT OR REPLACE INTO CalendarDays (CalendarDayId, Date, IsSchoolDay, DayType, Notes)
-                                    VALUES (@CalendarDayId, @Date, @IsSchoolDay, @DayType, @Notes)";
-                        connection.Execute(sql, new
+                        var sql = @"
+                            INSERT INTO SchoolCalendarDays (CalendarDate, IsSchoolDay, DayType, Notes)
+                            VALUES (@DateStr, @IsSchoolDay, @DayTypeStr, @Notes)
+                            ON CONFLICT(CalendarDate) DO UPDATE SET
+                                IsSchoolDay = excluded.IsSchoolDay,
+                                DayType = excluded.DayType,
+                                Notes = excluded.Notes";
+
+                        var parameters = days.Select(day => new
                         {
-                            day.CalendarDayId,
-                            Date = day.Date.ToString("yyyy-MM-dd"),
+                            DateStr = day.Date.ToString("yyyy-MM-dd"),
                             day.IsSchoolDay,
-                            day.DayType,
+                            DayTypeStr = day.DayType.ToString(),
                             day.Notes
-                        }, transaction);
+                        }).ToList();
 
-                        // If this is a new calendar day, get the generated ID
-                        if (day.CalendarDayId == 0)
-                        {
-                            day.CalendarDayId = connection.ExecuteScalar<int>("SELECT last_insert_rowid()", transaction: transaction);
-                        }
-
-                        // Delete existing active routes for this calendar day
-                        connection.Execute(
-                            "DELETE FROM CalendarDayRoutes WHERE CalendarDayId = @CalendarDayId",
-                            new { day.CalendarDayId }, transaction);
-
-                        // Insert new active routes
-                        if (day.ActiveRouteIds != null && day.ActiveRouteIds.Count > 0)
-                        {
-                            var routeInsertSql = @"INSERT INTO CalendarDayRoutes (CalendarDayId, RouteId)
-                                                VALUES (@CalendarDayId, @RouteId)";
-                            foreach (var routeId in day.ActiveRouteIds)
-                            {
-                                connection.Execute(routeInsertSql, new
-                                {
-                                    day.CalendarDayId,
-                                    RouteId = routeId
-                                }, transaction);
-                            }
-                        }
-
+                        conn.Execute(sql, parameters, transaction: transaction);
                         transaction.Commit();
+                        _logger.Information("Successfully saved {Count} calendar days.", parameters.Count);
+                        return true;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        _logger.Error(ex, "Error during bulk calendar day update. Rolling back transaction.");
                         transaction.Rollback();
                         throw;
                     }
                 }
-                return 0;
-            }, "add or update calendar day");
+            }, "AddOrUpdateCalendarDays");
         }
 
         public SchoolCalendarDay GetCalendarDay(DateTime date)
         {
-            return ExecuteWithRetry(connection =>
+            return ExecuteWithRetry(conn =>
             {
-                // Get the calendar day
-                var calendarDay = connection.QuerySingleOrDefault<SchoolCalendarDay>(
-                    "SELECT * FROM CalendarDays WHERE Date = @Date",
-                    new { Date = date.ToString("yyyy-MM-dd") });
+                var rawData = conn.QueryFirstOrDefault<dynamic>(
+                    "SELECT * FROM SchoolCalendarDays WHERE CalendarDate = @DateStr",
+                    new { DateStr = date.ToString("yyyy-MM-dd") });
 
-                if (calendarDay != null)
-                {
-                    // Initialize the ActiveRouteIds list
-                    calendarDay.ActiveRouteIds = new List<int>();
+                if (rawData == null) return null;
 
-                    // Get the active routes for this calendar day
-                    var activeRouteIds = connection.Query<int>(
-                        "SELECT RouteId FROM CalendarDayRoutes WHERE CalendarDayId = @CalendarDayId",
-                        new { calendarDay.CalendarDayId });
+                int calendarDayId = (int)rawData.CalendarDayID;
+                string calendarDate = (string)rawData.CalendarDate;
+                bool isSchoolDay = Convert.ToBoolean(rawData.IsSchoolDay);
+                string dayTypeStr = rawData.DayType?.ToString();
+                string notes = rawData.Notes?.ToString() ?? string.Empty;
+                
+                var day = new SchoolCalendarDay(calendarDayId, calendarDate, isSchoolDay, dayTypeStr, notes);
 
-                    // Add the active route IDs to the list
-                    calendarDay.ActiveRouteIds.AddRange(activeRouteIds);
-                }
-
-                return calendarDay;
-            }, "fetch calendar day");
+                return day;
+            },
+            "GetCalendarDay");
         }
 
         public List<ScheduledRoute> GetScheduledRoutes(int calendarDayId)
         {
-            return ExecuteWithRetry(connection =>
-            {
-                return connection.Query<ScheduledRoute>(
-                    "SELECT * FROM ScheduledRoutes WHERE CalendarDayId = @CalendarDayId",
-                    new { CalendarDayId = calendarDayId }).ToList();
-            }, "fetch scheduled routes by calendar day id");
+            return ExecuteWithRetryList(conn =>
+                conn.Query<ScheduledRoute>(
+                    "SELECT * FROM ScheduledRoutes WHERE CalendarDayID = @Id",
+                    new { Id = calendarDayId }).ToList(),
+                "GetScheduledRoutes by ID");
         }
 
         public List<ScheduledRoute> GetScheduledRoutes(DateTime date)
         {
-            return ExecuteWithRetry(connection =>
-            {
-                var calendarDay = GetCalendarDay(date);
-                if (calendarDay == null)
-                {
-                    return new List<ScheduledRoute>();
-                }
-
-                return GetScheduledRoutes(calendarDay.CalendarDayId);
-            }, "fetch scheduled routes by date");
+            return ExecuteWithRetryList(conn =>
+                conn.Query<ScheduledRoute>(
+                    "SELECT sr.* FROM ScheduledRoutes sr JOIN SchoolCalendarDays sc ON sr.CalendarDayID = sc.CalendarDayID WHERE sc.CalendarDate = @Date",
+                    new { Date = date.ToString("yyyy-MM-dd") }).ToList(),
+                "GetScheduledRoutes by Date");
         }
 
-        public void AddDriver(BusBuddy.Models.Driver driver)
+        public bool AddDriver(Driver driver)
         {
-            ExecuteWithRetry(connection =>
+            return ExecuteWithRetryValue(conn =>
             {
-                var sql = @"INSERT INTO Drivers (DriverId, Name, Driver_Name, Address, City, State, Zip_Code, Phone_Number, Email_Address, Is_Stipend_Paid, DL_Type)
-                            VALUES (@DriverID, @Driver_Name, @Driver_Name, @Address, @City, @State, @Zip_Code, @Phone_Number, @Email_Address, @Is_Stipend_Paid, @DL_Type)";
-                connection.Execute(sql, driver);
-                return 0;
-            }, "add driver");
+                var sql = "INSERT INTO Drivers (DriverName, PhoneNumber, EmailAddress, IsStipendPaid, DLType) VALUES (@Name, @PhoneNumber, @EmailAddress, @IsStipendPaid, @DLType)";
+                return conn.Execute(sql, driver) > 0;
+            }, "AddDriver");
         }
 
-        public List<BusBuddy.Models.Activity> GetActivities()
+        public List<Activity> GetActivities()
         {
-            return ExecuteWithRetry(connection =>
-            {
-                return connection.Query<BusBuddy.Models.Activity>("SELECT * FROM Activities").ToList();
-            }, "fetch activities");
+            return ExecuteWithRetryList(conn =>
+                conn.Query<Activity>("SELECT * FROM Activities ORDER BY ActivityDate").ToList(),
+                "GetActivities");
         }
 
         public void UpdateScheduledRoute(ScheduledRoute route)
         {
-            ExecuteWithRetry(connection =>
+            ExecuteWithRetry(conn =>
             {
-                var sql = @"UPDATE ScheduledRoutes
-                            SET CalendarDayId = @CalendarDayId, RouteId = @RouteId, 
-                                AssignedBusNumber = @AssignedBusNumber, AssignedDriverName = @AssignedDriverName
-                            WHERE ScheduledRouteId = @ScheduledRouteId";
-                connection.Execute(sql, route);
-                return 0;
-            }, "update scheduled route");
+                var sql = @"
+                    UPDATE ScheduledRoutes SET
+                        RouteID = @RouteID,
+                        AssignedBusNumber = @AssignedBusNumber,
+                        AssignedDriverID = @AssignedDriverID
+                    WHERE ScheduledRouteID = @ScheduledRouteID";
+                return conn.Execute(sql, route);
+            }, "UpdateScheduledRoute");
         }
 
-        public void AddActivity(BusBuddy.Models.Activity activity)
+        public void AddActivity(Activity activity)
         {
-            ExecuteWithRetry(connection =>
+            ExecuteWithRetry(conn =>
             {
-                var sql = @"INSERT INTO Activities (ActivityId, Name, Description)
-                            VALUES (@ActivityId, @Name, @Description)";
-                connection.Execute(sql, activity);
-                return 0;
-            }, "add activity");
+                var sql = "INSERT INTO Activities (ActivityDate, BusNumber, Destination, LeaveTime, DriverID, HoursDriven, StudentsDriven) VALUES (@ActivityDate, @BusNumber, @Destination, @LeaveTime, @DriverID, @HoursDriven, @StudentsDriven)";
+                return conn.Execute(sql, activity);
+            }, "AddActivity");
         }
 
         public void AddTrip(Trip trip)
         {
-            ExecuteWithRetry(connection =>
+            ExecuteWithRetry(conn =>
             {
-                var sql = @"INSERT INTO Trips (TripID, TripType, Date, BusNumber, DriverName, StartTime, EndTime, TotalHoursDriven, Destination, IsCDLRoute, MilesDriven, TripCategory)
-                            VALUES (@TripID, @TripType, @Date, @BusNumber, @DriverName, @StartTime, @EndTime, @TotalHoursDriven, @Destination, @IsCDLRoute, @MilesDriven, @TripCategory)";
-                connection.Execute(sql, new
+                // Use property names that match the Trip model
+                var sql = "INSERT INTO Trips (TripType, TripDate, BusNumber, DriverName, StartTime, EndTime, TotalHoursDriven, Destination) VALUES (@TripType, @Date, @BusNumber, @DriverName, @StartTime, @EndTime, @TotalHoursDriven, @Destination)";
+                
+                // Create parameters explicitly to handle property name mapping
+                var parameters = new
                 {
-                    trip.TripID,
                     trip.TripType,
                     Date = trip.Date.ToString("yyyy-MM-dd"),
                     trip.BusNumber,
@@ -401,416 +779,194 @@ namespace BusBuddy.Data
                     StartTime = trip.StartTime.ToString("HH:mm"),
                     EndTime = trip.EndTime.ToString("HH:mm"),
                     trip.TotalHoursDriven,
-                    trip.Destination,
-                    IsCDLRoute = trip.IsCDLRoute ? 1 : 0, // Convert boolean to integer for SQLite
-                    trip.MilesDriven,
-                    trip.TripCategory
-                });
-                return 0;
-            }, "add trip");
+                    trip.Destination
+                };
+                
+                return conn.Execute(sql, parameters);
+            }, "AddTrip");
         }
 
         public List<Trip> GetTripsByDate(DateOnly date)
         {
-            return ExecuteWithRetry(connection =>
+            return ExecuteWithRetryList(conn =>
             {
-                var requiredColumns = new List<string>
-                {
-                    "TripID", "TripType", "Date", "BusNumber", "DriverName", "StartTime", "EndTime", "TotalHoursDriven", "Destination"
-                };
-
-                if (!ValidateTableSchema(connection, "Trips", requiredColumns))
-                {
-                    _logger.Error("Trips table schema is invalid. Returning empty list.");
-                    return new List<Trip>();
-                }
+                var sql = @"SELECT 
+                    TripID, 
+                    TripType, 
+                    TripDate, 
+                    StartTime, 
+                    EndTime, 
+                    Destination, 
+                    BusNumber, 
+                    DriverName, 
+                    AMBeginMileage, 
+                    AMEndMileage, 
+                    NumRiders, 
+                    PMStartMileage, 
+                    PMEndingMileage, 
+                    NumPMRiders, 
+                    TotalHoursDriven
+                FROM Trips WHERE TripDate = @Date ORDER BY StartTime";
                 
-                var dateString = date.ToString("yyyy-MM-dd");
-                var rawTrips = connection.Query<dynamic>(
-                    "SELECT * FROM Trips WHERE Date = @Date",
-                    new { Date = dateString }).ToList();
-                    
-                var trips = new List<Trip>();
+                var trips = conn.Query<dynamic>(sql, new { Date = date.ToString("yyyy-MM-dd") }).ToList();
                 
-                // Convert string dates and times to appropriate types
-                foreach (var rawTrip in rawTrips)
+                // Convert the dynamic results to Trip objects
+                var result = trips.Select(t => new Trip
                 {
-                    try
-                    {
-                        var trip = new Trip
-                        {
-                            TripID = rawTrip.TripID,
-                            TripType = rawTrip.TripType,
-                            BusNumber = rawTrip.BusNumber,
-                            DriverName = rawTrip.DriverName,
-                            TotalHoursDriven = rawTrip.TotalHoursDriven,
-                            Destination = rawTrip.Destination,
-                            // Initialize with default values to avoid unassigned variables
-                            Date = date,
-                            // Add support for new payment-related fields
-                            MilesDriven = rawTrip.MilesDriven != null ? (double)rawTrip.MilesDriven : 0,
-                            TripCategory = rawTrip.TripCategory != null ? (string)rawTrip.TripCategory : "Route"
-                        };
-
-                        // Convert IsCDLRoute from integer to boolean
-                        if (rawTrip.IsCDLRoute != null)
-                        {
-                            trip.IsCDLRoute = Convert.ToInt32(rawTrip.IsCDLRoute) != 0;
-                        }
-                        
-                        // Parse start time from string
-                        TimeOnly startTime = new TimeOnly(0, 0); // Default value
-                        if (rawTrip.StartTime != null && TimeOnly.TryParse(rawTrip.StartTime.ToString(), out startTime))
-                        {
-                            trip.StartTime = startTime;
-                        }
-                        else
-                        {
-                            trip.StartTime = startTime; // Use default if parsing fails
-                        }
-                        
-                        // Parse end time from string
-                        TimeOnly endTime = new TimeOnly(0, 0); // Default value
-                        if (rawTrip.EndTime != null && TimeOnly.TryParse(rawTrip.EndTime.ToString(), out endTime))
-                        {
-                            trip.EndTime = endTime;
-                        }
-                        else
-                        {
-                            trip.EndTime = endTime; // Use default if parsing fails
-                        }
-                        
-                        trips.Add(trip);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ex, "Error converting trip data from database for date {Date}", dateString);
-                    }
-                }
+                    TripID = t.TripID,
+                    TripType = t.TripType,
+                    Date = DateOnly.Parse(t.TripDate.ToString()),
+                    BusNumber = t.BusNumber,
+                    DriverName = t.DriverName?.ToString() ?? string.Empty,
+                    StartTime = TimeOnly.TryParse(t.StartTime?.ToString(), out TimeOnly start) ? start : TimeOnly.MinValue,
+                    EndTime = TimeOnly.TryParse(t.EndTime?.ToString(), out TimeOnly end) ? end : TimeOnly.MinValue,
+                    Destination = t.Destination?.ToString() ?? string.Empty,
+                    TotalHoursDriven = t.TotalHoursDriven ?? 0.0
+                }).ToList();
                 
-                return trips;
-            }, "fetch trips by date");
+                return result;
+            }, "GetTripsByDate");
         }
 
         public DatabaseStatistics GetDatabaseStatistics()
         {
-            return ExecuteWithRetry(connection =>
+            return ExecuteWithRetry(conn =>
             {
-                var stats = new DatabaseStatistics();
-                
-                stats.TripCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Trips");
-                stats.DriverCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Drivers");
-                stats.BusCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Buses");
-                stats.RouteCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Routes");
-                stats.FuelRecordCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM FuelRecords");
-                stats.ActivityCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Activities");
-                
-                return stats;
-            }, "get database statistics");
+                return new DatabaseStatistics
+                {
+                    TotalTrips = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM Trips"),
+                    TotalDrivers = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM Drivers"),
+                    TotalRoutes = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM Routes"),
+                    TotalFuelRecords = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM Fuel"),
+                    TotalMaintenanceRecords = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM Maintenance"),
+                    TotalActivities = conn.ExecuteScalar<int>("SELECT COUNT(*) FROM Activities"),
+                    Timestamp = DateTime.Now
+                };
+            }, "GetDatabaseStatistics");
         }
 
-        public List<BusBuddy.Models.FuelRecord> GetFuelRecords()
+        public List<FuelRecord> GetFuelRecords()
         {
-            return ExecuteWithRetry(connection =>
+            return ExecuteWithRetryList(conn =>
+                conn.Query<FuelRecord>("SELECT * FROM Fuel ORDER BY FuelDate DESC").ToList(),
+                "GetFuelRecords");
+        }
+
+        public bool UpdateFuelRecord(FuelRecord record)
+        {
+            return ExecuteWithRetryValue(conn =>
             {
-                return connection.Query<BusBuddy.Models.FuelRecord>("SELECT * FROM FuelRecords").ToList();
-            }, "fetch fuel records");
+                var sql = $@"UPDATE {FuelSchema.TableName} SET
+                    {FuelSchema.FuelDate} = @FuelDate,
+                    {FuelSchema.BusNumber} = @BusNumber,
+                    {FuelSchema.Gallons} = @Gallons,
+                    {FuelSchema.Odometer} = @Odometer,
+                    {FuelSchema.Notes} = @Notes
+                    WHERE {FuelSchema.FuelID} = @FuelID";
+                return conn.Execute(sql, record) > 0;
+            }, "UpdateFuelRecord");
+        }
+
+        public bool DeleteFuelRecord(int recordId)
+        {
+            return ExecuteWithRetryValue(conn =>
+                conn.Execute($"DELETE FROM {FuelSchema.TableName} WHERE {FuelSchema.FuelID} = @Id", new { Id = recordId }) > 0,
+                "DeleteFuelRecord");
         }
 
         public void AddRoute(Route route)
         {
-            ExecuteWithRetry(connection =>
+            ExecuteWithRetry(conn =>
             {
-                var sql = @"INSERT INTO Routes (RouteId, Name, Description, DefaultBusNumber, DefaultDriverName)
-                            VALUES (@RouteId, @RouteName, @Description, @DefaultBusNumber, @DefaultDriverName)";
-                connection.Execute(sql, new {
-                    RouteId = route.RouteId,
-                    RouteName = route.RouteName,
-                    Description = route.Description,
-                    DefaultBusNumber = route.DefaultBusNumber,
-                    DefaultDriverName = route.DefaultDriverName
-                });
-                return 0;
-            }, "add route");
+                var sql = "INSERT INTO Routes (RouteName, DefaultBusNumber, DefaultDriverID, Description, StartTime, EndTime) VALUES (@RouteName, @DefaultBusNumber, @DefaultDriverID, @Description, @StartTime, @EndTime)";
+                return conn.Execute(sql, route);
+            }, "AddRoute");
         }
 
         public void UpdateRoute(Route route)
         {
-            ExecuteWithRetry(connection =>
+            ExecuteWithRetry(conn =>
             {
-                var sql = @"UPDATE Routes
-                            SET Name = @RouteName, Description = @Description, 
-                                DefaultBusNumber = @DefaultBusNumber, DefaultDriverName = @DefaultDriverName
-                            WHERE RouteId = @RouteId";
-                connection.Execute(sql, new {
-                    RouteId = route.RouteId,
-                    RouteName = route.RouteName,
-                    Description = route.Description,
-                    DefaultBusNumber = route.DefaultBusNumber,
-                    DefaultDriverName = route.DefaultDriverName
-                });
-                return 0;
-            }, "update route");
+                var sql = "UPDATE Routes SET RouteName = @RouteName, DefaultBusNumber = @DefaultBusNumber, DefaultDriverID = @DefaultDriverID, Description = @Description, StartTime = @StartTime, EndTime = @EndTime WHERE RouteID = @RouteID";
+                return conn.Execute(sql, route);
+            }, "UpdateRoute");
         }
 
-        /// <summary>
-        /// Validates if a string is a valid SQL identifier (table or column name)
-        /// </summary>
-        /// <param name="identifier">The identifier to validate</param>
-        /// <returns>True if the identifier is valid, false otherwise</returns>
-        private bool IsValidIdentifier(string identifier)
+        public bool DeleteRoute(int routeId)
         {
-            if (string.IsNullOrWhiteSpace(identifier))
-                return false;
-                
-            // Check if the identifier contains only alphanumeric characters and underscores
-            // and starts with a letter or underscore
-            return System.Text.RegularExpressions.Regex.IsMatch(
-                identifier, 
-                @"^[a-zA-Z_][a-zA-Z0-9_]*$");
+            return ExecuteWithRetryValue(conn =>
+                conn.Execute("DELETE FROM Routes WHERE RouteID = @RouteID", new { RouteID = routeId }) > 0,
+                "DeleteRoute");
         }
-        
-        protected virtual T ExecuteWithRetry<T>(Func<SQLiteConnection, T> operation, string operationName)
+
+        public bool UpdateDriver(Driver driver)
         {
-            const int maxRetries = 3;
-            int attempt = 0;
-
-            while (true)
+            return ExecuteWithRetryValue(conn =>
             {
-                try
-                {
-                    using (var connection = new SQLiteConnection(_connectionString))
-                    {
-                        connection.Open();
-                        return operation(connection);
-                    }
-                }
-                catch (SQLiteException ex) when (attempt < maxRetries)
-                {
-                    attempt++;
-                    _logger.Warning("Attempt {Attempt} failed for {OperationName}: {Exception}. Retrying...", attempt, operationName, ex.Message);
-                    System.Threading.Thread.Sleep(1000 * attempt);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex, "Failed to {OperationName} after {Attempt} attempts.", operationName, attempt);
-                    throw new InvalidOperationException($"Failed to {operationName}", ex);
-                }
-            }
+                var sql = "UPDATE Drivers SET DriverName = @Name, PhoneNumber = @PhoneNumber, EmailAddress = @EmailAddress WHERE DriverID = @DriverID";
+                return conn.Execute(sql, driver) > 0;
+            }, "UpdateDriver");
         }
-        
-        /// <summary>
-        /// Validates that a table exists and has all required columns
-        /// </summary>
-        /// <param name="connection">The database connection</param>
-        /// <param name="tableName">Name of the table to validate</param>
-        /// <param name="requiredColumns">List of required column names</param>
-        /// <returns>True if the table exists and has all required columns, false otherwise</returns>
-        protected bool ValidateTableSchema(SQLiteConnection connection, string tableName, List<string> requiredColumns)
+
+        public bool DeleteDriver(int driverId)
         {
-            try
-            {
-                // Check if table exists - use parameterized query to prevent SQL injection
-                var tableExists = connection.ExecuteScalar<int>(
-                    "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=@TableName", 
-                    new { TableName = tableName }) > 0;
-
-                if (!tableExists)
-                {
-                    _logger.Error("{TableName} table does not exist.", tableName);
-                    return false;
-                }
-
-                // Get all columns in the table - SQLite PRAGMA doesn't support parameters, but we can validate the table name
-                if (!IsValidIdentifier(tableName))
-                {
-                    _logger.Error("Invalid table name: {TableName}", tableName);
-                    return false;
-                }
-                
-                var columnInfo = connection.Query<dynamic>($"PRAGMA table_info({tableName})").ToList();
-                var columns = columnInfo.Select(row => (string)row.name).ToList();
-
-                // Check for required columns
-                foreach (var column in requiredColumns)
-                {
-                    if (!columns.Contains(column))
-                    {
-                        _logger.Error("Required column {Column} is missing in table {TableName}.", column, tableName);
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "Error validating schema for table {TableName}", tableName);
-                return false;
-            }
+            return ExecuteWithRetryValue(conn =>
+                conn.Execute("DELETE FROM Drivers WHERE DriverID = @DriverID", new { DriverID = driverId }) > 0,
+                "DeleteDriver");
         }
 
-        public static void EnsureDatabaseExists()
+        public List<Maintenance> GetMaintenanceRecords()
         {
-            // Check if the database file exists
-            if (!System.IO.File.Exists("WileySchool.db"))
-            {
-                // Create a new database file
-                SQLiteConnection.CreateFile("WileySchool.db");
-            }
-            
-            using (var connection = new SQLiteConnection("Data Source=WileySchool.db;Version=3;"))
-            {
-                connection.Open();
-                var sql = @"
-                    CREATE TABLE IF NOT EXISTS Trips (
-                        TripID INTEGER PRIMARY KEY,
-                        TripType TEXT,
-                        Date TEXT,
-                        BusNumber INTEGER,
-                        DriverName TEXT,
-                        StartTime TEXT,
-                        EndTime TEXT,
-                        TotalHoursDriven REAL,
-                        Destination TEXT,
-                        IsCDLRoute INTEGER DEFAULT 0,
-                        MilesDriven REAL DEFAULT 0,
-                        TripCategory TEXT DEFAULT 'Route'
-                    );
-                    CREATE TABLE IF NOT EXISTS Drivers (
-                        DriverId INTEGER PRIMARY KEY,
-                        Name TEXT,
-                        Driver_Name TEXT,
-                        Address TEXT,
-                        City TEXT,
-                        State TEXT,
-                        Zip_Code TEXT,
-                        Phone_Number TEXT,
-                        Email_Address TEXT,
-                        Is_Stipend_Paid INTEGER DEFAULT 0,
-                        DL_Type TEXT
-                    );
-                    CREATE TABLE IF NOT EXISTS Buses (
-                        BusNumber INTEGER PRIMARY KEY
-                    );
-                    CREATE TABLE IF NOT EXISTS Routes (
-                        RouteId INTEGER PRIMARY KEY,
-                        Name TEXT,
-                        Description TEXT,
-                        DefaultBusNumber INTEGER DEFAULT 0,
-                        DefaultDriverName TEXT DEFAULT ''
-                    );
-                    CREATE TABLE IF NOT EXISTS FuelRecords (
-                        RecordId INTEGER PRIMARY KEY,
-                        BusNumber INTEGER,
-                        Date TEXT,
-                        Gallons REAL,
-                        Cost REAL,
-                        Fuel_Type TEXT,
-                        Odometer_Reading INTEGER
-                    );
-                    CREATE TABLE IF NOT EXISTS CalendarDays (
-                        CalendarDayId INTEGER PRIMARY KEY,
-                        Date TEXT,
-                        IsSchoolDay INTEGER,
-                        DayType TEXT,
-                        Notes TEXT
-                    );
-                    CREATE TABLE IF NOT EXISTS ScheduledRoutes (
-                        ScheduledRouteId INTEGER PRIMARY KEY,
-                        CalendarDayId INTEGER,
-                        RouteId INTEGER,
-                        AssignedBusNumber INTEGER,
-                        AssignedDriverName TEXT
-                    );
-                    CREATE TABLE IF NOT EXISTS Activities (
-                        ActivityId INTEGER PRIMARY KEY,
-                        Name TEXT,
-                        Description TEXT
-                    );
-                    CREATE TABLE IF NOT EXISTS CalendarDayRoutes (
-                        Id INTEGER PRIMARY KEY,
-                        CalendarDayId INTEGER,
-                        RouteId INTEGER,
-                        FOREIGN KEY (CalendarDayId) REFERENCES CalendarDays(CalendarDayId),
-                        FOREIGN KEY (RouteId) REFERENCES Routes(RouteId)
-                    );";
-                connection.Execute(sql);
-                
-                // Add sample data if tables are empty
-                AddSampleDataIfEmpty(connection);
-            }
-        }
-        
-        private static void AddSampleDataIfEmpty(SQLiteConnection connection)
-        {
-            try
-            {
-                // Check if Drivers table is empty
-                var driverCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Drivers");
-                if (driverCount == 0)
-                {
-                    // Add a sample driver
-                    connection.Execute(@"
-                        INSERT INTO Drivers (DriverId, Name, Driver_Name, Address, City, State, Zip_Code, Phone_Number, Email_Address, Is_Stipend_Paid, DL_Type)
-                        VALUES (1, 'John Doe', 'John Doe', '123 Main St', 'Anytown', 'NY', '12345', '555-123-4567', 'john.doe@example.com', 0, 'CDL')
-                    ");
-                }
-                
-                // Check if Buses table is empty
-                var busCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Buses");
-                if (busCount == 0)
-                {
-                    // Add sample buses
-                    connection.Execute(@"
-                        INSERT INTO Buses (BusNumber) VALUES (1);
-                        INSERT INTO Buses (BusNumber) VALUES (2);
-                        INSERT INTO Buses (BusNumber) VALUES (3)
-                    ");
-                }
-                
-                // Check if Routes table is empty
-                var routeCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM Routes");
-                if (routeCount == 0)
-                {
-                    // Add sample routes
-                    connection.Execute(@"
-                        INSERT INTO Routes (RouteId, Name, Description, DefaultBusNumber, DefaultDriverName)
-                        VALUES (1, 'Morning Route', 'Morning pickup route', 1, 'John Doe');
-                        
-                        INSERT INTO Routes (RouteId, Name, Description, DefaultBusNumber, DefaultDriverName)
-                        VALUES (2, 'Afternoon Route', 'Afternoon dropoff route', 2, 'John Doe')
-                    ");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error adding sample data: {ex.Message}");
-            }
+            return ExecuteWithRetryList(conn =>
+                conn.Query<Maintenance>(
+                    @"SELECT MaintenanceID, 
+                        BusNumber, 
+                        DatePerformed, 
+                        Description, 
+                        Cost, 
+                        OdometerReading 
+                    FROM Maintenance ORDER BY DatePerformed DESC").ToList(),
+                "GetMaintenanceRecords");
         }
 
-        public static void Cleanup()
+        public void AddMaintenanceRecord(Maintenance maintenance)
         {
-            using (var connection = new SQLiteConnection("Data Source=WileySchool.db;Version=3;"))
+            ExecuteWithRetry(conn =>
             {
-                connection.Open();
-                var sql = @"
-                    DELETE FROM Trips WHERE Date < date('now', '-1 year');
-                    DELETE FROM FuelRecords WHERE Date < date('now', '-1 year');
-                    VACUUM;";
-                connection.Execute(sql);
-            }
+                var sql = @"INSERT INTO Maintenance 
+                    (BusNumber, DatePerformed, Description, Cost, OdometerReading) 
+                    VALUES (@BusNumber, @DatePerformed, @Description, @Cost, @OdometerReading)";
+                return conn.Execute(sql, maintenance);
+            }, "AddMaintenanceRecord");
         }
-    }
 
-    // Placeholder model classes (replace with actual definitions if they exist)
-    public class DatabaseStatistics
-    {
-        public int TripCount { get; set; }
-        public int DriverCount { get; set; }
-        public int BusCount { get; set; }
-        public int RouteCount { get; set; }
-        public int FuelRecordCount { get; set; }
-        public int ActivityCount { get; set; }
+        public void UpdateMaintenanceRecord(Maintenance maintenance)
+        {
+            ExecuteWithRetry(conn =>
+            {
+                var sql = @"UPDATE Maintenance 
+                    SET BusNumber = @BusNumber, 
+                        DatePerformed = @DatePerformed, 
+                        Description = @Description, 
+                        Cost = @Cost, 
+                        OdometerReading = @OdometerReading 
+                    WHERE MaintenanceID = @MaintenanceID";
+                return conn.Execute(sql, maintenance);
+            }, "UpdateMaintenanceRecord");
+        }
+
+        public void DeleteMaintenanceRecord(int maintenanceId)
+        {
+            ExecuteWithRetry(conn =>
+                conn.Execute("DELETE FROM Maintenance WHERE MaintenanceID = @MaintenanceID", new { MaintenanceID = maintenanceId }),
+                "DeleteMaintenanceRecord");
+        }
     }
 }
+
+#pragma warning restore CS8600
+#pragma warning restore CS8601
+#pragma warning restore CS8602
+#pragma warning restore CS8603
+#pragma warning restore CS8604
+#pragma warning restore CS8605

@@ -6,51 +6,100 @@ namespace BusBuddy.Models
     /// <summary>
     /// Represents a scheduled route for a specific calendar day
     /// </summary>
-    public class ScheduledRoute
+    public sealed class ScheduledRoute
     {
         /// <summary>
-        /// Unique identifier for the scheduled route
+        /// Gets or sets the unique identifier for the scheduled route
         /// </summary>
-        public int ScheduledRouteId { get; set; }
-
-        /// <summary>
-        /// ID of the calendar day
-        /// </summary>
-        public int CalendarDayId { get; set; }
-
-        /// <summary>
-        /// ID of the route
-        /// </summary>
-        public int RouteId { get; set; }
+        public int ScheduledRouteID { get; set; }
         
         /// <summary>
-        /// Bus assigned to this scheduled route
+        /// Gets or sets the unique identifier for the scheduled route (lowercase alias)
+        /// </summary>
+        public int ScheduledRouteId 
+        { 
+            get => ScheduledRouteID; 
+            set => ScheduledRouteID = value; 
+        }
+
+        /// <summary>
+        /// Gets or sets the ID of the calendar day
+        /// </summary>
+        public int CalendarDayID { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the ID of the calendar day (lowercase alias)
+        /// </summary>
+        public int CalendarDayId 
+        { 
+            get => CalendarDayID; 
+            set => CalendarDayID = value; 
+        }
+
+        /// <summary>
+        /// Gets or sets the ID of the route
+        /// </summary>
+        public int RouteID { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the ID of the route (lowercase alias)
+        /// </summary>
+        public int RouteId 
+        { 
+            get => RouteID; 
+            set => RouteID = value; 
+        }
+        
+        /// <summary>
+        /// Gets or sets the bus assigned to this scheduled route
         /// </summary>
         public int AssignedBusNumber { get; set; }
 
         /// <summary>
-        /// Driver assigned to this scheduled route
+        /// Gets or sets the driver ID assigned to this scheduled route
         /// </summary>
-        public string AssignedDriverName { get; set; }
-
+        public int AssignedDriverID { get; set; }
+        
         /// <summary>
-        /// Constructor with parameters
+        /// Gets or sets the driver ID assigned to this scheduled route (lowercase alias)
         /// </summary>
-        public ScheduledRoute(int scheduledRouteId, int calendarDayId, int routeId, int assignedBusNumber, string assignedDriverName)
+        public int AssignedDriverId 
+        { 
+            get => AssignedDriverID; 
+            set => AssignedDriverID = value; 
+        }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScheduledRoute"/> class with specified values
+        /// </summary>
+        /// <param name="scheduledRouteID">The scheduled route ID</param>
+        /// <param name="calendarDayID">The calendar day ID</param>
+        /// <param name="routeID">The route ID</param>
+        /// <param name="assignedBusNumber">The assigned bus number</param>
+        /// <param name="assignedDriverID">The assigned driver ID</param>
+        public ScheduledRoute(int scheduledRouteID, int calendarDayID, int routeID, int assignedBusNumber, int assignedDriverID)
         {
-            ScheduledRouteId = scheduledRouteId;
-            CalendarDayId = calendarDayId;
-            RouteId = routeId;
+            ScheduledRouteID = scheduledRouteID;
+            CalendarDayID = calendarDayID;
+            RouteID = routeID;
             AssignedBusNumber = assignedBusNumber;
-            AssignedDriverName = assignedDriverName;
+            AssignedDriverID = assignedDriverID;
         }
 
         /// <summary>
-        /// Default constructor
+        /// Initializes a new instance of the <see cref="ScheduledRoute"/> class
         /// </summary>
         public ScheduledRoute()
         {
-            AssignedDriverName = string.Empty;
+        }
+        
+        /// <summary>
+        /// Returns a string representation of the scheduled route
+        /// </summary>
+        /// <returns>A string representation of the scheduled route</returns>
+        public override string ToString()
+        {
+            return $"Route ID: {RouteID}, Bus: {AssignedBusNumber}, Driver ID: {AssignedDriverID}";
         }
     }
 }

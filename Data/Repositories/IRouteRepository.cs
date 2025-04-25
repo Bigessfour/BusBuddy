@@ -10,6 +10,8 @@ namespace BusBuddy.Data.Repositories
         /// <summary>
         /// Gets a route by name
         /// </summary>
+#pragma warning disable SA1611 // Element parameters should be documented
         Task<Route> GetRouteByNameAsync(string name);
+#pragma warning restore SA1611 // Element parameters should be documented
     }
 }

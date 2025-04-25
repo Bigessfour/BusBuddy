@@ -1,9 +1,7 @@
 // BusBuddy/Data/Repositories/ActivityRepository.cs
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 using BusBuddy.Models;
+using Dapper;
 using Serilog;
 
 namespace BusBuddy.Data.Repositories
@@ -12,13 +10,14 @@ namespace BusBuddy.Data.Repositories
     {
         private readonly IDatabaseManager _dbManager;
         private readonly ILogger _logger;
-        
+
         public ActivityRepository(IDatabaseManager dbManager, ILogger logger)
         {
             _dbManager = dbManager ?? throw new ArgumentNullException(nameof(dbManager));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         
+#pragma warning disable CS8603 // Possible null reference return.
         public async Task<IEnumerable<Activity>> GetAllAsync()
         {
             try
@@ -95,7 +94,7 @@ namespace BusBuddy.Data.Repositories
             try
             {
                 var activities = _dbManager.GetActivities();
-                return await Task.FromResult(activities.Where(a => a.Date == date));
+                return await Task.FromResult(activities.Where(a => a.ActivityDate == date));
             }
             catch (Exception ex)
             {
@@ -117,5 +116,7 @@ namespace BusBuddy.Data.Repositories
                 throw;
             }
         }
+#pragma warning restore CS8603
     }
 }
+#pragma warning restore CS1591

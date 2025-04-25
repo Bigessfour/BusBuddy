@@ -1,4 +1,5 @@
 // BusBuddy/Data/Repositories/RouteRepository.cs
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace BusBuddy.Data.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         
+#pragma warning disable CS8603 // Possible null reference return.
         public async Task<IEnumerable<Route>> GetAllAsync()
         {
             try
@@ -37,7 +39,7 @@ namespace BusBuddy.Data.Repositories
             try
             {
                 var routes = _dbManager.GetRoutes();
-                return await Task.FromResult(routes.FirstOrDefault(r => r.RouteId == id));
+                return await Task.FromResult(routes.FirstOrDefault(r => r.RouteID == id));
             }
             catch (Exception ex)
             {
@@ -51,7 +53,7 @@ namespace BusBuddy.Data.Repositories
             try
             {
                 _dbManager.AddRoute(entity);
-                return await Task.FromResult(entity.RouteId);
+                return await Task.FromResult(entity.RouteID);
             }
             catch (Exception ex)
             {
@@ -64,6 +66,7 @@ namespace BusBuddy.Data.Repositories
         {
             try
             {
+                _logger.Information("Updating route with ID {RouteId}", entity.RouteID);
                 _dbManager.UpdateRoute(entity);
                 return await Task.FromResult(true);
             }
@@ -78,9 +81,9 @@ namespace BusBuddy.Data.Repositories
         {
             try
             {
-                // Implement delete logic when available in DatabaseManager
-                _logger.Warning("Route deletion not implemented in DatabaseManager");
-                return await Task.FromResult(false);
+                _logger.Information("Deleting route with ID {RouteId}", id);
+                var result = _dbManager.DeleteRoute(id);
+                return await Task.FromResult(result);
             }
             catch (Exception ex)
             {
@@ -102,5 +105,7 @@ namespace BusBuddy.Data.Repositories
                 throw;
             }
         }
+#pragma warning restore CS8603
     }
 }
+#pragma warning restore CS1591

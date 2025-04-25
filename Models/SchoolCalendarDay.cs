@@ -1,86 +1,92 @@
-// BusBuddy/Models/SchoolCalendarDay.cs
-using System;
-using System.Collections.Generic;
-
 namespace BusBuddy.Models
 {
-    /// <summary>
-    /// Represents a day in the school calendar
-    /// </summary>
-    public class SchoolCalendarDay
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public enum SchoolDayType
     {
-        /// <summary>
-        /// Unique identifier for the calendar day
-        /// </summary>
-        public int CalendarDayId { get; set; }
+        Regular,
+        EarlyRelease,
+        LateStart,
+        HalfDay,
+        NoSchool
+    }
 
-        /// <summary>
-        /// The date of this calendar entry
-        /// </summary>
-        public DateTime Date { get; set; }
+    public sealed class SchoolCalendarDay
+    {
+        private const int TruckPlazaRouteId = 1;
+        private const int EastRouteId = 2;
+        private const int WestRouteId = 3;
+        private const int SPEDRouteId = 4;
 
-        /// <summary>
-        /// Whether this is a school day (buses run)
-        /// </summary>
-        public bool IsSchoolDay { get; set; }
-
-        /// <summary>
-        /// Description of the day (Regular, Early Release, etc.)
-        /// </summary>
-        public string DayType { get; set; }
-
-        /// <summary>
-        /// Notes about this calendar day
-        /// </summary>
-        public string Notes { get; set; }
-
-        /// <summary>
-        /// List of route IDs that run on this day
-        /// </summary>
-        public List<int> ActiveRouteIds { get; set; }
-
-        /// <summary>
-        /// Constructor with parameters
-        /// </summary>
-        public SchoolCalendarDay(int calendarDayId, DateTime date, bool isSchoolDay, string dayType, string notes)
-        {
-            CalendarDayId = calendarDayId;
-            Date = date;
-            IsSchoolDay = isSchoolDay;
-            DayType = dayType;
-            Notes = notes;
-            ActiveRouteIds = new List<int>();
-        }
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
         public SchoolCalendarDay()
         {
-            Date = DateTime.Now;
-            DayType = "Regular";
-            Notes = string.Empty;
-            ActiveRouteIds = new List<int>();
+            this.CalendarDate = DateTime.Now.ToString("yyyy-MM-dd");
+            this.DayType = SchoolDayType.Regular;
+            this.Notes = string.Empty;
+            this.ActiveRouteIds = new List<int>();
+            this.ScheduledRoutes = new List<ScheduledRoute>();
         }
 
-        /// <summary>
-        /// Helper to determine if the Truck Plaza route should run
-        /// </summary>
-        public bool IsRunningTruckPlazaRoute => IsSchoolDay && ActiveRouteIds.Contains(1);
+        public SchoolCalendarDay(int calendarDayID, string calendarDate, bool isSchoolDay, string dayType, string notes)
+        {
+            this.CalendarDayID = calendarDayID;
+            this.CalendarDate = calendarDate;
+            this.IsSchoolDay = isSchoolDay;
 
-        /// <summary>
-        /// Helper to determine if the East route should run
-        /// </summary>
-        public bool IsRunningEastRoute => IsSchoolDay && ActiveRouteIds.Contains(2);
+            if (!Enum.TryParse<SchoolDayType>(dayType, true, out var parsedDayType))
+            {
+                parsedDayType = SchoolDayType.Regular;
+            }
 
-        /// <summary>
-        /// Helper to determine if the West route should run
-        /// </summary>
-        public bool IsRunningWestRoute => IsSchoolDay && ActiveRouteIds.Contains(3);
+            this.DayType = parsedDayType;
+            this.Notes = notes ?? string.Empty;
+            this.ActiveRouteIds = new List<int>();
+            this.ScheduledRoutes = new List<ScheduledRoute>();
+        }
 
-        /// <summary>
-        /// Helper to determine if the SPED route should run
-        /// </summary>
-        public bool IsRunningSPEDRoute => IsSchoolDay && ActiveRouteIds.Contains(4);
+        public int CalendarDayID { get; set; }
+        public string CalendarDate { get; set; } // 'YYYY-MM-DD'
+        public bool IsSchoolDay { get; set; }
+        public bool IsTeacherWorkDay { get; set; }
+        public SchoolDayType DayType { get; set; } = SchoolDayType.Regular;
+        public string Notes { get; set; } = string.Empty;
+        public List<int> ActiveRouteIds { get; set; } = new List<int>();
+        public List<ScheduledRoute> ScheduledRoutes { get; set; } = new List<ScheduledRoute>();
+        
+        // Add Date property that converts CalendarDate string to DateTime for DatabaseManager compatibility
+        public DateTime Date
+        {
+            get => DateTime.Parse(CalendarDate);
+            set => CalendarDate = value.ToString("yyyy-MM-dd");
+        }
+
+        public int CalendarDayId
+        {
+            get => CalendarDayID;
+            set => CalendarDayID = value;
+        }
+
+        public bool IsRunningTruckPlazaRoute => this.IsSchoolDay &&
+            (this.ScheduledRoutes.Any(sr => sr.RouteID == TruckPlazaRouteId) ||
+             this.ActiveRouteIds.Contains(TruckPlazaRouteId));
+
+        public bool IsRunningEastRoute => this.IsSchoolDay &&
+            (this.ScheduledRoutes.Any(sr => sr.RouteID == EastRouteId) ||
+             this.ActiveRouteIds.Contains(EastRouteId));
+
+        public bool IsRunningWestRoute => this.IsSchoolDay &&
+            (this.ScheduledRoutes.Any(sr => sr.RouteID == WestRouteId) ||
+             this.ActiveRouteIds.Contains(WestRouteId));
+
+        public bool IsRunningSPEDRoute => this.IsSchoolDay &&
+            (this.ScheduledRoutes.Any(sr => sr.RouteID == SPEDRouteId) ||
+             this.ActiveRouteIds.Contains(SPEDRouteId));
+
+        public override string ToString()
+        {
+            return $"{DateTime.Parse(CalendarDate):d} - {(this.IsSchoolDay ? this.DayType.ToString() + " School Day" : "No School")}";
+        }
     }
 }

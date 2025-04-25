@@ -1,0 +1,576 @@
+2025-04-22 06:54:22.629 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 06:54:22.795 -06:00 [INF] Current database schema version: 0
+2025-04-22 06:54:22.800 -06:00 [INF] Found 2 pending migrations.
+2025-04-22 06:54:22.802 -06:00 [INF] Applying migration 1...
+2025-04-22 06:54:22.805 -06:00 [WRN] Migration script for version 1 did not update schema version correctly (Current: 0). Attempting manual update.
+2025-04-22 06:54:22.910 -06:00 [ERR] Failed to apply migration 1. Rolling back transaction.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+2025-04-22 06:54:23.008 -06:00 [FTL] A critical error occurred during database migration application.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+2025-04-22 06:54:23.045 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 82
+2025-04-22 06:55:23.000 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 06:55:23.127 -06:00 [INF] Current database schema version: 0
+2025-04-22 06:55:23.133 -06:00 [INF] Found 2 pending migrations.
+2025-04-22 06:55:23.136 -06:00 [INF] Applying migration 1...
+2025-04-22 06:55:23.138 -06:00 [WRN] Migration script for version 1 did not update schema version correctly (Current: 0). Attempting manual update.
+2025-04-22 06:55:23.236 -06:00 [ERR] Failed to apply migration 1. Rolling back transaction.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+2025-04-22 06:55:23.320 -06:00 [FTL] A critical error occurred during database migration application.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+2025-04-22 06:55:23.352 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 82
+2025-04-22 08:09:07.939 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 08:09:08.101 -06:00 [INF] Current database schema version: 0
+2025-04-22 08:09:08.106 -06:00 [INF] Found 2 pending migrations.
+2025-04-22 08:09:08.108 -06:00 [INF] Applying migration 1...
+2025-04-22 08:09:08.111 -06:00 [WRN] Migration script for version 1 did not update schema version correctly (Current: 0). Attempting manual update.
+2025-04-22 08:09:08.215 -06:00 [ERR] Failed to apply migration 1. Rolling back transaction.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+2025-04-22 08:09:08.310 -06:00 [FTL] A critical error occurred during database migration application.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+2025-04-22 08:09:08.348 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 82
+2025-04-22 10:05:48.963 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 10:05:49.093 -06:00 [INF] Current database schema version: 0
+2025-04-22 10:05:49.098 -06:00 [INF] Found 2 pending migrations.
+2025-04-22 10:05:49.101 -06:00 [INF] Applying migration 1...
+2025-04-22 10:05:49.104 -06:00 [WRN] Migration script for version 1 did not update schema version correctly (Current: 0). Attempting manual update.
+2025-04-22 10:05:49.201 -06:00 [ERR] Failed to apply migration 1. Rolling back transaction.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+2025-04-22 10:05:49.281 -06:00 [FTL] A critical error occurred during database migration application.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+2025-04-22 10:05:49.314 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x87AF202F): constraint failed
+UNIQUE constraint failed: SchemaVersion.Version
+   at System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   at System.Data.SQLite.SQLiteDataReader.Step(SQLiteStatement statement)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 136
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 82
+2025-04-22 12:11:16.030 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 12:11:16.171 -06:00 [INF] Checking for and fixing potential database issues...
+2025-04-22 12:11:16.177 -06:00 [INF] SchemaVersion table appears to be in good condition with 1 row(s).
+2025-04-22 12:11:16.183 -06:00 [INF] Current database schema version: 0
+2025-04-22 12:11:16.188 -06:00 [INF] Found 3 pending migrations.
+2025-04-22 12:11:16.190 -06:00 [INF] Applying migration 1...
+2025-04-22 12:11:16.196 -06:00 [INF] Successfully applied migration 1. Schema version is now: 1
+2025-04-22 12:11:16.197 -06:00 [INF] Applying migration 2...
+2025-04-22 12:11:16.204 -06:00 [INF] Successfully applied migration 2. Schema version is now: 2
+2025-04-22 12:11:16.204 -06:00 [INF] Applying migration 3...
+2025-04-22 12:11:16.281 -06:00 [ERR] Failed to apply migration 3. Rolling back transaction.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 12:11:16.360 -06:00 [FTL] A critical error occurred during database migration application.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 12:11:16.394 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 252
+2025-04-22 12:16:07.612 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 12:16:07.695 -06:00 [INF] Checking for and fixing potential database issues...
+2025-04-22 12:16:07.700 -06:00 [INF] SchemaVersion table appears to be in good condition with 1 row(s).
+2025-04-22 12:16:07.706 -06:00 [INF] Current database schema version: 0
+2025-04-22 12:16:07.710 -06:00 [INF] Found 3 pending migrations.
+2025-04-22 12:16:07.712 -06:00 [INF] Applying migration 1...
+2025-04-22 12:16:07.717 -06:00 [INF] Successfully applied migration 1. Schema version is now: 1
+2025-04-22 12:16:07.717 -06:00 [INF] Applying migration 2...
+2025-04-22 12:16:07.722 -06:00 [INF] Successfully applied migration 2. Schema version is now: 2
+2025-04-22 12:16:07.722 -06:00 [INF] Applying migration 3...
+2025-04-22 12:16:07.725 -06:00 [ERR] Failed to apply migration 3. Rolling back transaction.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 12:16:07.744 -06:00 [FTL] A critical error occurred during database migration application.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 12:16:07.744 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 252
+2025-04-22 13:48:47.519 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 13:48:47.605 -06:00 [INF] Checking for and fixing potential database issues...
+2025-04-22 13:48:47.610 -06:00 [INF] SchemaVersion table appears to be in good condition with 1 row(s).
+2025-04-22 13:48:47.617 -06:00 [INF] Current database schema version: 0
+2025-04-22 13:48:47.620 -06:00 [INF] Found 3 pending migrations.
+2025-04-22 13:48:47.623 -06:00 [INF] Applying migration 1...
+2025-04-22 13:48:47.630 -06:00 [INF] Successfully applied migration 1. Schema version is now: 1
+2025-04-22 13:48:47.631 -06:00 [INF] Applying migration 2...
+2025-04-22 13:48:47.636 -06:00 [INF] Successfully applied migration 2. Schema version is now: 2
+2025-04-22 13:48:47.636 -06:00 [INF] Applying migration 3...
+2025-04-22 13:48:47.639 -06:00 [ERR] Failed to apply migration 3. Rolling back transaction.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 13:48:47.660 -06:00 [FTL] A critical error occurred during database migration application.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 13:48:47.660 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 252
+2025-04-22 13:58:39.612 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 13:58:39.686 -06:00 [INF] Checking for and fixing potential database issues...
+2025-04-22 13:58:39.692 -06:00 [INF] SchemaVersion table appears to be in good condition with 1 row(s).
+2025-04-22 13:58:39.698 -06:00 [INF] Current database schema version: 2
+2025-04-22 13:58:39.701 -06:00 [INF] Found 1 pending migrations.
+2025-04-22 13:58:39.703 -06:00 [INF] Applying migration 3...
+2025-04-22 13:58:39.706 -06:00 [ERR] Failed to apply migration 3. Rolling back transaction.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 13:58:39.726 -06:00 [FTL] A critical error occurred during database migration application.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 13:58:39.727 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 252
+2025-04-22 14:02:01.801 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 14:02:01.874 -06:00 [INF] Checking for and fixing potential database issues...
+2025-04-22 14:02:01.879 -06:00 [INF] SchemaVersion table appears to be in good condition with 1 row(s).
+2025-04-22 14:02:01.885 -06:00 [INF] Current database schema version: 2
+2025-04-22 14:02:01.889 -06:00 [INF] Found 1 pending migrations.
+2025-04-22 14:02:01.891 -06:00 [INF] Applying migration 3...
+2025-04-22 14:02:01.894 -06:00 [ERR] Failed to apply migration 3. Rolling back transaction.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 14:02:01.914 -06:00 [FTL] A critical error occurred during database migration application.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 14:02:01.915 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 252
+2025-04-22 14:04:31.803 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 14:04:31.939 -06:00 [INF] Checking for and fixing potential database issues...
+2025-04-22 14:04:31.945 -06:00 [INF] SchemaVersion table appears to be in good condition with 1 row(s).
+2025-04-22 14:04:31.951 -06:00 [INF] Current database schema version: 0
+2025-04-22 14:04:31.956 -06:00 [INF] Found 3 pending migrations.
+2025-04-22 14:04:31.958 -06:00 [INF] Applying migration 1...
+2025-04-22 14:04:31.965 -06:00 [INF] Successfully applied migration 1. Schema version is now: 1
+2025-04-22 14:04:31.966 -06:00 [INF] Applying migration 2...
+2025-04-22 14:04:31.971 -06:00 [INF] Successfully applied migration 2. Schema version is now: 2
+2025-04-22 14:04:31.971 -06:00 [INF] Applying migration 3...
+2025-04-22 14:04:32.053 -06:00 [ERR] Failed to apply migration 3. Rolling back transaction.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 14:04:32.135 -06:00 [FTL] A critical error occurred during database migration application.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 14:04:32.170 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 252
+2025-04-22 14:11:10.949 -06:00 [INF] Database file found at C:\Users\steve.mckitrick\Desktop\BusBuddy\bin\Debug\net9.0-windows\WileySchool.db. Checking schema version...
+2025-04-22 14:11:11.033 -06:00 [INF] Checking for and fixing potential database issues...
+2025-04-22 14:11:11.038 -06:00 [INF] SchemaVersion table appears to be in good condition with 1 row(s).
+2025-04-22 14:11:11.043 -06:00 [INF] Current database schema version: 0
+2025-04-22 14:11:11.047 -06:00 [INF] Found 3 pending migrations.
+2025-04-22 14:11:11.049 -06:00 [INF] Applying migration 1...
+2025-04-22 14:11:11.057 -06:00 [INF] Successfully applied migration 1. Schema version is now: 1
+2025-04-22 14:11:11.057 -06:00 [INF] Applying migration 2...
+2025-04-22 14:11:11.064 -06:00 [INF] Successfully applied migration 2. Schema version is now: 2
+2025-04-22 14:11:11.064 -06:00 [INF] Applying migration 3...
+2025-04-22 14:11:11.067 -06:00 [ERR] Failed to apply migration 3. Rolling back transaction.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 14:11:11.087 -06:00 [FTL] A critical error occurred during database migration application.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+2025-04-22 14:11:11.087 -06:00 [FTL] A critical error occurred during database initialization or migration.
+code = Error (1), message = System.Data.SQLite.SQLiteException (0x87AF001F): SQL logic error
+near "EXISTS": syntax error
+   at System.Data.SQLite.SQLite3.Prepare(SQLiteConnection cnn, SQLiteCommand command, String strSql, SQLiteStatement previous, UInt32 timeoutMS, String& strRemain)
+   at System.Data.SQLite.SQLiteCommand.BuildNextCommand()
+   at System.Data.SQLite.SQLiteCommand.GetStatement(Int32 index)
+   at System.Data.SQLite.SQLiteDataReader.NextResult()
+   at System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   at System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   at System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   at Dapper.SqlMapper.ExecuteCommand(IDbConnection cnn, CommandDefinition& command, Action`2 paramReader) in /_/Dapper/SqlMapper.cs:line 2965
+   at Dapper.SqlMapper.ExecuteImpl(IDbConnection cnn, CommandDefinition& command) in /_/Dapper/SqlMapper.cs:line 656
+   at Dapper.SqlMapper.Execute(IDbConnection cnn, String sql, Object param, IDbTransaction transaction, Nullable`1 commandTimeout, Nullable`1 commandType) in /_/Dapper/SqlMapper.cs:line 527
+   at BusBuddy.Data.DatabaseManager.ApplyPendingMigrations() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 351
+   at BusBuddy.Data.DatabaseManager.InitializeDatabase() in C:\Users\steve.mckitrick\Desktop\BusBuddy\Data\DatabaseManager.cs:line 252

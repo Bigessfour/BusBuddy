@@ -1,170 +1,188 @@
-// BusBuddy/API/ApiClient.cs
-#nullable enable
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
 using Serilog;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using BusBuddy.Models;
 
 namespace BusBuddy.API
 {
-    /// <summary>
-    /// Basic API client for making HTTP requests
-    /// </summary>
-    public static class ApiClient
+    public class ApiClient
     {
-        // Environment variable name for the API key
-        private const string ApiKeyEnvVar = "BUSBUDDY_API_KEY";
-        
-        // API configuration keys
-        private const string DefaultApiUrlKey = "API_BASE_URL";
-        private const string XaiApiUrlKey = "XAI_API_URL";
-        
-        // Content type for JSON
-        private const string ContentTypeJson = "application/json";
-        
-        // Current model for API requests
-        private static string _currentModel = "grok-3";
+        private readonly HttpClient _httpClient;
+        private readonly Serilog.ILogger _logger;
+        private readonly string _apiKey;
+        private readonly bool _isEnabled;
 
-        // API URLs with default values that can be overridden
-        private static string DefaultApiUrl => 
-            Environment.GetEnvironmentVariable(DefaultApiUrlKey) ?? "https://api.example.com";
-        
-        private static string XaiApiUrl => 
-            Environment.GetEnvironmentVariable(XaiApiUrlKey) ?? "https://api.x.ai/v1/chat/completions";
-        
-        // Get a fresh HttpClient for every request
-        private static HttpClient GetFreshHttpClient()
+        // Constructor with direct URL and API key for simpler instantiation
+        public ApiClient(string baseUrl, string apiKey, Serilog.ILogger logger)
         {
-            var client = new HttpClient();
-            string? apiKey = Environment.GetEnvironmentVariable(ApiKeyEnvVar);
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _apiKey = apiKey;
             
-            if (!string.IsNullOrEmpty(apiKey))
+            if (string.IsNullOrEmpty(baseUrl))
             {
-                client.DefaultRequestHeaders.Authorization = 
-                    new AuthenticationHeaderValue("Bearer", apiKey);
+                _logger.Error("API URL is not configured");
+                _isEnabled = false;
+                return;
             }
-            
-            client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue(ContentTypeJson));
-                
-            return client;
-        }
-        
-        /// <summary>
-        /// Initializes the API key for the application by setting the environment variable.
-        /// This should be called at application startup, before making any API calls.
-        /// </summary>
-        /// <param name="apiKey">The API key value</param>
-        /// <returns>True if the API key was successfully set</returns>
-        public static bool InitializeApiKey(string apiKey)
-        {
+
             try
             {
-                if (string.IsNullOrWhiteSpace(apiKey))
-                {
-                    Log.Error("Cannot initialize with an empty API key");
-                    return false;
-                }
+                // Configure HttpClient directly
+                _httpClient = new HttpClient();
+                _httpClient.BaseAddress = new Uri(baseUrl);
+                _httpClient.Timeout = TimeSpan.FromSeconds(30);
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                // Set the environment variable for the current process
-                Environment.SetEnvironmentVariable(ApiKeyEnvVar, apiKey);
-                
-                // Verify the API key was set correctly
-                string? verifyKey = Environment.GetEnvironmentVariable(ApiKeyEnvVar);
-                bool success = !string.IsNullOrWhiteSpace(verifyKey);
-                
-                if (success)
+                // Set Authentication Header if key exists
+                if (!string.IsNullOrEmpty(_apiKey))
                 {
-                    Log.Information("API key successfully initialized");
+                    _httpClient.DefaultRequestHeaders.Add("X-API-Key", _apiKey);
+                    _isEnabled = true;
                 }
                 else
                 {
-                    Log.Error("Failed to initialize API key");
+                    _logger.Warning("API Key is not provided. API functionality will be limited.");
+                    _isEnabled = false;
                 }
-                
-                return success;
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error initializing API key");
-                return false;
+                _logger.Error(ex, "Error initializing API client");
+                _isEnabled = false;
             }
         }
-        
-        /// <summary>
-        /// Tests the connection to the API by sending a simple request
-        /// </summary>
-        public static async Task<bool> TestAPIConnectionAsync()
+
+        public bool TestConnection()
         {
             try
             {
-                using var httpClient = GetFreshHttpClient();
+                _logger.Information("Testing API connection...");
+                var request = new HttpRequestMessage(HttpMethod.Head, "");
+                var response = _httpClient.SendAsync(request).GetAwaiter().GetResult();
                 
-                // In a real application, this would test an actual API endpoint
-                // For now, we'll just simulate success
-                await Task.Delay(500);
-                
-                Log.Information("API connection test completed successfully");
-                return true;
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.Information("API connection test successful");
+                    return true;
+                }
+
+                _logger.Warning("API connection test failed with status code: {StatusCode}", response.StatusCode);
+                return false;
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "API connection test failed");
+                _logger.Error(ex, "API connection test failed with exception");
                 return false;
             }
         }
-        
-        /// <summary>
-        /// Detects scheduling conflicts between a new trip and existing trips
-        /// </summary>
-        /// <param name="newTrip">The new trip to check</param>
-        /// <param name="existingTrips">List of existing trips to check against</param>
-        /// <returns>A tuple with conflict status and detailed information</returns>
-        public static async Task<(bool HasConflict, string ConflictDetails)> DetectSchedulingConflictsAsync(
-            Trip newTrip, List<Trip> existingTrips)
+
+        public bool IsApiEnabled => _isEnabled && _httpClient != null;
+
+        // Synchronous version for simpler consumption
+        public T GetData<T>(string endpoint) where T : class
         {
-            if (newTrip == null)
+            if (!IsApiEnabled)
             {
-                Log.Warning("DetectSchedulingConflictsAsync called with null trip");
-                return (false, "Invalid trip data: Trip cannot be null");
+                _logger.Warning("API is disabled. Cannot perform GET request to {Endpoint}", endpoint);
+                return null;
             }
 
             try
             {
-                Log.Information("Checking for scheduling conflicts for {Destination} on {Date}", 
-                    newTrip.Destination, newTrip.Date);
-                
-                // Simple conflict detection logic
-                var conflictingTrips = existingTrips.Where(t => 
-                    t.Date == newTrip.Date && 
-                    t.BusNumber == newTrip.BusNumber &&
-                    ((t.StartTime <= newTrip.StartTime && t.EndTime >= newTrip.StartTime) ||
-                     (t.StartTime <= newTrip.EndTime && t.EndTime >= newTrip.EndTime) ||
-                     (t.StartTime >= newTrip.StartTime && t.EndTime <= newTrip.EndTime))).ToList();
-                
-                if (conflictingTrips.Any())
-                {
-                    var conflictDetails = string.Join("\n", conflictingTrips.Select(t => 
-                        $"- Conflict with trip to {t.Destination} from {t.StartTime} to {t.EndTime}"));
-                    
-                    return (true, $"Bus #{newTrip.BusNumber} already has scheduled trips during this time:\n{conflictDetails}");
-                }
-                
-                return (false, "No scheduling conflicts detected.");
+                _logger.Information("Sending GET request to {Endpoint}", endpoint);
+                var response = _httpClient.GetAsync(endpoint).GetAwaiter().GetResult();
+
+                _logger.Debug("Received status {StatusCode} from GET {Endpoint}", response.StatusCode, endpoint);
+                response.EnsureSuccessStatusCode();
+
+                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                return JsonConvert.DeserializeObject<T>(json);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error checking for scheduling conflicts");
-                return (false, $"Error checking for conflicts: {ex.Message}");
+                _logger.Error(ex, "Error during GET {Endpoint}", endpoint);
+                return null;
+            }
+        }
+
+        public bool PostData<T>(string endpoint, T data)
+        {
+            if (!IsApiEnabled)
+            {
+                _logger.Warning("API is disabled. Cannot perform POST request to {Endpoint}", endpoint);
+                return false;
+            }
+
+            try
+            {
+                _logger.Information("Sending POST request to {Endpoint}", endpoint);
+                var json = JsonConvert.SerializeObject(data);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = _httpClient.PostAsync(endpoint, content).GetAwaiter().GetResult();
+                _logger.Debug("Received status {StatusCode} from POST {Endpoint}", response.StatusCode, endpoint);
+                
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error during POST {Endpoint}", endpoint);
+                return false;
+            }
+        }
+
+        public bool PutData<T>(string endpoint, T data)
+        {
+            if (!IsApiEnabled)
+            {
+                _logger.Warning("API is disabled. Cannot perform PUT request to {Endpoint}", endpoint);
+                return false;
+            }
+
+            try
+            {
+                _logger.Information("Sending PUT request to {Endpoint}", endpoint);
+                var json = JsonConvert.SerializeObject(data);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = _httpClient.PutAsync(endpoint, content).GetAwaiter().GetResult();
+                _logger.Debug("Received status {StatusCode} from PUT {Endpoint}", response.StatusCode, endpoint);
+                
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error during PUT {Endpoint}", endpoint);
+                return false;
+            }
+        }
+
+        public bool DeleteData(string endpoint)
+        {
+            if (!IsApiEnabled)
+            {
+                _logger.Warning("API is disabled. Cannot perform DELETE request to {Endpoint}", endpoint);
+                return false;
+            }
+
+            try
+            {
+                _logger.Information("Sending DELETE request to {Endpoint}", endpoint);
+                var response = _httpClient.DeleteAsync(endpoint).GetAwaiter().GetResult();
+                _logger.Debug("Received status {StatusCode} from DELETE {Endpoint}", response.StatusCode, endpoint);
+                
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error during DELETE {Endpoint}", endpoint);
+                return false;
             }
         }
     }
 }
+#pragma warning restore CS1591

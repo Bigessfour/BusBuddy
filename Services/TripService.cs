@@ -1,9 +1,7 @@
-// BusBuddy/Services/TripService.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BusBuddy.API;
 using BusBuddy.Data.Repositories;
 using BusBuddy.Models;
 using BusBuddy.Utilities;
@@ -15,13 +13,13 @@ namespace BusBuddy.Services
     {
         private readonly ITripRepository _tripRepository;
         private readonly ILogger _logger;
-        
+
         public TripService(ITripRepository tripRepository, ILogger logger)
         {
             _tripRepository = tripRepository ?? throw new ArgumentNullException(nameof(tripRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        
+
         public async Task<IEnumerable<Trip>> GetAllTripsAsync()
         {
             try
@@ -34,7 +32,7 @@ namespace BusBuddy.Services
                 throw;
             }
         }
-        
+
         public async Task<Trip> GetTripByIdAsync(int id)
         {
             try
@@ -47,7 +45,7 @@ namespace BusBuddy.Services
                 throw;
             }
         }
-        
+
         public async Task<IEnumerable<Trip>> GetTripsByDateAsync(DateOnly date)
         {
             try
@@ -60,7 +58,7 @@ namespace BusBuddy.Services
                 throw;
             }
         }
-        
+
         public async Task<IEnumerable<Trip>> GetTripsByDriverAsync(string driverName)
         {
             try
@@ -73,7 +71,7 @@ namespace BusBuddy.Services
                 throw;
             }
         }
-        
+
         public async Task<IEnumerable<Trip>> GetTripsByBusAsync(int busNumber)
         {
             try
@@ -86,29 +84,29 @@ namespace BusBuddy.Services
                 throw;
             }
         }
-        
+
         public async Task<(bool Success, string Message, int TripId)> AddTripAsync(Trip trip)
         {
             try
             {
-                // Validate trip data
-                var (isValid, errors) = DataValidator.ValidateTrip(trip);
+                var availableDrivers = new List<string>();
+                var availableBusNumbers = new List<int>();
+
+                var (isValid, errors) = DataValidator.ValidateTrip(trip, availableDrivers, availableBusNumbers);
                 if (!isValid)
                 {
                     string errorMessage = string.Join(", ", errors);
                     _logger.Warning("Trip validation failed: {ErrorMessage}", errorMessage);
                     return (false, errorMessage, 0);
                 }
-                
-                // Check for scheduling conflicts
+
                 var (hasConflict, conflictDetails) = await CheckSchedulingConflictsAsync(trip);
                 if (hasConflict)
                 {
                     _logger.Warning("Scheduling conflict detected: {ConflictDetails}", conflictDetails);
                     return (false, conflictDetails, 0);
                 }
-                
-                // Add the trip
+
                 int tripId = await _tripRepository.AddAsync(trip);
                 _logger.Information("Trip added successfully with ID {TripId}", tripId);
                 return (true, "Trip added successfully", tripId);
@@ -119,19 +117,57 @@ namespace BusBuddy.Services
                 return (false, $"Error adding trip: {ex.Message}", 0);
             }
         }
-        
+
         public async Task<(bool HasConflict, string ConflictDetails)> CheckSchedulingConflictsAsync(Trip newTrip)
         {
             try
             {
+                // Fetch all existing trips
                 var existingTrips = await _tripRepository.GetAllAsync();
-                return await ApiClient.DetectSchedulingConflictsAsync(newTrip, existingTrips.ToList());
+                
+                // Implement conflict detection logic
+                foreach (var existingTrip in existingTrips)
+                {
+                    // Skip comparing with itself (if updating)
+                    if (existingTrip.TripID == newTrip.TripID) continue;
+                    
+                    // Only check trips on the same date
+                    if (existingTrip.Date != newTrip.Date) continue;
+                    
+                    // Check for Driver conflict
+                    if (existingTrip.DriverName == newTrip.DriverName &&
+                        TimesOverlap(existingTrip.StartTime, existingTrip.EndTime, newTrip.StartTime, newTrip.EndTime))
+                    {
+                        return (true, $"Driver '{newTrip.DriverName}' is already scheduled for trip {existingTrip.TripID} at that time.");
+                    }
+
+                    // Check for Bus conflict
+                    if (existingTrip.BusNumber == newTrip.BusNumber &&
+                        TimesOverlap(existingTrip.StartTime, existingTrip.EndTime, newTrip.StartTime, newTrip.EndTime))
+                    {
+                        return (true, $"Bus #{newTrip.BusNumber} is already scheduled for trip {existingTrip.TripID} at that time.");
+                    }
+                }
+                
+                // No conflicts found
+                return (false, string.Empty);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error checking scheduling conflicts");
                 return (false, $"Error checking scheduling conflicts: {ex.Message}");
             }
+        }
+        
+        // Helper method for checking time overlaps
+        private bool TimesOverlap(TimeOnly start1, TimeOnly end1, TimeOnly start2, TimeOnly end2)
+        {
+            // Ensure end is after start for comparison logic (handle overnight trips)
+            if (end1 < start1) end1 = new TimeOnly(end1.Hour + 24, end1.Minute);
+            if (end2 < start2) end2 = new TimeOnly(end2.Hour + 24, end2.Minute);
+            
+            // Overlap occurs when one range starts before the other ends
+            return start1 < end2 && start2 < end1;
         }
     }
 }

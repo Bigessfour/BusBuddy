@@ -15,6 +15,8 @@ namespace BusBuddy.Data.Repositories
         /// <summary>
         /// Gets a driver by name
         /// </summary>
+#pragma warning disable SA1611 // Element parameters should be documented
         Task<Driver> GetDriverByNameAsync(string name);
+#pragma warning restore SA1611 // Element parameters should be documented
     }
 }

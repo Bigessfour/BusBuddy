@@ -1,4 +1,5 @@
 // BusBuddy/Data/Repositories/FuelRepository.cs
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +12,16 @@ namespace BusBuddy.Data.Repositories
     public class FuelRepository : IFuelRepository
     {
         private readonly IDatabaseManager _dbManager;
-        private readonly ILogger _logger;
+        private readonly Serilog.ILogger _logger;
         
-        public FuelRepository(IDatabaseManager dbManager, ILogger logger)
+        public FuelRepository(IDatabaseManager dbManager, Serilog.ILogger logger)
         {
             _dbManager = dbManager ?? throw new ArgumentNullException(nameof(dbManager));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         
+        #region Asynchronous Methods
+        #pragma warning disable CS8603 // Possible null reference return.
         public async Task<IEnumerable<FuelRecord>> GetAllAsync()
         {
             try
@@ -37,7 +40,7 @@ namespace BusBuddy.Data.Repositories
             try
             {
                 var fuelRecords = _dbManager.GetFuelRecords();
-                return await Task.FromResult(fuelRecords.FirstOrDefault(f => f.Fuel_ID == id));
+                return await Task.FromResult(fuelRecords.FirstOrDefault(f => f.FuelID == id));
             }
             catch (Exception ex)
             {
@@ -51,7 +54,7 @@ namespace BusBuddy.Data.Repositories
             try
             {
                 _dbManager.AddFuelRecord(entity);
-                return await Task.FromResult(entity.Fuel_ID);
+                return await Task.FromResult(entity.FuelID);
             }
             catch (Exception ex)
             {
@@ -64,9 +67,7 @@ namespace BusBuddy.Data.Repositories
         {
             try
             {
-                // Implement update logic when available in DatabaseManager
-                _logger.Warning("Fuel record update not implemented in DatabaseManager");
-                return await Task.FromResult(false);
+                return await Task.FromResult(_dbManager.UpdateFuelRecord(entity));
             }
             catch (Exception ex)
             {
@@ -79,9 +80,7 @@ namespace BusBuddy.Data.Repositories
         {
             try
             {
-                // Implement delete logic when available in DatabaseManager
-                _logger.Warning("Fuel record deletion not implemented in DatabaseManager");
-                return await Task.FromResult(false);
+                return await Task.FromResult(_dbManager.DeleteFuelRecord(id));
             }
             catch (Exception ex)
             {
@@ -95,7 +94,7 @@ namespace BusBuddy.Data.Repositories
             try
             {
                 var fuelRecords = _dbManager.GetFuelRecords();
-                return await Task.FromResult(fuelRecords.Where(f => f.Bus_Number == busNumber));
+                return await Task.FromResult(fuelRecords.Where(f => f.BusNumber == busNumber));
             }
             catch (Exception ex)
             {
@@ -103,5 +102,76 @@ namespace BusBuddy.Data.Repositories
                 throw;
             }
         }
+        #pragma warning restore CS8603
+        #endregion
+
+        #region Synchronous Methods
+        public List<int> GetBusNumbers()
+        {
+            try
+            {
+                return _dbManager.GetBusNumbers();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting bus numbers");
+                throw;
+            }
+        }
+        
+        public List<FuelRecord> GetAll()
+        {
+            try
+            {
+                return _dbManager.GetFuelRecords();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting all fuel records");
+                throw;
+            }
+        }
+        
+        public int Add(FuelRecord entity)
+        {
+            try
+            {
+                bool success = _dbManager.AddFuelRecord(entity);
+                return success ? entity.FuelID : 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error adding fuel record");
+                throw;
+            }
+        }
+        
+        public bool Update(FuelRecord entity)
+        {
+            try
+            {
+                return _dbManager.UpdateFuelRecord(entity);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error updating fuel record");
+                throw;
+            }
+        }
+        
+        public bool Delete(int id)
+        {
+            try
+            {
+                return _dbManager.DeleteFuelRecord(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error deleting fuel record");
+                throw;
+            }
+        }
+        #endregion
     }
 }
+#pragma warning restore CS1591
