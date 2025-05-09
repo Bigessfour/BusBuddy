@@ -1,7 +1,0 @@
-{
-  "csharp.showOmnisharpLogOnError": false,
-  "omnisharp.autoStart": false,
-  "zencoder.enableRepoIndexing": true,
-  "zencoder.requirementsTool.enable": true,
-  "window.closeWhenEmpty": true
-}
