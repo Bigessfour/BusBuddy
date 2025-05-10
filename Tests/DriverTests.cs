@@ -1,5 +1,9 @@
 using Xunit;
 using BusBuddy.Models.Entities;
+using BusBuddy.Models;
+using BusBuddy.Forms;
+using Microsoft.Extensions.Logging;
+using System.Windows.Forms;
 using System;
 
 namespace BusBuddy.Tests

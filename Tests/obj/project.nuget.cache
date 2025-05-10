@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "G+x95QDQkfg=",
-  "success": true,
+  "dgSpecHash": "OVU6fLzsbF4=",
+  "success": false,
   "projectFilePath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\6.0.0\\microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512",
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
@@ -84,10 +85,17 @@
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.core\\2.4.1\\xunit.core.2.4.1.nupkg.sha512",
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.extensibility.core\\2.4.1\\xunit.extensibility.core.2.4.1.nupkg.sha512",
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.extensibility.execution\\2.4.1\\xunit.extensibility.execution.2.4.1.nupkg.sha512",
-    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.runner.visualstudio\\2.4.3\\xunit.runner.visualstudio.2.4.3.nupkg.sha512",
-    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.netcore.app.ref\\5.0.0\\microsoft.netcore.app.ref.5.0.0.nupkg.sha512",
-    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\5.0.0\\microsoft.windowsdesktop.app.ref.5.0.0.nupkg.sha512",
-    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\5.0.0\\microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512"
+    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.runner.visualstudio\\2.4.3\\xunit.runner.visualstudio.2.4.3.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1102",
+      "level": "Error",
+      "message": "Unable to find package System.Windows.Forms with version (>= 4.7.0)\r\n  - Found 1 version(s) in nuget.org [ Nearest version: 4.0.0 ]",
+      "libraryId": "System.Windows.Forms",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

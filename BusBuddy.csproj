@@ -2,7 +2,7 @@
 
     <PropertyGroup>
       <OutputType>WinExe</OutputType>
-      <TargetFramework>net8.0-windows</TargetFramework>
+      <TargetFramework>net6.0</TargetFramework>
       <Nullable>enable</Nullable>
       <UseWindowsForms>true</UseWindowsForms>
       <ImplicitUsings>enable</ImplicitUsings>
@@ -11,6 +11,7 @@
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <AnalysisLevel>none</AnalysisLevel>
       <NoWarn>$(NoWarn);1591;8603;8618;1998;8602;8600;8601;8604;8605;8622;0414</NoWarn>
+      <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,13 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="System.Windows.Forms" Version="4.7.0" />
+    <ProjectReference Include="..\BusBuddy\BusBuddy.csproj" />
   </ItemGroup>
 
 </Project>
