@@ -68,5 +68,11 @@ namespace BusBuddy.Models.Entities
         /// Activity trips that have this destination
         /// </summary>
         public List<ActivityTrip> ActivityTrips { get; set; } = new List<ActivityTrip>();
+
+        /// <summary>
+        /// The route associated with this destination
+        /// </summary>
+        public int? RouteId { get; set; }
+        public Route? Route { get; set; }
     }
 }

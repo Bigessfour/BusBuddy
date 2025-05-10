@@ -1,13 +1,25 @@
 using System;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace BusBuddy.Forms
 {
     public class RouteEditorDialog : Form
     {
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string RouteName { get; set; } = string.Empty;
+
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string StartLocation { get; set; } = string.Empty;
+
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string EndLocation { get; set; } = string.Empty;
+
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public decimal Distance { get; set; }
 
         public RouteEditorDialog() { }

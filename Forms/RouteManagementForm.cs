@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using BusBuddy.Data.Interfaces;
 using BusBuddy.Models.Entities;
+using BusBuddy.Forms;
 
 namespace BusBuddy.Forms
 {    
@@ -114,7 +115,7 @@ namespace BusBuddy.Forms
                             RouteName = dialog.RouteName,
                             StartLocation = dialog.StartLocation,
                             EndLocation = dialog.EndLocation,
-                            Distance = (double)dialog.Distance
+                            Distance = (decimal)dialog.Distance
                         };
                         var addedRoute = await dbHelper.AddRouteAsync(route);
                         MessageBox.Show(addedRoute != null ? "Route added successfully" : $"Failed to add route.",
@@ -162,7 +163,7 @@ namespace BusBuddy.Forms
                             RouteName = dialog.RouteName,
                             StartLocation = dialog.StartLocation,
                             EndLocation = dialog.EndLocation,
-                            Distance = (double)dialog.Distance
+                            Distance = (decimal)dialog.Distance
                         };
                         var updated = await dbHelper.UpdateRouteAsync(route);
                         MessageBox.Show(updated ? "Route updated successfully" : $"Failed to update route.",
