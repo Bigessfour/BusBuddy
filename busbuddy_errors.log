@@ -3,3 +3,5 @@
 // Fixed CS1061 in BusBuddyContext.cs by adding using BusBuddy.Models.Entities; to Destination.cs on May 9, 2025
 // Fixed WFO1000 errors in RouteEditorDialog.cs with DesignerSerializationVisibilityAttribute on May 9, 2025
 // Updated EF Core packages to 9.0.0-preview.7.24405.3 in BusBuddy.csproj on May 9, 2025
+// Added BusBuddyContextFactory.cs for EF Core migrations on May 9, 2025
+Backed up BusBuddy database to BusBuddy_backup_20250509.bacpac on %DATE% %TIME%

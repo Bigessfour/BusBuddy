@@ -118,6 +118,18 @@
             the contents of this method with the code editor.
             </summary>
         </member>
+        <member name="T:BusBuddy.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:BusBuddy.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BusBuddy.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BusBuddy.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:BusBuddy.Models.Entities.ActivityTrip">
             <summary>
             Represents a trip for an activity (field trip, sporting event, etc.)
