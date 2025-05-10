@@ -2,7 +2,7 @@
 
     <PropertyGroup>
       <OutputType>WinExe</OutputType>
-      <TargetFramework>net6.0</TargetFramework>
+      <TargetFramework>net8.0-windows</TargetFramework>
       <Nullable>enable</Nullable>
       <UseWindowsForms>true</UseWindowsForms>
       <ImplicitUsings>enable</ImplicitUsings>
@@ -10,45 +10,44 @@
       <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <AnalysisLevel>none</AnalysisLevel>
-      <NoWarn>$(NoWarn);1591;8603;8618;1998;8602;8600;8601;8604;8605;8622;0414</NoWarn>
+      <NoWarn>$(NoWarn);1591;8603;8618;1998;8602;8600;8601;8604;8605;8622;0414;NU1701</NoWarn>
       <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Dapper" Version="2.1.35" />
-      <PackageReference Include="MaterialSkin.2" Version="2.3.1" />      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0-preview.7.24405.3">
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-preview.7.24405.3" />
+      <PackageReference Include="MaterialSkin" Version="1.0.1" />
+      <PackageReference Include="MaterialSkin.2" Version="2.3.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Http" Version="8.*" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="Serilog" Version="4.2.0" />
       <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
-      <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-      <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-      <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
-    </ItemGroup>
-
+      <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />.0.1" />
+      <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />>
+      <PackageReference Include="System.Data.SQLite" Version="1.0.118" />ference Include="Serilog.Sinks.File" Version="6.0.0" />
+    </ItemGroup>      <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+>
     <ItemGroup>
       <None Update="app.config">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>pdate="app.config">
+      </None>rveNewest</CopyToOutputDirectory>
       <None Update="WileySchool.db">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>pdate="WileySchool.db">
+      </None>eserveNewest</CopyToOutputDirectory>
       <None Update="init-db.sql">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>pdate="init-db.sql">
+      </None>eNewest</CopyToOutputDirectory>
       <None Update="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>pdate="appsettings.json">
+      </None>utputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </ItemGroup>      </None>
+Group></Project>
 </Project>
