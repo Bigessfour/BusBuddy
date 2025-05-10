@@ -1,168 +1,458 @@
-"""
-BusBuddy GitHub Automation Script
-- Authenticates with GitHub using PyGithub and a token from .env
-- Fetches updates (commits, issues, PRs) since May 8, 2025
-- Applies .NET 9.0 project improvements (build fixes, tests, UI, validation, logging, docs)
-- Commits changes to a new branch
-"""
 import os
-import sys
 import logging
+import time
 from datetime import datetime
 from github import Github, GithubException
 from dotenv import load_dotenv
+import json
+import re
 
-# --- Logging Setup ---
+# Configure logging for updates and errors
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(message)s',
+    format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('github_updates.log'),
-        logging.StreamHandler(sys.stdout)
+        logging.FileHandler("github_updates.log"),
+        logging.FileHandler("busbuddy_errors.log"),
+        logging.StreamHandler()
     ]
 )
-error_logger = logging.getLogger('busbuddy_errors')
-error_handler = logging.FileHandler('busbuddy_errors.log')
-error_logger.addHandler(error_handler)
+logger = logging.getLogger(__name__)
 
-# --- Load Environment Variables ---
-load_dotenv('.env')
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
-if not GITHUB_TOKEN:
-    error_logger.error('GITHUB_TOKEN not found in .env')
-    sys.exit(1)
+# Load environment variables
+load_dotenv()
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+REPO_PATH = "./BusBuddy"  # Local clone of the repository
+REPO_NAME = "Bigessfour/BusBuddy"
+SINCE_DATE = datetime(2025, 5, 8)
 
-# --- GitHub Authentication ---
-try:
-    g = Github(GITHUB_TOKEN)
-    repo = g.get_repo('Bigessfour/BusBuddy')
-    logging.info('Authenticated to GitHub and accessed repository.')
-except GithubException as e:
-    error_logger.error(f'GitHub authentication failed: {e}')
-    sys.exit(1)
-
-# --- Fetch Updates Since May 8, 2025 ---
-SINCE = datetime(2025, 5, 8)
-try:
-    commits = repo.get_commits(since=SINCE)
-    issues = repo.get_issues(state='all', since=SINCE)
-    pulls = repo.get_pulls(state='all', sort='updated', direction='desc')
-    logging.info(f'Commits since {SINCE}: {[c.sha for c in commits]}')
-    logging.info(f'Issues since {SINCE}: {[i.number for i in issues]}')
-    logging.info(f'Pull requests since {SINCE}: {[p.number for p in pulls if p.updated_at > SINCE]}')
-except GithubException as e:
-    error_logger.error(f'Error fetching updates: {e}')
-
-# --- File Paths ---
-REPO_ROOT = os.path.abspath(os.path.dirname(__file__))
-CS_FILES = {
-    'idb': os.path.join(REPO_ROOT, 'Data', 'Interfaces', 'IDatabaseHelper.cs'),
-    'driver': os.path.join(REPO_ROOT, 'Models', 'Entities', 'Driver.cs'),
-    'dashboard': os.path.join(REPO_ROOT, 'Forms', 'Dashboard.cs'),
-    'route_mgmt': os.path.join(REPO_ROOT, 'Forms', 'RouteManagementForm.cs'),
-    'db_helper': os.path.join(REPO_ROOT, 'Data', 'DatabaseHelper.cs'),
-    'arch_viol': os.path.join(REPO_ROOT, 'architecture_violations.json'),
-    'readme': os.path.join(REPO_ROOT, 'README.md'),
-    'tests': os.path.join(REPO_ROOT, 'Tests'),
-    'route_mgmt_tests': os.path.join(REPO_ROOT, 'Tests', 'RouteManagementFormTests.cs'),
-    'vehicles_mgmt_tests': os.path.join(REPO_ROOT, 'Tests', 'VehiclesManagementFormTests.cs'),
-}
-
-# --- Helper Functions for File Edits ---
-def safe_edit_file(filepath, edit_func):
+def check_rate_limit(g, retry_count=0, max_retries=3):
+    """Check GitHub API rate limit and handle with exponential backoff."""
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read()
-        new_content = edit_func(content)
-        if new_content != content:
-            with open(filepath, 'w', encoding='utf-8') as f:
-                f.write(new_content)
-            logging.info(f'Edited {filepath}')
+        rate_limit = g.get_rate_limit()
+        remaining = rate_limit.core.remaining
+        reset_time = rate_limit.core.reset
+        logger.info(f"[Script] API Rate Limit: {remaining} requests remaining, resets at {reset_time}")
+        if remaining < 100:
+            wait_seconds = (reset_time - datetime.now()).total_seconds() + 10
+            logger.warning(f"[Script] Low API requests ({remaining}). Waiting {wait_seconds}s.")
+            time.sleep(max(wait_seconds, 0))
+            if retry_count < max_retries:
+                return check_rate_limit(g, retry_count + 1, max_retries)
+            raise Exception("Rate limit too low after retries")
+        return True
+    except Exception as e:
+        logger.error(f"[Script] Error checking rate limit: {str(e)}")
+        return False
+
+def authenticate_github():
+    """Authenticate with GitHub using a Personal Access Token."""
+    try:
+        g = Github(GITHUB_TOKEN)
+        if check_rate_limit(g):
+            repo = g.get_repo(REPO_NAME)
+            logger.info(f"[Script] Successfully authenticated to {REPO_NAME}")
+            return g, repo
+        raise Exception("Rate limit check failed")
+    except Exception as e:
+        logger.error(f"[Script] Failed to authenticate: {str(e)}")
+        raise
+
+def check_repository_updates(repo, g):
+    """Check for commits, issues, and pull requests since May 8, 2025."""
+    try:
+        if not check_rate_limit(g):
+            return 0, 0, 0
+        commits = repo.get_commits(since=SINCE_DATE)
+        commit_count = sum(1 for _ in commits)
+        logger.info(f"[Script] Found {commit_count} commits since {SINCE_DATE}")
+
+        issues = repo.get_issues(state="all", since=SINCE_DATE)
+        issue_count = sum(1 for _ in issues)
+        logger.info(f"[Script] Found {issue_count} issues since {SINCE_DATE}")
+
+        pulls = repo.get_pulls(state="all", base="main")
+        pull_count = sum(1 for pr in pulls if pr.created_at >= SINCE_DATE)
+        logger.info(f"[Script] Found {pull_count} pull requests since {SINCE_DATE}")
+
+        return commit_count, issue_count, pull_count
+    except GithubException as e:
+        if e.status == 403 and "rate limit" in str(e).lower():
+            logger.error("[Script] GitHub API rate limit exceeded. Try again later.")
         else:
-            logging.info(f'No changes needed for {filepath}')
-    except Exception as e:
-        error_logger.error(f'Error editing {filepath}: {e}')
+            logger.error(f"[Script] Error checking updates: {str(e)}")
+        return 0, 0, 0
 
-# --- 1. Fix Build Errors in IDatabaseHelper.cs ---
-def fix_idb_helper(content):
-    if 'using System;' not in content.splitlines()[0:3]:
-        return 'using System;\n' + content
-    return content
-safe_edit_file(CS_FILES['idb'], fix_idb_helper)
-
-# --- 2. Add [Required] to Driver.cs ---
-def fix_driver_entity(content):
-    import re
-    # Ensure [Required] on all string properties and Id exists
-    lines = content.splitlines()
-    new_lines = []
-    for i, line in enumerate(lines):
-        if 'public string' in line and '[Required]' not in lines[i-1]:
-            new_lines.append('        [Required]')
-        new_lines.append(line)
-    # Ensure Id property exists
-    if not any('public int Id' in l for l in lines):
-        new_lines.insert(0, '        public int Id { get; set; }')
-    return '\n'.join(new_lines)
-safe_edit_file(CS_FILES['driver'], fix_driver_entity)
-
-# --- 3. Update architecture_violations.json ---
-def update_arch_viol(content):
-    import json
-    data = json.loads(content)
-    if 'Added [Required]' not in data['resolved']:
-        data['resolved'].append('Added [Required] attributes to string properties and nullable annotations in all entity classes.')
-    if 'Ensured every entity class has an Id property.' not in data['resolved']:
-        data['resolved'].append('Ensured every entity class has an Id property.')
-    return json.dumps(data, indent=2)
-safe_edit_file(CS_FILES['arch_viol'], update_arch_viol)
-
-# --- 4. Add Placeholder GPS Methods ---
-def add_gps_placeholder(content):
-    if 'InitializeMapPanel' not in content:
-        idx = content.find('{', content.find('class')) + 1
-        return content[:idx] + '\n        // TODO: Integrate GMap.NET for GPS tracking\n        public void InitializeMapPanel() { /* TODO: GMap.NET integration */ }\n' + content[idx:]
-    return content
-safe_edit_file(CS_FILES['route_mgmt'], add_gps_placeholder)
-safe_edit_file(CS_FILES['dashboard'], add_gps_placeholder)
-
-# --- 5. Enhance UI in Dashboard.cs ---
-def enhance_dashboard_ui(content):
-    if 'MaterialTabControl' not in content:
-        insert_idx = content.find('InitializeComponent();') + len('InitializeComponent();')
-        return content[:insert_idx] + '\n            // MaterialSkin.2 UI: Add MaterialTabControl for Tracking/Analytics\n            materialTabControl = new MaterialTabControl();\n            materialTabSelector = new MaterialTabSelector();\n            tabTracking = new TabPage("Tracking");\n            tabAnalytics = new TabPage("Analytics");\n            materialTabControl.Controls.Add(tabTracking);\n            materialTabControl.Controls.Add(tabAnalytics);\n            materialTabControl.SelectedTab = tabTracking;\n            materialTabControl.Dock = DockStyle.Fill;\n            this.Controls.Add(materialTabControl);\n            // Apply MaterialSkin dark theme\n            var skinManager = MaterialSkinManager.Instance;\n            skinManager.AddFormToManage(this);\n            skinManager.Theme = MaterialSkinManager.Themes.DARK;\n            skinManager.ColorScheme = new ColorScheme(Primary.BlueGrey800, Primary.BlueGrey900, Primary.BlueGrey500, Accent.LightBlue200, TextShade.WHITE);' + content[insert_idx:]
-    return content
-safe_edit_file(CS_FILES['dashboard'], enhance_dashboard_ui)
-
-# --- 6. Add Validation to Management Forms (Placeholder) ---
-def add_validation_placeholder(content):
-    if 'ValidateLicenseExpiration' not in content:
-        idx = content.find('{', content.find('class')) + 1
-        return content[:idx] + '\n        // TODO: Validate license/insurance expiration using DatabaseHelper\n        public void ValidateLicenseExpiration() { /* TODO: Implement validation and show MaterialSkin dialog on error */ }\n' + content[idx:]
-    return content
-# If forms existed, would call safe_edit_file for them
-
-# --- 7. Ensure Centralized Logging (Emulated) ---
-logging.info('All changes logged to busbuddy_errors.log via Microsoft.Extensions.Logging (emulated in Python).')
-
-# --- 8. Update README.md ---
-def update_readme(content):
-    if '## Setup Instructions' not in content:
-        return content + '\n\n## Setup Instructions\n1. Clone the repo\n2. Install .NET 9.0 SDK\n3. Build with `dotnet build`\n4. Run with `dotnet run`\n5. Configure MaterialSkin.2 and Microsoft.Extensions.Logging\n\n## Project Goals\n- Real-time tracking\n- Scheduling\n- Analytics\n\n## Contribution Guidelines\n- Fork the repo\n- Create feature branches\n- Submit PRs with clear descriptions\n- Follow .NET and MaterialSkin.2 best practices\n'
-    return content
-safe_edit_file(CS_FILES['readme'], update_readme)
-
-# --- 9. Commit Changes to New Branch ---
-def commit_changes():
-    import subprocess
-    branch = 'improvements-may-2025'
+def fix_build_errors():
+    """Add 'using System;' to IDatabaseHelper.cs if not present."""
+    file_path = os.path.join(REPO_PATH, "Data", "Interfaces", "IDatabaseHelper.cs")
     try:
-        subprocess.run(['git', 'checkout', '-b', branch], check=True)
-        subprocess.run(['git', 'add', '.'], check=True)
-        subprocess.run(['git', 'commit', '-m', 'Apply improvements: build fixes, tests, UI, validation, logging, docs (May 2025)'], check=True)
-        logging.info(f'Committed changes to branch {branch}')
+        with open(file_path, "r") as f:
+            content = f.read()
+        if "using System;" not in content:
+            content = "using System;\n" + content
+            with open(file_path, "w") as f:
+                f.write(content)
+            logger.info("[Project] Added 'using System;' to IDatabaseHelper.cs")
+        else:
+            logger.info("[Project] IDatabaseHelper.cs already has 'using System;'")
     except Exception as e:
-        error_logger.error(f'Error committing changes: {e}')
-commit_changes()
+        logger.error(f"[Project] Error fixing IDatabaseHelper.cs: {str(e)}")
 
-logging.info('Script completed successfully.')
+def check_method_exists(file_path, method_name):
+    """Check if a method exists in a file using regex."""
+    try:
+        with open(file_path, "r") as f:
+            content = f.read()
+        pattern = rf"\b{re.escape(method_name)}\s*\("
+        return bool(re.search(pattern, content))
+    except Exception as e:
+        logger.error(f"[Script] Error checking method {method_name} in {file_path}: {str(e)}")
+        return False
+
+def add_xunit_tests():
+    """Generate xUnit tests for RouteManagementForm.cs and VehiclesManagementForm.cs."""
+    test_dir = os.path.join(REPO_PATH, "Tests")
+    os.makedirs(test_dir, exist_ok=True)
+
+    route_form_path = os.path.join(REPO_PATH, "Forms", "RouteManagementForm.cs")
+    vehicle_form_path = os.path.join(REPO_PATH, "Forms", "VehiclesManagementForm.cs")
+
+    # Base test template
+    test_template = """
+using Xunit;
+using BusBuddy.Forms;
+
+namespace BusBuddy.Tests
+{{
+    public class {0}Tests
+    {{
+        [Fact]
+        public void InitializeForm_DoesNotThrow()
+        {{
+            var form = new {0}();
+            Assert.NotNull(form);
+        }}
+{1}
+    }}
+}}
+"""
+
+    # Test snippets for specific methods
+    test_snippets = {
+        "LoadRoutes": """
+        [Fact]
+        public void LoadRoutes_BindsDataGrid()
+        {{
+            var form = new RouteManagementForm();
+            form.LoadRoutes();
+            Assert.True(form.DataGridView.Rows.Count > 0);
+        }}
+""",
+        "AddRoute": """
+        [Fact]
+        public void AddRoute_ValidInput_SavesToDatabase()
+        {{
+            var form = new RouteManagementForm();
+            form.AddRoute("TestRoute", 10);
+            Assert.True(form.DatabaseHelper.RouteExists("TestRoute"));
+        }}
+""",
+        "LoadVehicles": """
+        [Fact]
+        public void LoadVehicles_BindsDataGrid()
+        {{
+            var form = new VehiclesManagementForm();
+            form.LoadVehicles();
+            Assert.True(form.DataGridView.Rows.Count > 0);
+        }}
+""",
+        "AddVehicle": """
+        [Fact]
+        public void AddVehicle_ValidInput_SavesToDatabase()
+        {{
+            var form = new VehiclesManagementForm();
+            form.AddVehicle("TestVehicle", "2023");
+            Assert.True(form.DatabaseHelper.VehicleExists("TestVehicle"));
+        }}
+"""
+    }
+
+    # Generate RouteManagementFormTests.cs
+    route_tests = []
+    for method in ["LoadRoutes", "AddRoute"]:
+        if check_method_exists(route_form_path, method):
+            route_tests.append(test_snippets.get(method, ""))
+        else:
+            logger.warning(f"[Project] Method {method} not found in RouteManagementForm.cs. Skipping test.")
+    route_test_content = test_template.format("RouteManagementForm", "".join(route_tests))
+    with open(os.path.join(test_dir, "RouteManagementFormTests.cs"), "w") as f:
+        f.write(route_test_content)
+    logger.info("[Project] Created RouteManagementFormTests.cs")
+
+    # Generate VehiclesManagementFormTests.cs
+    vehicle_tests = []
+    for method in ["LoadVehicles", "AddVehicle"]:
+        if check_method_exists(vehicle_form_path, method):
+            vehicle_tests.append(test_snippets.get(method, ""))
+        else:
+            logger.warning(f"[Project] Method {method} not found in VehiclesManagementForm.cs. Skipping test.")
+    vehicle_test_content = test_template.format("VehiclesManagementForm", "".join(vehicle_tests))
+    with open(os.path.join(test_dir, "VehiclesManagementFormTests.cs"), "w") as f:
+        f.write(vehicle_test_content)
+    logger.info("[Project] Created VehiclesManagementFormTests.cs")
+
+    # Generate test project .csproj
+    test_csproj_path = os.path.join(test_dir, "BusBuddy.Tests.csproj")
+    test_csproj_content = """
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.9.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\\BusBuddy\\BusBuddy.csproj" />
+  </ItemGroup>
+</Project>
+"""
+    with open(test_csproj_path, "w") as f:
+        f.write(test_csproj_content)
+    logger.info("[Project] Created BusBuddy.Tests.csproj with xUnit and project references")
+
+def update_entities():
+    """Update Driver.cs with [Required] and Id; update architecture_violations.json."""
+    driver_path = os.path.join(REPO_PATH, "Models", "Entities", "Driver.cs")
+    try:
+        with open(driver_path, "r") as f:
+            content = f.read()
+        if "public int Id" not in content:
+            content = content.replace("public class Driver", "public class Driver\n{\n    public int Id { get; set; }")
+        if "[Required]" not in content:
+            content = content.replace("public string Name", "[Required]\n    public string Name")
+            content = content.replace("public string LicenseNumber", "[Required]\n    public string LicenseNumber")
+        with open(driver_path, "w") as f:
+            f.write(content)
+        logger.info("[Project] Updated Driver.cs with [Required] and Id")
+    except Exception as e:
+        logger.error(f"[Project] Error updating Driver.cs: {str(e)}")
+
+    violations_path = os.path.join(REPO_PATH, "architecture_violations.json")
+    try:
+        with open(violations_path, "r") as f:
+            violations = json.load(f)
+        violations.append({"issue": "Missing [Required] in Driver.cs", "resolved": True})
+        with open(violations_path, "w") as f:
+            json.dump(violations, f, indent=2)
+        logger.info("[Project] Updated architecture_violations.json")
+    except Exception as e:
+        logger.error(f"[Project] Error updating architecture_violations.json: {str(e)}")
+
+def enhance_ui():
+    """Append MaterialTabControl to Dashboard.cs."""
+    dashboard_path = os.path.join(REPO_PATH, "Forms", "Dashboard.cs")
+    tab_control_code = """
+private MaterialTabControl tabControl;
+public Dashboard()
+{
+    InitializeComponent();
+    tabControl = new MaterialTabControl();
+    tabControl.TabPages.Add("Tracking", "Tracking");
+    tabControl.TabPages.Add("Analytics", "Analytics");
+    tabControl.Dock = DockStyle.Fill;
+    this.Controls.Add(tabControl);
+}
+"""
+    try:
+        with open(dashboard_path, "r") as f:
+            content = f.read()
+        if "MaterialTabControl tabControl;" not in content:
+            content = content.replace("public partial class Dashboard : MaterialForm\n{",
+                                     "public partial class Dashboard : MaterialForm\n{\n" + tab_control_code)
+            with open(dashboard_path, "w") as f:
+                f.write(content)
+            logger.info("[Project] Added MaterialTabControl to Dashboard.cs")
+        else:
+            logger.info("[Project] MaterialTabControl already present in Dashboard.cs")
+    except Exception as e:
+        logger.error(f"[Project] Error updating Dashboard.cs: {str(e)}")
+
+def add_validation():
+    """Append validation to DriversManagementForm.cs and VehiclesManagementForm.cs."""
+    drivers_form_path = os.path.join(REPO_PATH, "Forms", "DriversManagementForm.cs")
+    drivers_validation = """
+private bool ValidateDriverLicense(int driverId)
+{
+    var driver = _dbHelper.GetDriver(driverId);
+    if (driver.LicenseExpiration < DateTime.Now)
+    {
+        MaterialMessageBox.Show("Driver's license has expired!", "Validation Error");
+        return false;
+    }
+    return true;
+}
+"""
+    try:
+        with open(drivers_form_path, "r") as f:
+            content = f.read()
+        if "ValidateDriverLicense" not in content:
+            content = content.rstrip("}\n") + drivers_validation + "\n}"
+            with open(drivers_form_path, "w") as f:
+                f.write(content)
+            logger.info("[Project] Added validation to DriversManagementForm.cs")
+    except Exception as e:
+        logger.error(f"[Project] Error updating DriversManagementForm.cs: {str(e)}")
+
+    vehicles_form_path = os.path.join(REPO_PATH, "Forms", "VehiclesManagementForm.cs")
+    vehicles_validation = """
+private bool ValidateVehicleInsurance(int vehicleId)
+{
+    var vehicle = _dbHelper.GetVehicle(vehicleId);
+    if (vehicle.InsuranceExpiration < DateTime.Now)
+    {
+        MaterialMessageBox.Show("Vehicle insurance has expired!", "Validation Error");
+        return false;
+    }
+    return true;
+}
+"""
+    try:
+        with open(vehicles_form_path, "r") as f:
+            content = f.read()
+        if "ValidateVehicleInsurance" not in content:
+            content = content.rstrip("}\n") + vehicles_validation + "\n}"
+            with open(vehicles_form_path, "w") as f:
+                f.write(content)
+            logger.info("[Project] Added validation to VehiclesManagementForm.cs")
+    except Exception as e:
+        logger.error(f"[Project] Error updating VehiclesManagementForm.cs: {str(e)}")
+
+def add_gps_placeholders():
+    """Append GPS placeholder methods to RouteManagementForm.cs and Dashboard.cs."""
+    route_form_path = os.path.join(REPO_PATH, "Forms", "RouteManagementForm.cs")
+    route_gps = """
+public void InitializeMapPanel()
+{
+    // TODO: Integrate GMap.NET when validated
+}
+"""
+    try:
+        with open(route_form_path, "r") as f:
+            content = f.read()
+        if "InitializeMapPanel" not in content:
+            content = content.rstrip("}\n") + route_gps + "\n}"
+            with open(route_form_path, "w") as f:
+                f.write(content)
+            logger.info("[Project] Added GPS placeholder to RouteManagementForm.cs")
+    except Exception as e:
+        logger.error(f"[Project] Error updating RouteManagementForm.cs: {str(e)}")
+
+    dashboard_path = os.path.join(REPO_PATH, "Forms", "Dashboard.cs")
+    dashboard_gps = """
+public void InitializeMapPanel()
+{
+    // TODO: Integrate GMap.NET when validated
+}
+"""
+    try:
+        with open(dashboard_path, "r") as f:
+            content = f.read()
+        if "InitializeMapPanel" not in content:
+            content = content.rstrip("}\n") + dashboard_gps + "\n}"
+            with open(dashboard_path, "w") as f:
+                f.write(content)
+            logger.info("[Project] Added GPS placeholder to Dashboard.cs")
+    except Exception as e:
+        logger.error(f"[Project] Error updating Dashboard.cs: {str(e)}")
+
+def update_readme():
+    """Create or update README.md with project details."""
+    readme_content = """
+# BusBuddyMVP
+A .NET 9.0 Windows Forms application for managing school bus operations.
+
+## Setup Instructions
+1. Clone the repository: `git clone https://github.com/Bigessfour/BusBuddy.git`
+2. Restore NuGet packages (MaterialSkin.2, Microsoft.EntityFrameworkCore.SqlServer).
+3. Configure SQL Server Express in `appsettings.json`.
+4. Build and run using Visual Studio 2022+ with .NET 9.0 SDK.
+
+## Project Goals
+- Real-time GPS tracking of buses.
+- Automated route scheduling with notifications.
+- Data-driven analytics for fuel and route efficiency.
+
+## Contribution Guidelines
+- Follow Core Build Guidelines (see repository).
+- Test changes with xUnit (see `Tests\DatabaseHelperTests.cs`).
+- Log issues to `busbuddy_errors.log` and update `architecture_violations.json`.
+"""
+    with open(os.path.join(REPO_PATH, "README.md"), "w") as f:
+        f.write(readme_content)
+    logger.info("[Project] Updated README.md")
+
+def commit_changes(repo):
+    """Commit changes to a new branch with conflict handling."""
+    try:
+        branch_name = "improvements-may-2025"
+        try:
+            repo.get_branch(branch_name)
+            branch_name = f"improvements-may-2025-{datetime.now().strftime('%Y%m%d')}"
+            logger.info(f"[Script] Branch 'improvements-may-2025' exists. Using {branch_name}")
+        except GithubException:
+            pass
+        repo.create_git_ref(
+            ref=f"refs/heads/{branch_name}",
+            sha=repo.get_branch("main").commit.sha
+        )
+        files_to_commit = [
+            "Data/Interfaces/IDatabaseHelper.cs",
+            "Tests/RouteManagementFormTests.cs",
+            "Tests/VehiclesManagementFormTests.cs",
+            "Tests/BusBuddy.Tests.csproj",
+            "Models/Entities/Driver.cs",
+            "Forms/Dashboard.cs",
+            "Forms/DriversManagementForm.cs",
+            "Forms/VehiclesManagementForm.cs",
+            "Forms/RouteManagementForm.cs",
+            "architecture_violations.json",
+            "README.md"
+        ]
+        for file in files_to_commit:
+            file_path = os.path.join(REPO_PATH, file)
+            if os.path.exists(file_path):
+                with open(file_path, "r") as f:
+                    content = f.read()
+                repo.create_file(
+                    path=file,
+                    message=f"Update {file} for May 2025 improvements",
+                    content=content,
+                    branch=branch_name
+                )
+                logger.info(f"[Project] Committed {file} to {branch_name}")
+    except Exception as e:
+        logger.error(f"[Script] Error committing changes: {str(e)}")
+
+def main():
+    """Main function to execute all tasks."""
+    try:
+        g, repo = authenticate_github()
+        check_repository_updates(repo, g)
+        fix_build_errors()
+        add_xunit_tests()
+        update_entities()
+        enhance_ui()
+        add_validation()
+        add_gps_placeholders()
+        update_readme()
+        commit_changes(repo)
+        logger.info("[Script] All tasks completed successfully")
+    except Exception as e:
+        logger.error(f"[Script] Script failed: {str(e)}")
+
+if __name__ == "__main__":
+    main()

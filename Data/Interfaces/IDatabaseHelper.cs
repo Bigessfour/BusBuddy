@@ -19,13 +19,37 @@ namespace BusBuddy.Data.Interfaces
         /// Initializes the database if it doesn't exist
         /// </summary>
         /// <returns>Task representing the asynchronous operation</returns>
-        Task InitializeDatabaseAsync();
-
-        /// <summary>
+        Task InitializeDatabaseAsync();        /// <summary>
         /// Gets all routes from the database
         /// </summary>
         /// <returns>List of routes</returns>
         Task<IEnumerable<Route>> GetRoutesAsync();
+
+        /// <summary>
+        /// Gets all vehicles from the database
+        /// </summary>
+        /// <returns>List of vehicles</returns>
+        Task<IEnumerable<Vehicle>> GetVehiclesAsync();
+
+        /// <summary>
+        /// Gets a vehicle by ID
+        /// </summary>
+        /// <param name="id">The vehicle ID</param>
+        /// <returns>The vehicle</returns>
+        Vehicle GetVehicle(int id);
+
+        /// <summary>
+        /// Adds a new vehicle to the database
+        /// </summary>
+        /// <param name="vehicle">The vehicle to add</param>
+        void AddVehicle(Vehicle vehicle);
+
+        /// <summary>
+        /// Checks if a vehicle exists
+        /// </summary>
+        /// <param name="name">Vehicle name to check</param>
+        /// <returns>True if vehicle exists, false otherwise</returns>
+        bool VehicleExists(string name);
 
         /// <summary>
         /// Gets a route by ID

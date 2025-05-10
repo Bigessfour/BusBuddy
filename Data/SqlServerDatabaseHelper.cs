@@ -178,5 +178,80 @@ namespace BusBuddy.Data
                 throw;
             }
         }
+
+        /// <summary>
+        /// Gets all vehicles from the database
+        /// </summary>
+        /// <returns>List of vehicles</returns>
+        public async Task<IEnumerable<Vehicle>> GetVehiclesAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Getting all vehicles");
+                return await _context.Vehicles.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting vehicles");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets a vehicle by ID
+        /// </summary>
+        /// <param name="id">The vehicle ID</param>
+        /// <returns>The vehicle</returns>
+        public Vehicle GetVehicle(int id)
+        {
+            try
+            {
+                _logger.LogInformation($"Getting vehicle with ID {id}");
+                return _context.Vehicles.Find(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting vehicle with ID {id}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Adds a new vehicle to the database
+        /// </summary>
+        /// <param name="vehicle">The vehicle to add</param>
+        public void AddVehicle(Vehicle vehicle)
+        {
+            try
+            {
+                _logger.LogInformation($"Adding vehicle {vehicle.VehicleNumber}");
+                _context.Vehicles.Add(vehicle);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding vehicle {vehicle.VehicleNumber}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Checks if a vehicle exists
+        /// </summary>
+        /// <param name="name">Vehicle name to check</param>
+        /// <returns>True if vehicle exists, false otherwise</returns>
+        public bool VehicleExists(string name)
+        {
+            try
+            {
+                _logger.LogInformation($"Checking if vehicle {name} exists");
+                return _context.Vehicles.Any(v => v.VehicleNumber == name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error checking if vehicle {name} exists");
+                throw;
+            }
+        }
     }
 }
