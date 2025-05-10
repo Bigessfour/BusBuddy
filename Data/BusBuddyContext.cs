@@ -56,17 +56,19 @@ namespace BusBuddy.Data
                 .Property(r => r.PMEndMileage).HasPrecision(18, 2);
 
             // Configure cascade behavior for RouteData driver relationships
+            // First relationship uses SetNull
             modelBuilder.Entity<RouteData>()
                 .HasOne(rd => rd.AMDriver)
                 .WithMany()
                 .HasForeignKey(rd => rd.AMDriverId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            // Second relationship uses Restrict/NoAction to avoid multiple cascade paths
             modelBuilder.Entity<RouteData>()
                 .HasOne(rd => rd.PMDriver)
                 .WithMany()
                 .HasForeignKey(rd => rd.PMDriverId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict); // Changed from SetNull to Restrict to avoid multiple cascade paths
 
             // Configure cascade behavior for ActivityTrip relationships
             modelBuilder.Entity<ActivityTrip>()
@@ -171,14 +173,29 @@ namespace BusBuddy.Data
                     
                     foreach (var rd in affectedRouteData)
                     {
+                        // For AMDriver (configured with SetNull), we can reassign or set to null
                         if (rd.AMDriverId == driverId)
                         {
                             rd.AMDriverId = reassignToDriverId;
+                            logger?.LogInformation("Updated RouteData {Id} AMDriverId from {OldDriver} to {NewDriver}", 
+                                rd.Id, driverId, reassignToDriverId.HasValue ? reassignToDriverId.Value.ToString() : "null");
                         }
                         
+                        // For PMDriver (configured with Restrict), we MUST handle this to prevent constraint violations
                         if (rd.PMDriverId == driverId)
                         {
-                            rd.PMDriverId = reassignToDriverId;
+                            if (reassignToDriverId.HasValue)
+                            {
+                                rd.PMDriverId = reassignToDriverId;
+                                logger?.LogInformation("Updated RouteData {Id} PMDriverId from {OldDriver} to {NewDriver}", 
+                                    rd.Id, driverId, reassignToDriverId.Value);
+                            }
+                            else
+                            {
+                                rd.PMDriverId = null;
+                                logger?.LogInformation("Set RouteData {Id} PMDriverId to null (was {OldDriver})", 
+                                    rd.Id, driverId);
+                            }
                         }
                     }
                 }

@@ -499,12 +499,10 @@ namespace BusBuddy.Migrations
                     b.HasOne("BusBuddy.Models.Entities.Driver", "AMDriver")
                         .WithMany()
                         .HasForeignKey("AMDriverId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("BusBuddy.Models.Entities.Driver", "PMDriver")
+                        .OnDelete(DeleteBehavior.SetNull);                    b.HasOne("BusBuddy.Models.Entities.Driver", "PMDriver")
                         .WithMany()
                         .HasForeignKey("PMDriverId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AMDriver");
 

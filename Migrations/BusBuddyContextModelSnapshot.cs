@@ -74,7 +74,7 @@ namespace BusBuddy.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("ActivityTrips");
+                    b.ToTable("ActivityTrips", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Entities.Destination", b =>
@@ -125,7 +125,7 @@ namespace BusBuddy.Migrations
 
                     b.HasIndex("RouteId");
 
-                    b.ToTable("Destinations");
+                    b.ToTable("Destinations", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Entities.Driver", b =>
@@ -164,7 +164,7 @@ namespace BusBuddy.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Drivers");
+                    b.ToTable("Drivers", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Entities.FuelEntry", b =>
@@ -210,7 +210,7 @@ namespace BusBuddy.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("FuelEntries");
+                    b.ToTable("FuelEntries", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Entities.Maintenance", b =>
@@ -235,7 +235,7 @@ namespace BusBuddy.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("Maintenances");
+                    b.ToTable("Maintenances", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Entities.Part", b =>
@@ -260,7 +260,7 @@ namespace BusBuddy.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Parts");
+                    b.ToTable("Parts", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Entities.Route", b =>
@@ -298,7 +298,7 @@ namespace BusBuddy.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Routes");
+                    b.ToTable("Routes", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Entities.RouteData", b =>
@@ -343,7 +343,7 @@ namespace BusBuddy.Migrations
 
                     b.HasIndex("PMDriverId");
 
-                    b.ToTable("RouteData");
+                    b.ToTable("RouteData", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Entities.Vehicle", b =>
@@ -394,7 +394,7 @@ namespace BusBuddy.Migrations
 
                     b.HasIndex("AssignedDriverId");
 
-                    b.ToTable("Vehicles");
+                    b.ToTable("Vehicles", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Logs.LogEntry", b =>
@@ -418,7 +418,7 @@ namespace BusBuddy.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogEntries");
+                    b.ToTable("LogEntries", (string)null);
                 });
 
             modelBuilder.Entity("BusBuddy.Models.Entities.ActivityTrip", b =>
@@ -496,12 +496,10 @@ namespace BusBuddy.Migrations
                     b.HasOne("BusBuddy.Models.Entities.Driver", "AMDriver")
                         .WithMany()
                         .HasForeignKey("AMDriverId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("BusBuddy.Models.Entities.Driver", "PMDriver")
+                        .OnDelete(DeleteBehavior.SetNull);                    b.HasOne("BusBuddy.Models.Entities.Driver", "PMDriver")
                         .WithMany()
                         .HasForeignKey("PMDriverId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("AMDriver");
 

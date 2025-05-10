@@ -102,13 +102,12 @@ namespace BusBuddy.Migrations
                         column: x => x.AMDriverId,
                         principalTable: "Drivers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
+                        onDelete: ReferentialAction.SetNull);                    table.ForeignKey(
                         name: "FK_RouteData_Drivers_PMDriverId",
                         column: x => x.PMDriverId,
                         principalTable: "Drivers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

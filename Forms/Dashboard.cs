@@ -22,11 +22,8 @@ namespace BusBuddy.Forms
         private MaterialTabSelector materialTabSelector;
         private TabPage tabTracking;
         private TabPage tabAnalytics;
-        
-        // Analytics placeholders
-        private Panel fuelTrendChartPanel;
-        private Label fuelTrendChartLabel;
-        private Button btnViewDetailedReports;
+          // Analytics placeholders - to be implemented in future releases
+        // Removed unused fields
         
         // GPS tracking placeholders
         private Panel mapPanel;

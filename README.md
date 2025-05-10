@@ -142,6 +142,37 @@ The system implements proper relationship handling to maintain data integrity:
 - **Untested Components**: 31 (e.g., `RouteManagementForm.cs`, `VehiclesManagementForm.cs`)
 - **Architecture Violations**: 22 (e.g., missing `[Required]` in `Models\Entities\Driver.cs`)
 
+## Database Schema Notes & Fixes
+
+### Foreign Key Constraint Fix (May 10, 2025)
+The application previously encountered a foreign key constraint error when creating the database:
+
+```
+Introducing FOREIGN KEY constraint 'FK_RouteData_Drivers_PMDriverId' on table 'RouteData' 
+may cause cycles or multiple cascade paths.
+```
+
+This error occurred because the `RouteData` entity had two foreign key relationships to the `Driver` entity 
+(AMDriverId and PMDriverId), both using `DeleteBehavior.SetNull`, creating multiple cascade paths.
+
+#### Solution
+1. Changed the `PMDriverId` relationship from `DeleteBehavior.SetNull` to `DeleteBehavior.Restrict`:
+
+```csharp
+modelBuilder.Entity<RouteData>()
+    .HasOne(rd => rd.PMDriver)
+    .WithMany()
+    .HasForeignKey(rd => rd.PMDriverId)
+    .OnDelete(DeleteBehavior.Restrict); // Changed from SetNull to Restrict
+```
+
+2. Enhanced the `DeleteDriverSafelyAsync` method to explicitly handle the `RouteData` references.
+
+#### Testing
+- Created unit tests to verify both driver reassignment and nullification work correctly
+- Verified database creation succeeds with the updated configuration
+- Confirmed that driver deletion with related `RouteData` records works properly
+
 ### Core Features
 - **Driver Management**: Track driver information, licenses, certifications
   - Safe driver deletion with options to reassign or remove dependent records
