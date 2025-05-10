@@ -9,3 +9,4 @@ Updated BusBuddyContextFactory.cs namespace to BusBuddyMVP.Data for EF Core migr
 Dropped and rebuilt BusBuddy database with initial schema on %DATE%
 Verified application startup and database connectivity on %DATE%
 Updated README.md to reflect clean build and database setup on %DATE%
+Added GitHub Actions workflow build.yml on 05/09/2025 21:57:08
