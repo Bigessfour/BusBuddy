@@ -1,9 +1,5 @@
 using Xunit;
 using BusBuddy.Models.Entities;
-using BusBuddy.Models;
-using BusBuddy.Forms;
-using Microsoft.Extensions.Logging;
-using System.Windows.Forms;
 using System;
 
 namespace BusBuddy.Tests
@@ -16,10 +12,21 @@ namespace BusBuddy.Tests
             var destination = new Destination
             {
                 Id = 1,
-                Name = "School"
+                Name = "Elementary School",
+                Address = "123 Education St",
+                City = "Springfield",
+                State = "IL",
+                ZipCode = "62701",
+                ContactName = "Principal Smith",
+                ContactPhone = "555-123-4567",
+                TotalMiles = 15.5m
             };
+            
             Assert.Equal(1, destination.Id);
-            Assert.Equal("School", destination.Name);
+            Assert.Equal("Elementary School", destination.Name);
+            Assert.Equal("Springfield", destination.City);
+            Assert.Equal("123 Education St", destination.Address);
+            Assert.Equal(15.5m, destination.TotalMiles);
         }
     }
 }

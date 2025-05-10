@@ -1,13 +1,12 @@
 using System;
-using BusBuddy.Models.Entities;
 
 namespace BusBuddy.Models
 {
+    // This class has been replaced by BusBuddy.Models.Entities.Destination
+    // Use the Entities.Destination instead of this class
+    [Obsolete("Use BusBuddy.Models.Entities.Destination instead", true)]
     public class Destination
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public Route? Route { get; set; }
-        public int? RouteId { get; set; }
+        // Class marked as obsolete - replaced by BusBuddy.Models.Entities.Destination
     }
 }

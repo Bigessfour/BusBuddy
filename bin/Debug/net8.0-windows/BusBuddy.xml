@@ -175,6 +175,30 @@
             the contents of this method with the code editor.
             </summary>
         </member>
+        <member name="T:BusBuddy.Forms.RouteEditorDialog">
+            <summary>
+            Dialog for adding or editing bus routes
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.RouteEditorDialog.#ctor">
+            <summary>
+            Initializes a new instance of the RouteEditorDialog
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.RouteEditorDialog.#ctor(System.String,System.String,System.String,System.Decimal)">
+            <summary>
+            Initializes a new instance of the RouteEditorDialog with existing data
+            </summary>
+            <param name="routeName">Name of the route</param>
+            <param name="start">Starting location</param>
+            <param name="end">Ending location</param>
+            <param name="distance">Distance in miles</param>
+        </member>
+        <member name="M:BusBuddy.Forms.RouteEditorDialog.InitializeComponent">
+            <summary>
+            Initializes form components
+            </summary>
+        </member>
         <member name="M:BusBuddy.Forms.RouteManagementForm.InitializeMapPanel">
             <summary>
             TODO: Integrate GMap.NET when validated.
