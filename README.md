@@ -1,9 +1,11 @@
 # BusBuddyMVP
 
-A .NET 9.0 Windows Forms application for managing school bus operations, built with SQL Server Express, Entity Framework Core, MaterialSkin.2 for UI, and Microsoft.Extensions.Logging for diagnostics.
+[![.NET Desktop CI](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml/badge.svg)](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml)
+
+A .NET 8.0 Windows Forms application for managing school bus operations, built with SQL Server Express, Entity Framework Core, MaterialSkin.2 for UI, and Microsoft.Extensions.Logging for diagnostics.
 
 ## Current Status (as of May 9, 2025)
-- **Build Status**: Successful
+- **Build Status**: [![.NET Desktop CI](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml/badge.svg)](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml)
 - **Errors**: 0 (resolved CS1061 in `BusBuddyContext.cs`, WFO1000 in `RouteEditorDialog.cs`)
 - **Warnings**: 0 (resolved NU1603 for EF Core packages)
 - **Current Floor**: 38 (stable base, database initialized)

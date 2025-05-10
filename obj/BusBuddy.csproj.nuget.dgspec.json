@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj": {}
+    "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj": {}
   },
   "projects": {
-    "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj": {
+    "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj",
+        "projectUniqueName": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj",
         "projectName": "BusBuddy",
-        "projectPath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj",
+        "projectPath": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj",
         "packagesPath": "C:\\Users\\steve.mckitrick\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\obj\\",
+        "outputPath": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\steve.mckitrick\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -29,6 +29,9 @@
           }
         },
         "warningProperties": {
+          "noWarn": [
+            "NU1701"
+          ],
           "warnAsError": [
             "NU1605"
           ]
@@ -78,11 +81,11 @@
             },
             "Microsoft.Extensions.Http": {
               "target": "Package",
-              "version": "[8.*, )"
+              "version": "[8.0.0, )"
             },
             "Microsoft.Extensions.Logging": {
               "target": "Package",
-              "version": "[9.0.4, )"
+              "version": "[8.0.0, )"
             },
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
@@ -98,7 +101,7 @@
             },
             "Serilog.Extensions.Logging": {
               "target": "Package",
-              "version": "[9.0.1, )"
+              "version": "[8.0.0, )"
             },
             "Serilog.Sinks.Console": {
               "target": "Package",

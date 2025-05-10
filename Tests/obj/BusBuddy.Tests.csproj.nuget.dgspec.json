@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj": {}
+    "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj": {
+    "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj",
-        "projectName": "BusBuddy.Tests",
-        "projectPath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj",
+        "projectUniqueName": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj",
+        "projectName": "BusBuddy",
+        "projectPath": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj",
         "packagesPath": "C:\\Users\\steve.mckitrick\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\obj\\",
+        "outputPath": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\steve.mckitrick\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,6 +26,163 @@
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows",
             "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "noWarn": [
+            "NU1701"
+          ],
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.35, )"
+            },
+            "MaterialSkin.2": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Binder": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Logging": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "Serilog.Extensions.Logging": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "System.Data.SQLite": {
+              "target": "Package",
+              "version": "[1.0.118, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.15, 8.0.15]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.15, 8.0.15]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.15, 8.0.15]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.15, 8.0.15]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj",
+        "projectName": "BusBuddy.Tests",
+        "projectPath": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj",
+        "packagesPath": "C:\\Users\\steve.mckitrick\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\steve.mckitrick\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj": {
+                "projectPath": "c:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -46,19 +203,33 @@
           "dependencies": {
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "coverlet.collector": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
               "version": "[6.0.0, )"
             },
-            "System.Windows.Forms": {
+            "coverlet.msbuild": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[4.7.0, )"
+              "version": "[6.0.0, )"
             },
             "xunit": {
               "target": "Package",
-              "version": "[2.4.1, )"
+              "version": "[2.6.6, )"
             },
             "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[2.4.3, )"
+              "version": "[2.5.7, )"
             }
           },
           "imports": [
@@ -89,6 +260,9 @@
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
