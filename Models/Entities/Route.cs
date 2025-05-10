@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using BusBuddy.Models;
 
 namespace BusBuddy.Models.Entities
 {

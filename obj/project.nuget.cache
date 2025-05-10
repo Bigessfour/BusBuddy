@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Vn0XsLz7Dus=",
+  "dgSpecHash": "qipAD+jRPvY=",
   "success": true,
   "projectFilePath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj",
   "expectedPackageFiles": [
@@ -114,26 +114,5 @@
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\system.windows.extensions\\4.7.0\\system.windows.extensions.4.7.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1603",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "BusBuddy depends on Microsoft.EntityFrameworkCore.Design (>= 9.0.0-preview.7.24221.5) but Microsoft.EntityFrameworkCore.Design 9.0.0-preview.7.24221.5 was not found. Microsoft.EntityFrameworkCore.Design 9.0.0-preview.7.24405.3 was resolved instead.",
-      "libraryId": "Microsoft.EntityFrameworkCore.Design",
-      "targetGraphs": [
-        "net9.0-windows7.0"
-      ]
-    },
-    {
-      "code": "NU1603",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "BusBuddy depends on Microsoft.EntityFrameworkCore.SqlServer (>= 9.0.0-preview.7.24221.5) but Microsoft.EntityFrameworkCore.SqlServer 9.0.0-preview.7.24221.5 was not found. Microsoft.EntityFrameworkCore.SqlServer 9.0.0-preview.7.24405.3 was resolved instead.",
-      "libraryId": "Microsoft.EntityFrameworkCore.SqlServer",
-      "targetGraphs": [
-        "net9.0-windows7.0"
-      ]
-    }
-  ]
+  "logs": []
 }

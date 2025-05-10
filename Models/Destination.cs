@@ -1,4 +1,5 @@
 using System;
+using BusBuddy.Models.Entities;
 
 namespace BusBuddy.Models
 {

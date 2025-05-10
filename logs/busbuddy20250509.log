@@ -1,0 +1,12 @@
+2025-05-09 21:32:49.360 -06:00 [INF]  Application starting up
+2025-05-09 21:32:49.423 -06:00 [INF]  Services configured
+2025-05-09 21:32:49.762 -06:00 [INF] BusBuddy.Forms.Dashboard Dashboard constructor completed successfully
+2025-05-09 21:32:49.771 -06:00 [INF] BusBuddy.Forms.Dashboard Dashboard Load event starting
+2025-05-09 21:32:49.771 -06:00 [INF] BusBuddy.Forms.Dashboard Verifying required services
+2025-05-09 21:32:49.771 -06:00 [INF] BusBuddy.Forms.Dashboard All required services verified
+2025-05-09 21:32:49.771 -06:00 [INF] BusBuddy.Forms.Dashboard Setting up custom controls
+2025-05-09 21:32:49.773 -06:00 [INF] BusBuddy.Forms.Dashboard Custom controls setup complete
+2025-05-09 21:32:49.774 -06:00 [INF] BusBuddy.Forms.Dashboard Initializing standard menus
+2025-05-09 21:32:49.774 -06:00 [INF] BusBuddy.Forms.Dashboard Standard menus initialized
+2025-05-09 21:32:49.808 -06:00 [INF] BusBuddy.Forms.Dashboard Dashboard Load event completed
+2025-05-09 21:32:49.810 -06:00 [INF] BusBuddy.Forms.Dashboard Dashboard shown to user

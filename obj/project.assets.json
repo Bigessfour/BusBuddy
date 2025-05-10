@@ -6245,8 +6245,8 @@
     "net9.0-windows7.0": [
       "Dapper >= 2.1.35",
       "MaterialSkin.2 >= 2.3.1",
-      "Microsoft.EntityFrameworkCore.Design >= 9.0.0-preview.7.24221.5",
-      "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.0-preview.7.24221.5",
+      "Microsoft.EntityFrameworkCore.Design >= 9.0.0-preview.7.24405.3",
+      "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.0-preview.7.24405.3",
       "Microsoft.Extensions.Configuration >= 8.0.0",
       "Microsoft.Extensions.Configuration.Binder >= 8.0.2",
       "Microsoft.Extensions.Configuration.Json >= 8.0.0",
@@ -6317,11 +6317,11 @@
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
             "target": "Package",
-            "version": "[9.0.0-preview.7.24221.5, )"
+            "version": "[9.0.0-preview.7.24405.3, )"
           },
           "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
-            "version": "[9.0.0-preview.7.24221.5, )"
+            "version": "[9.0.0-preview.7.24405.3, )"
           },
           "Microsoft.Extensions.Configuration": {
             "target": "Package",
@@ -6398,27 +6398,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1603",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "BusBuddy depends on Microsoft.EntityFrameworkCore.Design (>= 9.0.0-preview.7.24221.5) but Microsoft.EntityFrameworkCore.Design 9.0.0-preview.7.24221.5 was not found. Microsoft.EntityFrameworkCore.Design 9.0.0-preview.7.24405.3 was resolved instead.",
-      "libraryId": "Microsoft.EntityFrameworkCore.Design",
-      "targetGraphs": [
-        "net9.0-windows7.0"
-      ]
-    },
-    {
-      "code": "NU1603",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "BusBuddy depends on Microsoft.EntityFrameworkCore.SqlServer (>= 9.0.0-preview.7.24221.5) but Microsoft.EntityFrameworkCore.SqlServer 9.0.0-preview.7.24221.5 was not found. Microsoft.EntityFrameworkCore.SqlServer 9.0.0-preview.7.24405.3 was resolved instead.",
-      "libraryId": "Microsoft.EntityFrameworkCore.SqlServer",
-      "targetGraphs": [
-        "net9.0-windows7.0"
-      ]
-    }
-  ]
+  }
 }

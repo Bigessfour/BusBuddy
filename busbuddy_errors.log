@@ -1,2 +1,5 @@
 // ...existing log entries...
 // Added using System; to IDatabaseHelper.cs to resolve CS0246 errors on {DateTime.Now}
+// Fixed CS1061 in BusBuddyContext.cs by adding using BusBuddy.Models.Entities; to Destination.cs on May 9, 2025
+// Fixed WFO1000 errors in RouteEditorDialog.cs with DesignerSerializationVisibilityAttribute on May 9, 2025
+// Updated EF Core packages to 9.0.0-preview.7.24405.3 in BusBuddy.csproj on May 9, 2025
