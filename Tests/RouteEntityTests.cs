@@ -12,10 +12,16 @@ namespace BusBuddy.Tests
             var route = new Route
             {
                 Id = 1,
-                Name = "Route 1"
+                RouteName = "Route 1",
+                StartLocation = "School",
+                EndLocation = "Downtown",
+                Distance = 10.5m
             };
             Assert.Equal(1, route.Id);
-            Assert.Equal("Route 1", route.Name);
+            Assert.Equal("Route 1", route.RouteName);
+            Assert.Equal("School", route.StartLocation);
+            Assert.Equal("Downtown", route.EndLocation);
+            Assert.Equal(10.5m, route.Distance);
         }
     }
 }
