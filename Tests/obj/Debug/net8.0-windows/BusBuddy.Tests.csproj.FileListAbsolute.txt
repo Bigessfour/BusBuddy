@@ -1,0 +1,5 @@
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\bin\Debug\net8.0-windows\CoverletSourceRootsMapping_BusBuddy.Tests
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net8.0-windows\BusBuddy.Tests.csproj.AssemblyReference.cache
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net8.0-windows\BusBuddy.Tests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net8.0-windows\BusBuddy.Tests.csproj.CoreCompileInputs.cache
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net8.0-windows\BusBuddy.Tests.sourcelink.json

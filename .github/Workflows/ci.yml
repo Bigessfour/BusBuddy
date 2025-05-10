@@ -14,4 +14,4 @@ jobs:
     - name: Build
       run: dotnet build BusBuddy.sln --no-restore
     - name: Test
-      run: dotnet test Tests\BusBuddy.Tests.csproj --no-build
+      run: dotnet test BusBuddy.Tests\BusBuddy.Tests.csproj --no-build
