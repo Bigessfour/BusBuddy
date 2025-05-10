@@ -1,27 +1,110 @@
 name: CI
+
 on:
   push:
     branches: 
       - main
+      - master
       - develop
       - 'release/*'
       - 'hotfix/*'
   pull_request:
     branches: 
       - main
+      - master
       - develop
+
 jobs:
-  build:
+  build-and-test:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
-    - name: Restore
+        dotnet-version: '8.0.x'  # Using 8.0.x as verified in the project files
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
       run: dotnet restore BusBuddy.sln
+
+    - name: Format Code
+      run: dotnet format BusBuddy.sln --verify-no-changes --severity warn
+      continue-on-error: true
+
     - name: Build
-      run: dotnet build BusBuddy.sln --no-restore
-    - name: Test
-      run: dotnet test BusBuddy.Tests\BusBuddy.Tests.csproj --no-build
+      run: dotnet build BusBuddy.sln --configuration ${{ matrix.configuration }} --no-restore
+
+    - name: Clean test artifacts
+      run: |
+        if (Test-Path -Path "Tests\obj") {
+            Remove-Item -Path "Tests\obj" -Recurse -Force
+        }
+        if (Test-Path -Path "Tests\bin") {
+            Remove-Item -Path "Tests\bin" -Recurse -Force
+        }
+      shell: pwsh
+      
+    - name: Install Coverlet
+      run: dotnet tool install --global coverlet.console
+      
+    - name: Test with coverage
+      run: dotnet test Tests\BusBuddy.Tests.csproj --configuration ${{ matrix.configuration }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Threshold=50 /p:ThresholdType=line /p:Exclude="[*]*.Program"
+
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      
+    - name: Generate Coverage Report
+      run: reportgenerator -reports:"**/coverage.opencover.xml" -targetdir:"coveragereport" -reporttypes:"Html;Cobertura;TextSummary" -classfilters:"-Program;-*Context;-*Factory"
+      
+    - name: Display Coverage Summary
+      run: |
+        if (Test-Path -Path "coveragereport/Summary.txt") {
+            $summary = Get-Content -Path "coveragereport/Summary.txt"
+            Write-Host "Coverage Summary:"
+            Write-Host $summary
+            
+            # Also log to busbuddy_errors.log
+            $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+            "$timestamp - Test coverage report:" | Out-File -Append -FilePath "busbuddy_errors.log"
+            $summary | Out-File -Append -FilePath "busbuddy_errors.log"
+        }
+      shell: pwsh
+      
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report-${{ matrix.configuration }}
+        path: coveragereport
+      
+    - name: Log workflow completion
+      run: |
+        $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+        $logMessage = "$timestamp - CI workflow completed for ${{ github.event_name }} on ${{ github.ref }}"
+        Add-Content -Path "busbuddy_errors.log" -Value $logMessage
+      shell: pwsh
+
+    - name: Package application
+      run: dotnet publish BusBuddy.csproj -c ${{ matrix.configuration }} -o publish --self-contained false
+      if: ${{ matrix.configuration == 'Release' }}
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: BusBuddy-${{ matrix.configuration }}
+        path: publish/
+      if: ${{ matrix.configuration == 'Release' }}
