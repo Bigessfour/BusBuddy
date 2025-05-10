@@ -1,7 +1,7 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj": {}
+    "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj": {}
   },
   "projects": {
     "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj": {
@@ -133,6 +133,112 @@
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.15, 8.0.15]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.15, 8.0.15]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.15, 8.0.15]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj",
+        "projectName": "BusBuddy.Tests",
+        "projectPath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj",
+        "packagesPath": "C:\\Users\\steve.mckitrick\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\steve.mckitrick\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj": {
+                "projectPath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\BusBuddy.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "Microsoft.Extensions.Logging": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.9.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.4.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
               "version": "[8.0.15, 8.0.15]"
             },
             {
