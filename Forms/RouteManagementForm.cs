@@ -8,7 +8,8 @@ using BusBuddy.Data.Interfaces;
 using BusBuddy.Models.Entities;
 
 namespace BusBuddy.Forms
-{    public partial class RouteManagementForm : Form
+{    
+    public partial class RouteManagementForm : Form
     {
         private IDatabaseHelper dbHelper;
         private BindingSource bindingSource;
@@ -87,7 +88,7 @@ namespace BusBuddy.Forms
             try
             {
                 var result = await dbHelper.GetRoutesAsync();
-                bindingSource.DataSource = result.Success && result.Data != null ? result.Data : new List<BusBuddyMVP.Models.Entities.Route>();
+                bindingSource.DataSource = result ?? new List<BusBuddy.Models.Entities.Route>();
             }
             catch (Exception ex)
             {
@@ -108,19 +109,18 @@ namespace BusBuddy.Forms
                 {
                     try
                     {
-                        var route = new BusBuddyMVP.Models.Entities.Route
+                        var route = new BusBuddy.Models.Entities.Route
                         {
-                            RouteNumber = dialog.RouteNumber,
+                            RouteName = dialog.RouteName,
                             StartLocation = dialog.StartLocation,
                             EndLocation = dialog.EndLocation,
-                            Distance = (double)dialog.Distance,
-                            TripType = "Route"
+                            Distance = (double)dialog.Distance
                         };
-                        var result = await dbHelper.AddRouteAsync(route);
-                        MessageBox.Show(result.Success ? "Route added successfully" : $"Failed to add route: {result.ErrorMessage}",
-                            result.Success ? "Success" : "Error",
+                        var addedRoute = await dbHelper.AddRouteAsync(route);
+                        MessageBox.Show(addedRoute != null ? "Route added successfully" : $"Failed to add route.",
+                            addedRoute != null ? "Success" : "Error",
                             MessageBoxButtons.OK,
-                            result.Success ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+                            addedRoute != null ? MessageBoxIcon.Information : MessageBoxIcon.Error);
                         await LoadRoutesDataAsync();
                         bindingSource.ResetBindings(false);
                     }
@@ -145,31 +145,30 @@ namespace BusBuddy.Forms
             }
 
             int id = Convert.ToInt32(row.Cells["Id"].Value);
-            string routeNumber = row.Cells["RouteNumber"].Value?.ToString() ?? string.Empty;
+            string routeName = row.Cells["RouteName"].Value?.ToString() ?? string.Empty;
             string start = row.Cells["StartLocation"].Value?.ToString() ?? string.Empty;
             string end = row.Cells["EndLocation"].Value?.ToString() ?? string.Empty;
             double distance = double.TryParse(row.Cells["Distance"].Value?.ToString(), out var d) ? d : 0;
 
-            using (var dialog = new RouteEditorDialog(routeNumber, start, end, (decimal)distance))
+            using (var dialog = new RouteEditorDialog(routeName, start, end, (decimal)distance))
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        var route = new BusBuddyMVP.Models.Entities.Route
+                        var route = new BusBuddy.Models.Entities.Route
                         {
                             Id = id,
-                            RouteNumber = dialog.RouteNumber,
+                            RouteName = dialog.RouteName,
                             StartLocation = dialog.StartLocation,
                             EndLocation = dialog.EndLocation,
-                            Distance = (double)dialog.Distance,
-                            TripType = "Route"
+                            Distance = (double)dialog.Distance
                         };
-                        var result = await dbHelper.UpdateRouteAsync(route);
-                        MessageBox.Show(result.Success ? "Route updated successfully" : $"Failed to update route: {result.ErrorMessage}",
-                            result.Success ? "Success" : "Error",
+                        var updated = await dbHelper.UpdateRouteAsync(route);
+                        MessageBox.Show(updated ? "Route updated successfully" : $"Failed to update route.",
+                            updated ? "Success" : "Error",
                             MessageBoxButtons.OK,
-                            result.Success ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+                            updated ? MessageBoxIcon.Information : MessageBoxIcon.Error);
                         await LoadRoutesDataAsync();
                         bindingSource.ResetBindings(false);
                     }
@@ -198,8 +197,8 @@ namespace BusBuddy.Forms
 
             try
             {
-                var (success, message) = await dbHelper.DeleteRouteAsync(id);
-                MessageBox.Show(success ? "Route deleted successfully" : $"Failed to delete route: {message}",
+                var success = await dbHelper.DeleteRouteAsync(id);
+                MessageBox.Show(success ? "Route deleted successfully" : $"Failed to delete route.",
                                 success ? "Success" : "Error",
                                 MessageBoxButtons.OK,
                                 success ? MessageBoxIcon.Information : MessageBoxIcon.Error);

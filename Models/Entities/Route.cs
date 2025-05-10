@@ -50,5 +50,10 @@ namespace BusBuddy.Models.Entities
         /// Date and time the route was last modified
         /// </summary>
         public DateTime LastModified { get; set; }
+
+        /// <summary>
+        /// Destinations associated with this route
+        /// </summary>
+        public ICollection<Destination> Destinations { get; set; } = new List<Destination>();
     }
 }
