@@ -1,6 +1,6 @@
 # BusBuddyMVP
 
-[![.NET Desktop CI](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml/badge.svg)](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml)
+![CI](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml/badge.svg)
 
 A .NET 8.0 Windows Forms application for managing school bus operations, built with SQL Server Express, Entity Framework Core, MaterialSkin.2 for UI, and Microsoft.Extensions.Logging for diagnostics.
 
