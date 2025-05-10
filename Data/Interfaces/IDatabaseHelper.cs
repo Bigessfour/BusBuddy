@@ -111,5 +111,26 @@ namespace BusBuddy.Data.Interfaces
         /// <param name="reassignToDriverId">Optional. If provided, reassigns dependent records to this driver instead of setting to null</param>
         /// <returns>True if successful, false otherwise</returns>
         Task<bool> DeleteDriverSafelyAsync(int driverId, int? reassignToDriverId = null);
+
+        /// <summary>
+        /// Gets a driver by ID including related entities (use this when you need more than just the driver data)
+        /// </summary>
+        /// <param name="driverId">The driver ID</param>
+        /// <returns>The driver with related entities if found, null otherwise</returns>
+        Task<Driver> GetDriverWithDetailsAsync(int driverId);
+
+        /// <summary>
+        /// Performs a batch update of drivers (much more efficient than updating one at a time)
+        /// </summary>
+        /// <param name="drivers">Collection of drivers to update</param>
+        /// <returns>Number of records successfully updated</returns>
+        Task<int> BatchUpdateDriversAsync(IEnumerable<Driver> drivers);
+
+        /// <summary>
+        /// Gets drivers with licenses expiring within the specified days
+        /// </summary>
+        /// <param name="daysThreshold">Number of days to check for expiration</param>
+        /// <returns>List of drivers with expiring licenses</returns>
+        Task<IEnumerable<Driver>> GetDriversWithExpiringLicensesAsync(int daysThreshold);
     }
 }

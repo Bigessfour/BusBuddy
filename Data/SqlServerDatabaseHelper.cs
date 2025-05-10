@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -50,9 +51,7 @@ namespace BusBuddy.Data
                 _logger.LogError(ex, "Error initializing database");
                 throw;
             }
-        }
-
-        /// <summary>
+        }        /// <summary>
         /// Gets all routes from the database
         /// </summary>
         public async Task<IEnumerable<Route>> GetRoutesAsync()
@@ -60,16 +59,16 @@ namespace BusBuddy.Data
             try
             {
                 _logger.LogInformation("Getting all routes");
-                return await _context.Routes.ToListAsync();
+                return await _context.Routes
+                    .AsNoTracking() // Performance optimization: don't track entities when just reading
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting routes");
                 throw;
             }
-        }
-
-        /// <summary>
+        }        /// <summary>
         /// Gets a route by ID
         /// </summary>
         public async Task<Route> GetRouteByIdAsync(int routeId)
@@ -77,6 +76,7 @@ namespace BusBuddy.Data
             try
             {
                 _logger.LogInformation("Getting route with ID: {RouteId}", routeId);
+                // Use FindAsync for primary key lookups as it's optimized
                 return await _context.Routes.FindAsync(routeId);
             }
             catch (Exception ex)
@@ -177,9 +177,7 @@ namespace BusBuddy.Data
                 _logger.LogError(ex, "Error deleting route with ID: {RouteId}", routeId);
                 throw;
             }
-        }
-
-        /// <summary>
+        }        /// <summary>
         /// Gets all vehicles from the database
         /// </summary>
         /// <returns>List of vehicles</returns>
@@ -188,16 +186,16 @@ namespace BusBuddy.Data
             try
             {
                 _logger.LogInformation("Getting all vehicles");
-                return await _context.Vehicles.ToListAsync();
+                return await _context.Vehicles
+                    .AsNoTracking()  // Performance optimization for read-only operations
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting vehicles");
                 throw;
             }
-        }
-
-        /// <summary>
+        }        /// <summary>
         /// Gets a vehicle by ID
         /// </summary>
         /// <param name="id">The vehicle ID</param>
@@ -206,12 +204,13 @@ namespace BusBuddy.Data
         {
             try
             {
-                _logger.LogInformation($"Getting vehicle with ID {id}");
+                _logger.LogInformation("Getting vehicle with ID {VehicleId}", id);
+                // Using Find for primary key lookup which is optimized
                 return _context.Vehicles.Find(id);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error getting vehicle with ID {id}");
+                _logger.LogError(ex, "Error getting vehicle with ID {VehicleId}", id);
                 throw;
             }
         }
@@ -253,8 +252,7 @@ namespace BusBuddy.Data
                 throw;
             }
         }
-        
-        /// <summary>
+          /// <summary>
         /// Gets all drivers from the database
         /// </summary>
         /// <returns>List of drivers</returns>
@@ -263,7 +261,9 @@ namespace BusBuddy.Data
             try
             {
                 _logger.LogInformation("Getting all drivers");
-                return await _context.Drivers.ToListAsync();
+                return await _context.Drivers
+                    .AsNoTracking() // Performance optimization for read-only operations
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
@@ -271,8 +271,7 @@ namespace BusBuddy.Data
                 throw;
             }
         }
-        
-        /// <summary>
+          /// <summary>
         /// Gets a driver by ID
         /// </summary>
         /// <param name="driverId">The driver ID</param>
@@ -282,11 +281,43 @@ namespace BusBuddy.Data
             try
             {
                 _logger.LogInformation("Getting driver with ID {DriverId}", driverId);
+                
+                // Return a fully populated driver including any related entities if needed (uncomment next line)
+                // return await _context.Drivers.Include(d => d.Licenses).FirstOrDefaultAsync(d => d.Id == driverId);
+                
+                // Use FindAsync for primary key lookups (best performance for simple lookups)
                 return await _context.Drivers.FindAsync(driverId);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting driver with ID {DriverId}", driverId);
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// Gets a driver by ID including related entities (use this when you need more than just the driver data)
+        /// </summary>
+        /// <param name="driverId">The driver ID</param>
+        /// <returns>The driver with related entities if found, null otherwise</returns>
+        public async Task<Driver> GetDriverWithDetailsAsync(int driverId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting driver with details for ID {DriverId}", driverId);
+                
+                // This demonstrates eager loading of related entities
+                // Add Include() statements for any related entities needed
+                return await _context.Drivers
+                    .AsNoTracking() // Use AsNoTracking for read-only operations
+                    // Uncomment and adjust when you have related entities to include
+                    // .Include(d => d.Assignments)
+                    // .Include(d => d.Qualifications)
+                    .FirstOrDefaultAsync(d => d.Id == driverId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting driver details with ID {DriverId}", driverId);
                 throw;
             }
         }
@@ -311,8 +342,7 @@ namespace BusBuddy.Data
                 throw;
             }
         }
-        
-        /// <summary>
+          /// <summary>
         /// Updates an existing driver
         /// </summary>
         /// <param name="driver">The driver with updated information</param>
@@ -322,13 +352,22 @@ namespace BusBuddy.Data
             try
             {
                 _logger.LogInformation("Updating driver with ID {DriverId}", driver.Id);
+                
+                // Performance optimization: attach and mark as modified
+                // instead of querying for the driver first
                 _context.Entry(driver).State = EntityState.Modified;
+                
                 await _context.SaveChangesAsync();
                 return true;
             }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogWarning(ex, "Concurrency conflict when updating driver ID: {DriverId}", driver?.Id);
+                return false;
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating driver with ID {DriverId}", driver.Id);
+                _logger.LogError(ex, "Error updating driver with ID {DriverId}", driver?.Id);
                 return false;
             }
         }
@@ -362,6 +401,65 @@ namespace BusBuddy.Data
             {
                 _logger.LogError(ex, "Error deleting driver with ID {DriverId}", driverId);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Performs a batch update of drivers (much more efficient than updating one at a time)
+        /// </summary>
+        /// <param name="drivers">Collection of drivers to update</param>
+        /// <returns>Number of records successfully updated</returns>
+        public async Task<int> BatchUpdateDriversAsync(IEnumerable<Driver> drivers)
+        {
+            try
+            {
+                if (drivers == null || !drivers.Any())
+                    return 0;
+                
+                _logger.LogInformation("Batch updating {Count} drivers", drivers.Count());
+                
+                // Mark each entity as modified
+                foreach (var driver in drivers)
+                {
+                    _context.Entry(driver).State = EntityState.Modified;
+                }
+                
+                // Save all changes in a single transaction
+                var count = await _context.SaveChangesAsync();
+                _logger.LogInformation("Successfully updated {Count} drivers", count);
+                return count;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error performing batch update on drivers");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets drivers with licenses expiring within the specified days
+        /// </summary>
+        /// <param name="daysThreshold">Number of days to check for expiration</param>
+        /// <returns>List of drivers with expiring licenses</returns>
+        public async Task<IEnumerable<Driver>> GetDriversWithExpiringLicensesAsync(int daysThreshold)
+        {
+            try
+            {
+                _logger.LogInformation("Getting drivers with licenses expiring in the next {Days} days", daysThreshold);
+                
+                var expirationThreshold = DateTime.Now.AddDays(daysThreshold);
+                
+                return await _context.Drivers
+                    .AsNoTracking() // Performance optimization for read-only operations
+                    .Where(d => d.LicenseExpiration > DateTime.Now && 
+                               d.LicenseExpiration <= expirationThreshold)
+                    .OrderBy(d => d.LicenseExpiration)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting drivers with licenses expiring in next {Days} days", daysThreshold);
+                throw;
             }
         }
     }

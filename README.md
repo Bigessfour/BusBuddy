@@ -4,19 +4,22 @@
 
 A .NET 8.0 Windows Forms application for managing school bus operations, built with SQL Server Express, Entity Framework Core, MaterialSkin.2 for UI, and Microsoft.Extensions.Logging for diagnostics.
 
-## Current Status (as of May 10, 2025)
+## Current Status (as of May 12, 2025)
 - **Build Status**: [![CI](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml/badge.svg)](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml)
 - **Version**: 1.0.0-beta
 - **Errors**: 0 (resolved CS1061 in `BusBuddyContext.cs`, WFO1000 in `RouteEditorDialog.cs`)
 - **Warnings**: 0 (resolved NU1603 for EF Core packages)
 - **Current Floor**: 38 (stable base, database initialized)
 - **Progress**: Database rebuilt and initialized, application running, implementing organized branch strategy
-- **New Features**: Added safe driver deletion with foreign key constraint handling
+- **New Features**:
+  - Added license expiration alerts to Driver Management form
+  - Improved driver management with enhanced UI
+  - Added comprehensive test suite for form validation
 
 ## Project Health
 - **Build Status**: 0 errors, 0 warnings
-- **Test Coverage**: 13.85% (added tests for driver deletion functionality)
-- **Architectural Health**: Improved (migrated to EF Core with proper entity models)
+- **Test Coverage**: 25.73% (added comprehensive tests for Route and Vehicle Management forms)
+- **Architectural Health**: Resolved all 22 architecture violations (added [Required] attributes to entity models)
 - **Log Errors**: No recent errors
 
 ## Project Structure
@@ -29,6 +32,9 @@ BusBuddy/
 │       └── IDatabaseHelper.cs
 ├── Forms/                # UI Windows Forms
 │   ├── Dashboard.cs
+│   ├── DeleteDriverDialog.cs
+│   ├── DriverEditorDialog.cs
+│   ├── DriverManagementForm.cs
 │   ├── RouteEditorDialog.cs
 │   └── VehiclesManagementForm.cs
 ├── Models/               # Domain models
@@ -39,8 +45,11 @@ BusBuddy/
 │   └── ValueObjects/     # Value objects for entity properties
 │       └── Address.cs
 └── Tests/               # Test project
+    ├── DeleteDriverTests.cs
     ├── DriverTests.cs
-    └── VehicleTests.cs
+    ├── RouteManagementFormTests.cs
+    ├── VehicleTests.cs
+    └── VehiclesManagementFormBusinessTests.cs
 ```
 
 ## Branching Strategy

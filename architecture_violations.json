@@ -1,7 +1,11 @@
 {
   "resolved": [
     "Added [Required] attributes to string properties and nullable annotations in all entity classes.",
-    "Ensured every entity class has an Id property."
+    "Ensured every entity class has an Id property.",
+    "Optimized database operations using AsNoTracking() for read-only operations.",
+    "Implemented batch operations for more efficient bulk updates.",
+    "Added proper exception handling for DbUpdateConcurrencyException in update methods.",
+    "Created specialized methods for common query patterns to improve performance."
   ],
   "unresolved": []
 }
