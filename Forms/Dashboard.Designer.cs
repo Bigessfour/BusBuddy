@@ -1,4 +1,4 @@
-namespace BusBuddyMVP.Forms.MainForms
+namespace BusBuddy.Forms
 {
     partial class Dashboard
     {
