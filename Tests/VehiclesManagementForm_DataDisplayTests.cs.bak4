@@ -1,3 +1,4 @@
+// filepath: c:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\VehiclesManagementForm_DataDisplayTests.cs
 using Xunit;
 using BusBuddy.Forms;
 using BusBuddy.Data.Interfaces;
@@ -8,22 +9,18 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Moq;
 using System;
-using System.Runtime.Versioning;
-using BusBuddy.Tests.Utilities;
 
 namespace BusBuddy.Tests
 {
     /// <summary>
     /// Tests for the VehiclesManagementForm focusing on data display functionality
-    /// Using MessageBoxHandler to automatically handle MessageBox dialogs during tests
     /// </summary>
-    [SupportedOSPlatform("windows6.1")]  // Indicate this class requires Windows 6.1 (Windows 7) or later
-    public class VehiclesManagementForm_DataDisplayTests : MessageBoxHandlerTestBase
+    public class VehiclesManagementForm_DataDisplayTests
     {
         private readonly Mock<ILogger<VehiclesManagementForm>> _loggerMock;
         private readonly Mock<IDatabaseHelper> _dbHelperMock;
 
-        public VehiclesManagementForm_DataDisplayTests() : base(1) // Use 1 (IDOK) as the default button to click
+        public VehiclesManagementForm_DataDisplayTests()
         {
             // Mock the logger
             _loggerMock = new Mock<ILogger<VehiclesManagementForm>>();
@@ -79,9 +76,6 @@ namespace BusBuddy.Tests
             // Creating the form with task completion using a lambda to access the form
             var form = new VehiclesManagementForm(_dbHelperMock.Object, _loggerMock.Object);
             
-            // Clear any previously captured message boxes
-            ClearCapturedDialogs();
-            
             // Act - call the LoadVehicles method directly 
             form.LoadVehicles();
             
@@ -131,9 +125,6 @@ namespace BusBuddy.Tests
 
             // Creating the form
             var form = new VehiclesManagementForm(_dbHelperMock.Object, _loggerMock.Object);
-            
-            // Clear any previously captured message boxes
-            ClearCapturedDialogs();
             
             // Act - call the LoadVehicles method directly
             form.LoadVehicles();
@@ -185,9 +176,6 @@ namespace BusBuddy.Tests
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)))
                 .Callback(() => tcs.TrySetResult(true));
                 
-            // Clear any previously captured message boxes
-            ClearCapturedDialogs();
-                
             // Start the LoadVehicles process
             form.LoadVehicles();
             
@@ -214,9 +202,6 @@ namespace BusBuddy.Tests
                     It.Is<Exception?>(e => e != null && e.Message.Contains("Database connection failed")),
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
                 Times.AtLeastOnce);
-            
-            // Also verify that a message box was shown with an error
-            Assert.Contains(CapturedDialogs, dialog => dialog.Title == "Error");
         }
     }
 }

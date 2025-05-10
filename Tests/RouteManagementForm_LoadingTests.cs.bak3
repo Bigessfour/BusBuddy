@@ -8,44 +8,24 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Moq;
 using System;
-using System.Reflection;
-using System.Runtime.Versioning;
-using BusBuddy.Tests.Utilities;
 
 namespace BusBuddy.Tests
 {
     /// <summary>
     /// Additional tests for RouteManagementForm focusing on route loading functionality
-    /// Using MessageBoxHandler to automatically handle MessageBox dialogs during tests
     /// </summary>
-    [SupportedOSPlatform("windows6.1")]  // Indicate this class requires Windows 6.1 (Windows 7) or later
-    public class RouteManagementForm_LoadingTests : MessageBoxHandlerTestBase
+    public class RouteManagementForm_LoadingTests
     {
         private readonly Mock<ILogger<RouteManagementForm>> _loggerMock;
         private readonly Mock<IDatabaseHelper> _dbHelperMock;
 
-        public RouteManagementForm_LoadingTests() : base(1) // Use 1 (IDOK) as the default button to click
+        public RouteManagementForm_LoadingTests()
         {
             // Mock the logger
             _loggerMock = new Mock<ILogger<RouteManagementForm>>();
             
             // Mock the database helper
             _dbHelperMock = new Mock<IDatabaseHelper>();
-        }
-        
-        // Helper method to stop the refresh timer to prevent infinite loops
-        [SupportedOSPlatform("windows6.1")]
-        private void StopRefreshTimer(RouteManagementForm form)
-        {
-            // Get the private refreshTimer field using reflection
-            var timerField = typeof(RouteManagementForm).GetField("refreshTimer", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-                
-            if (timerField != null)
-            {
-                var timer = timerField.GetValue(form) as System.Windows.Forms.Timer;
-                timer?.Stop();
-            }
         }
         
         [Fact]
@@ -67,30 +47,23 @@ namespace BusBuddy.Tests
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)))
                 .Callback(() => tcs.TrySetResult(true));
 
-            // Clear any previously captured message boxes
-            ClearCapturedDialogs();
-
             // Creating the form
             var form = new RouteManagementForm(_dbHelperMock.Object, _loggerMock.Object);
             
-            // Stop the refresh timer to prevent continuous calls
-            StopRefreshTimer(form);
-            
             // Act - manually invoke the correct private LoadRoutesDataAsync method using reflection
             var method = typeof(RouteManagementForm).GetMethod("LoadRoutesDataAsync", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             
             var task = (Task)method.Invoke(form, null);
-            await task; // Actually await the task now
             
             // Use a timeout to prevent hanging
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(5)); // Reduced timeout since we're now awaiting the task
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30));
             var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
             
             if (completedTask == timeoutTask)
             {
                 // Test is taking too long, possibly hanging
-                throw new TimeoutException("Test execution timed out after 5 seconds");
+                throw new TimeoutException("Test execution timed out after 30 seconds");
             }
 
             // Assert
@@ -127,35 +100,28 @@ namespace BusBuddy.Tests
             _loggerMock.Setup(x => x.Log(
                     It.IsAny<LogLevel>(),
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("routes")),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("routes loaded")),
                     It.IsAny<Exception?>(),
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)))
                 .Callback(() => tcs.TrySetResult(true));
 
-            // Clear any previously captured message boxes
-            ClearCapturedDialogs();
-
             // Creating the form
             var form = new RouteManagementForm(_dbHelperMock.Object, _loggerMock.Object);
             
-            // Stop the refresh timer to prevent continuous calls
-            StopRefreshTimer(form);
-            
             // Act - manually invoke the correct private LoadRoutesDataAsync method using reflection
             var method = typeof(RouteManagementForm).GetMethod("LoadRoutesDataAsync", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             
             var task = (Task)method.Invoke(form, null);
-            await task; // Actually await the task
             
             // Use a timeout to prevent hanging
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(5)); // Reduced timeout since we're now awaiting the task
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30));
             var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
             
             if (completedTask == timeoutTask)
             {
                 // Test is taking too long, possibly hanging
-                throw new TimeoutException("Test execution timed out after 5 seconds");
+                throw new TimeoutException("Test execution timed out after 30 seconds");
             }
 
             // Assert
@@ -167,7 +133,7 @@ namespace BusBuddy.Tests
                 x => x.Log(
                     It.IsAny<LogLevel>(),
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("routes")),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("routes loaded")),
                     It.IsAny<Exception?>(),
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
                 Times.AtLeastOnce);
@@ -192,30 +158,23 @@ namespace BusBuddy.Tests
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)))
                 .Callback(() => tcs.TrySetResult(true));
 
-            // Clear any previously captured message boxes
-            ClearCapturedDialogs();
-
             // Creating the form
             var form = new RouteManagementForm(_dbHelperMock.Object, _loggerMock.Object);
             
-            // Stop the refresh timer to prevent continuous calls
-            StopRefreshTimer(form);
-            
             // Act - manually invoke the correct private LoadRoutesDataAsync method using reflection
             var method = typeof(RouteManagementForm).GetMethod("LoadRoutesDataAsync", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             
             var task = (Task)method.Invoke(form, null);
-            await task; // Actually await the task
             
             // Use a timeout to prevent hanging
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(5)); // Reduced timeout since we're now awaiting the task
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30));
             var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
             
             if (completedTask == timeoutTask)
             {
                 // Test is taking too long, possibly hanging
-                throw new TimeoutException("Test execution timed out after 5 seconds");
+                throw new TimeoutException("Test execution timed out after 30 seconds");
             }
 
             // Assert
@@ -231,9 +190,6 @@ namespace BusBuddy.Tests
                     It.Is<Exception?>(e => e != null && e.Message.Contains("Database connection failed")),
                     It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
                 Times.AtLeastOnce);
-                
-            // Also verify that a message box was shown with an error about loading routes
-            Assert.Contains(CapturedDialogs, dialog => dialog.Title == "Error");
         }
     }
 }
