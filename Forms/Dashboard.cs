@@ -22,6 +22,11 @@ namespace BusBuddy.Forms
         private MaterialTabSelector materialTabSelector;
         private TabPage tabTracking;
         private TabPage tabAnalytics;
+        
+        // Analytics placeholders
+        private Panel fuelTrendChartPanel;
+        private Label fuelTrendChartLabel;
+        private Button btnViewDetailedReports;
 
         // NOTE: All UI controls are automatically defined in Dashboard.Designer.cs
 
@@ -268,6 +273,132 @@ namespace BusBuddy.Forms
             this.Controls.Add(materialTabSelector);
             this.Controls.Add(materialTabControl);
             _logger.LogInformation("Added MaterialTabControl to Dashboard");
+
+            // Add chart placeholder to Analytics tab
+            InitializeAnalyticsTab();
+        }
+
+        private void InitializeAnalyticsTab()
+        {
+            try {
+                // Create a panel for the fuel trend chart
+                fuelTrendChartPanel = new Panel
+                {
+                    Dock = DockStyle.Top,
+                    Height = 250,
+                    BackColor = Color.White,
+                    Margin = new Padding(10)
+                };
+                
+                // Add a label as a placeholder for the chart
+                fuelTrendChartLabel = new Label
+                {
+                    Text = "Fuel Consumption Trends (Chart Placeholder)",
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    ForeColor = Color.DarkBlue,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Dock = DockStyle.Top,
+                    Height = 30
+                };
+                
+                // Create a sample representation of a chart with basic shapes
+                Panel chartPlaceholder = new Panel
+                {
+                    Dock = DockStyle.Fill,
+                    BackColor = Color.WhiteSmoke,
+                    Margin = new Padding(10)
+                };
+                
+                chartPlaceholder.Paint += (sender, e) => {
+                    // Draw a simple bar chart as a placeholder
+                    Graphics g = e.Graphics;
+                    int barWidth = 40;
+                    int spacing = 20;
+                    int startX = 50;
+                    int baseY = chartPlaceholder.Height - 50;
+                    
+                    // Draw X and Y axes
+                    g.DrawLine(Pens.Black, 40, 30, 40, baseY);
+                    g.DrawLine(Pens.Black, 40, baseY, chartPlaceholder.Width - 30, baseY);
+                    
+                    // Draw bars representing fuel consumption
+                    Random rand = new Random(42); // Fixed seed for consistent results
+                    for (int i = 0; i < 6; i++)
+                    {
+                        int barHeight = rand.Next(50, 150);
+                        g.FillRectangle(Brushes.SkyBlue, startX + i * (barWidth + spacing), 
+                            baseY - barHeight, barWidth, barHeight);
+                        g.DrawRectangle(Pens.Blue, startX + i * (barWidth + spacing), 
+                            baseY - barHeight, barWidth, barHeight);
+                        
+                        // Month labels
+                        string[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun" };
+                        g.DrawString(months[i], new Font("Arial", 8), Brushes.Black, 
+                            startX + i * (barWidth + spacing) + barWidth/2 - 10, baseY + 5);
+                    }
+                    
+                    // Add Y-axis labels
+                    g.DrawString("Gallons", new Font("Arial", 8), Brushes.Black, 5, baseY/2);
+                    g.DrawString("Months", new Font("Arial", 8), Brushes.Black, chartPlaceholder.Width/2, baseY + 20);
+                    
+                    // Add chart title
+                    g.DrawString("Monthly Fuel Consumption Trends", new Font("Arial", 12, FontStyle.Bold), 
+                        Brushes.DarkBlue, chartPlaceholder.Width/2 - 100, 5);
+                };
+                
+                // Add "View Detailed Reports" button
+                btnViewDetailedReports = new Button
+                {
+                    Text = "View Detailed Reports",
+                    Size = new Size(200, 40),
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                    Location = new Point(tabAnalytics.Width - 220, fuelTrendChartPanel.Bottom + 20),
+                    BackColor = Color.LightBlue,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold)
+                };
+                
+                btnViewDetailedReports.Click += (sender, e) => {
+                    try {
+                        _logger.LogInformation("Opening detailed reports form");
+                        
+                        // Create and show the reports form
+                        using (var reportsForm = new ReportsForm(_databaseHelper, _serviceProvider.GetService<ILogger<ReportsForm>>()))
+                        {
+                            reportsForm.ShowDialog();
+                        }
+                    }
+                    catch (Exception ex) {
+                        _logger.LogError(ex, "Error opening reports form");
+                        
+                        // Log to the error file directly
+                        string errorMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Error opening reports form: {ex.Message}";
+                        System.IO.File.AppendAllText("busbuddy_errors.log", errorMessage + Environment.NewLine);
+                        
+                        MessageBox.Show("Reports functionality will be implemented in a future update.", 
+                            "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                };
+                
+                // Add the components to the panel and tab
+                fuelTrendChartPanel.Controls.Add(chartPlaceholder);
+                fuelTrendChartPanel.Controls.Add(fuelTrendChartLabel);
+                tabAnalytics.Controls.Add(btnViewDetailedReports);
+                tabAnalytics.Controls.Add(fuelTrendChartPanel);
+                
+                _logger.LogInformation("Analytics tab components initialized successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error initializing analytics tab");
+                
+                // Write to the error log file directly
+                string errorMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Error initializing analytics tab: {ex.Message}";
+                System.IO.File.AppendAllText("busbuddy_errors.log", errorMessage + Environment.NewLine);
+                
+                MessageBox.Show($"Error initializing analytics features: {ex.Message}", 
+                    "Analytics Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ApplyMaterialSkinTheme()
