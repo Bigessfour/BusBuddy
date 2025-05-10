@@ -35,11 +35,18 @@ namespace BusBuddy
             try
             {
                 Log.Information("Application starting up");
-                
-                // Set up dependency injection
+                  // Set up dependency injection
                 var services = new ServiceCollection();
                 ConfigureServices(services);
                 var serviceProvider = services.BuildServiceProvider();
+                
+                // Ensure database exists and is created
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<BusBuddyContext>();
+                    dbContext.Database.EnsureCreated();
+                    Log.Information("Database created or verified");
+                }
                 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
