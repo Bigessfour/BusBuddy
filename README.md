@@ -45,7 +45,38 @@ To ensure stability and scalability, adhere to these principles:
 4. Build and run via Visual Studio 2022+ with .NET 9.0 SDK.
 5. Apply the `using System;` fix to `IDatabaseHelper.cs` to resolve build errors.
 
-## Contributing
+## Setup Instructions
+1. **Clone the repository:**
+   ```pwsh
+   git clone https://github.com/Bigessfour/BusBuddy.git
+   cd BusBuddy/BusBuddy
+   ```
+2. **Restore NuGet packages:**
+   ```pwsh
+   dotnet restore
+   ```
+3. **Configure SQL Server Express:**
+   - Edit `appsettings.json` with your SQL Server Express connection string.
+4. **Build and run:**
+   ```pwsh
+   dotnet build
+   dotnet run --project BusBuddy.csproj
+   ```
+
+## Testing
+- Run all xUnit tests:
+  ```pwsh
+  dotnet test
+  ```
+
+## Contribution Guidelines
 - Follow the Core Build Guidelines.
-- Test changes using xUnit (see `Tests\DatabaseHelperTests.cs`).
-- Log issues to `busbuddy_errors.log` and update `architecture_violations.json` for tracking.
+- Test all changes with xUnit before submitting a PR.
+- Log all feature additions and errors using `Microsoft.Extensions.Logging` to `busbuddy_errors.log`.
+- Document all changes and update `architecture_violations.json` as needed.
+
+## Logging
+- All errors and feature additions are logged to `busbuddy_errors.log` via `ILogger`.
+
+---
+For more details, see the in-code comments and documentation.

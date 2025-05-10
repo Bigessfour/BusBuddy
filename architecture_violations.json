@@ -1,0 +1,7 @@
+{
+  "resolved": [
+    "Added [Required] attributes to string properties and nullable annotations in all entity classes.",
+    "Ensured every entity class has an Id property."
+  ],
+  "unresolved": []
+}

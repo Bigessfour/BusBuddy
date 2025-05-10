@@ -102,6 +102,15 @@ namespace BusBuddy.Forms
             }
         }
 
+        /// <summary>
+        /// TODO: Integrate GMap.NET when validated.
+        /// </summary>
+        public void InitializeMapPanel()
+        {
+            // Placeholder for future map panel integration
+            logger.LogInformation("InitializeMapPanel placeholder called");
+        }
+
         private async void BtnAdd_Click(object? sender, EventArgs e)
         {
             using (var dialog = new RouteEditorDialog())

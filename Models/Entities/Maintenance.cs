@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusBuddy.Models.Entities
 {
@@ -30,6 +31,7 @@ namespace BusBuddy.Models.Entities
         /// <summary>
         /// Description of maintenance performed
         /// </summary>
+        [Required]
         public string Description { get; set; } = string.Empty;
     }
 }

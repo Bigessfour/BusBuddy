@@ -21,7 +21,7 @@ namespace BusBuddy.Models.Entities
         /// <summary>
         /// Navigation property for the vehicle
         /// </summary>
-        public Vehicle Vehicle { get; set; } = null!;
+        public Vehicle? Vehicle { get; set; } = null!;
 
         /// <summary>
         /// Date and time of the fuel purchase

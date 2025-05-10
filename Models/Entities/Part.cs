@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusBuddy.Models.Entities
 {
@@ -15,11 +16,13 @@ namespace BusBuddy.Models.Entities
         /// <summary>
         /// Part name
         /// </summary>
+        [Required]
         public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Part number
         /// </summary>
+        [Required]
         public string PartNumber { get; set; } = string.Empty;
         
         /// <summary>

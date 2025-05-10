@@ -5,14 +5,23 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using BusBuddy.Data;
 using BusBuddy.Data.Interfaces;
+using MaterialSkin;
+using MaterialSkin.Controls;
 
 namespace BusBuddy.Forms
-{    public partial class Dashboard : Form
+{    
+    public partial class Dashboard : MaterialForm
     {
         private readonly IDatabaseHelper _databaseHelper;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<Dashboard> _logger;
         private BindingSource bindingSource = new BindingSource();
+
+        // MaterialSkin.2 UI enhancement: Add MaterialTabControl for Tracking and Analytics
+        private MaterialTabControl materialTabControl;
+        private MaterialTabSelector materialTabSelector;
+        private TabPage tabTracking;
+        private TabPage tabAnalytics;
 
         // NOTE: All UI controls are automatically defined in Dashboard.Designer.cs
 
@@ -48,6 +57,9 @@ namespace BusBuddy.Forms
         {
             try
             {
+                ApplyMaterialSkinTheme();
+                InitializeMaterialTabs();
+
                 _logger!.LogInformation("Dashboard Load event starting");
 
                 // Verify that required services are available
@@ -236,6 +248,46 @@ namespace BusBuddy.Forms
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
+        }
+
+        private void InitializeMaterialTabs()
+        {
+            materialTabControl = new MaterialTabControl();
+            materialTabSelector = new MaterialTabSelector();
+            tabTracking = new TabPage { Text = "Tracking" };
+            tabAnalytics = new TabPage { Text = "Analytics" };
+            materialTabControl.Controls.Add(tabTracking);
+            materialTabControl.Controls.Add(tabAnalytics);
+            materialTabControl.Depth = 0;
+            materialTabControl.Location = new System.Drawing.Point(200, 60);
+            materialTabControl.Size = new System.Drawing.Size(600, 400);
+            materialTabControl.TabIndex = 0;
+            materialTabSelector.BaseTabControl = materialTabControl;
+            materialTabSelector.Location = new System.Drawing.Point(200, 30);
+            materialTabSelector.Size = new System.Drawing.Size(600, 30);
+            this.Controls.Add(materialTabSelector);
+            this.Controls.Add(materialTabControl);
+            _logger.LogInformation("Added MaterialTabControl to Dashboard");
+        }
+
+        private void ApplyMaterialSkinTheme()
+        {
+            var materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.AddFormToManage(this);
+            materialSkinManager.Theme = MaterialSkinManager.Themes.DARK;
+            materialSkinManager.ColorScheme = new ColorScheme(
+                Primary.Grey800, Primary.Grey900,
+                Primary.Grey500, Accent.Orange700,
+                TextShade.WHITE);
+        }
+
+        /// <summary>
+        /// TODO: Integrate GMap.NET when validated.
+        /// </summary>
+        public void InitializeMapPanel()
+        {
+            // Placeholder for future map panel integration
+            _logger.LogInformation("InitializeMapPanel placeholder called");
         }
     }
 }

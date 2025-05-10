@@ -34,6 +34,7 @@ namespace BusBuddy.Models.Entities
         /// <summary>
         /// The year the vehicle was manufactured
         /// </summary>
+        [Required]
         public int Year { get; set; }
 
         /// <summary>
@@ -57,6 +58,12 @@ namespace BusBuddy.Models.Entities
         /// Seating capacity of the vehicle
         /// </summary>
         public int Capacity { get; set; }
+
+        /// <summary>
+        /// Insurance expiration date
+        /// </summary>
+        [Required]
+        public DateTime InsuranceExpiration { get; set; }
 
         /// <summary>
         /// Date and time the vehicle was added to the system

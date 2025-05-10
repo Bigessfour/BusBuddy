@@ -39,11 +39,13 @@ namespace BusBuddy.Models.Entities
         /// <summary>
         /// Contact phone number
         /// </summary>
+        [Required]
         public string PhoneNumber { get; set; } = string.Empty;
 
         /// <summary>
         /// Contact email
         /// </summary>
+        [Required]
         public string Email { get; set; } = string.Empty;
 
         /// <summary>
