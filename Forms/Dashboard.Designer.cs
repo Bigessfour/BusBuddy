@@ -23,8 +23,7 @@ namespace BusBuddy.Forms
         #region Windows Form Designer generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// Required method for Designer support - do not modify the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
@@ -88,6 +87,7 @@ namespace BusBuddy.Forms
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             
             // navigationToolStripMenuItem
             // 
@@ -181,10 +181,21 @@ namespace BusBuddy.Forms
             this.ClientSize = new System.Drawing.Size(1024, 600);
             this.Controls.Add(this.contentPanel);
             this.Controls.Add(this.sidePanel);
+            this.Controls.Add(this.statusStrip);
+            this.Controls.Add(this.mainMenuStrip);
+            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "Dashboard";
             this.Text = "BusBuddy MVP - Dashboard";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.ControlBox = true;
+            this.MaximizeBox = true;
+            this.MinimizeBox = true;
+            this.mainMenuStrip.ResumeLayout(false);
+            this.mainMenuStrip.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         #endregion

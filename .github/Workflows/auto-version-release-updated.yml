@@ -1,0 +1,153 @@
+name: Auto Version and Release
+permissions:
+  contents: write
+  actions: read
+  checks: read
+on:
+  push:
+    branches: 
+      - main
+      - 'release/*'
+    paths:
+      - '**/*.cs'
+      - '**/*.csproj'
+      - '!**/*.md'
+      - '!.github/**'
+
+jobs:
+  version-and-release:
+    runs-on: windows-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, '[no-release]')"
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    
+    - name: Determine version bump
+      id: bump
+      run: |
+        # Check commit message for keywords
+        if echo "${{ github.event.head_commit.message }}" | grep -i -E "breaking|major"; then
+          echo "bump=major" >> $GITHUB_OUTPUT
+        elif echo "${{ github.event.head_commit.message }}" | grep -i -E "feature|minor"; then
+          echo "bump=minor" >> $GITHUB_OUTPUT
+        else
+          echo "bump=patch" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+    
+    - name: Configure Git
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+      
+    - name: Bump version and push tag
+      id: tag_version
+      run: |
+        # Extract current version or set default if not found
+        if grep -q "<Version>" BusBuddy.csproj; then
+          CURRENT_VERSION=$(grep -oP '<Version>\K[^<]+' BusBuddy.csproj)
+        else
+          # Add version tag if it doesn't exist
+          sed -i '/<PropertyGroup>/a\    <Version>1.0.0</Version>' BusBuddy.csproj
+          CURRENT_VERSION="1.0.0"
+        fi
+        
+        echo "Current version: $CURRENT_VERSION"
+        
+        # Parse version components
+        IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
+        MAJOR=${VERSION_PARTS[0]}
+        MINOR=${VERSION_PARTS[1]}
+        PATCH=${VERSION_PARTS[2]}
+        
+        # Bump version based on commit type
+        BUMP="${{ steps.bump.outputs.bump }}"
+        if [ "$BUMP" = "major" ]; then
+          MAJOR=$((MAJOR + 1))
+          MINOR=0
+          PATCH=0
+        elif [ "$BUMP" = "minor" ]; then
+          MINOR=$((MINOR + 1))
+          PATCH=0
+        else
+          PATCH=$((PATCH + 1))
+        fi
+        
+        NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+        echo "New version: $NEW_VERSION"
+        
+        # Update version in csproj file
+        if grep -q "<Version>" BusBuddy.csproj; then
+          sed -i "s/<Version>$CURRENT_VERSION<\/Version>/<Version>$NEW_VERSION<\/Version>/" BusBuddy.csproj
+        else
+          sed -i '/<PropertyGroup>/a\    <Version>'"$NEW_VERSION"'</Version>' BusBuddy.csproj
+        fi
+        
+        # Commit the version change
+        git add BusBuddy.csproj
+        git commit -m "Bump version to $NEW_VERSION [skip ci]"
+        
+        # Create and push tag
+        git tag "v$NEW_VERSION"
+        git push origin HEAD:${GITHUB_REF#refs/heads/}
+        git push origin "v$NEW_VERSION"
+        
+        # Set outputs for next steps
+        echo "new_tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Simple changelog generation from commit messages
+        PREVIOUS_TAG=$(git describe --tags --abbrev=0 "v${{ steps.tag_version.outputs.new_version }}^" 2>/dev/null || echo "")
+        
+        if [ -z "$PREVIOUS_TAG" ]; then
+          # If no previous tag exists, get all commits
+          CHANGELOG=$(git log --pretty=format:"* %s" | head -n 10)
+        else
+          # Otherwise get commits between tags
+          CHANGELOG=$(git log --pretty=format:"* %s" "$PREVIOUS_TAG..HEAD" | head -n 10)
+        fi
+        
+        # Escape newlines for GitHub Actions
+        CHANGELOG="${CHANGELOG//'%'/'%25'}"
+        CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+        CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+        
+        echo "changelog<<EOF" >> $GITHUB_OUTPUT
+        echo "$CHANGELOG" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: |
+          Changes in this Release:
+          ${{ steps.changelog.outputs.changelog }}
+        draft: false
+        prerelease: false

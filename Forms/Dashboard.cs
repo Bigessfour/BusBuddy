@@ -51,6 +51,7 @@ namespace BusBuddy.Forms
                 // Register events BEFORE setting up controls
                 this.Load += Dashboard_Load;
                 this.Resize += Dashboard_Resize;
+                this.FormClosing += Dashboard_FormClosing;
 
                 _logger!.LogInformation("Dashboard constructor completed successfully");
             }
@@ -463,6 +464,30 @@ namespace BusBuddy.Forms
                 Primary.Grey800, Primary.Grey900,
                 Primary.Grey500, Accent.Orange700,
                 TextShade.WHITE);
+        }
+
+        /// <summary>
+        /// Handles the exit menu item click event.
+        /// </summary>
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
+        /// Handles the form closing event.
+        /// </summary>
+        private void Dashboard_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                _logger.LogInformation("Dashboard is closing");
+                // Add any cleanup code here if needed
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in Dashboard_FormClosing");
+            }
         }
 
         /// <summary>

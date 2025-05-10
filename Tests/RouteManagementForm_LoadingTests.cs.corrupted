@@ -1,6 +1,14 @@
 using Xunit;
 using BusBuddy.Forms;
-using BusBuddy.Data.Interfaces;
+using BusBudd            // Verify logger was called to report empty routes
+            _loggerMock.Verify(
+                x => x.Log(
+                    It.Is<LogLevel>(l => l == LogLevel.Information),
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("No routes found")),
+                    It.IsAny<Exception?>(),
+                    It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)),
+                Times.AtLeastOnce);terfaces;
 using BusBuddy.Models.Entities;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
@@ -48,8 +56,7 @@ namespace BusBuddy.Tests
             // Assert
             // Verify the database was called
             _dbHelperMock.Verify(x => x.GetRoutesAsync(), Times.AtLeastOnce);
-            
-            // Verify logger was called to report empty routes
+              // Verify logger was called to report empty routes
             _loggerMock.Verify(
                 x => x.Log(
                     It.Is<LogLevel>(l => l == LogLevel.Information),

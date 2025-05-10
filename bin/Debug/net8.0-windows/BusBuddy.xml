@@ -255,6 +255,16 @@
             Simulates drawing a vehicle location on the map
             </summary>
         </member>
+        <member name="M:BusBuddy.Forms.Dashboard.exitToolStripMenuItem_Click(System.Object,System.EventArgs)">
+            <summary>
+            Handles the exit menu item click event.
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.Dashboard.Dashboard_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
+            <summary>
+            Handles the form closing event.
+            </summary>
+        </member>
         <member name="M:BusBuddy.Forms.Dashboard.InitializeMapPanel">
             <summary>
             TODO: Integrate GMap.NET when validated.
@@ -273,8 +283,7 @@
         </member>
         <member name="M:BusBuddy.Forms.Dashboard.InitializeComponent">
             <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
+            Required method for Designer support - do not modify the contents of this method with the code editor.
             </summary>
         </member>
         <member name="T:BusBuddy.Forms.DeleteDriverDialog">
