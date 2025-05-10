@@ -1,15 +1,16 @@
-# BusBuddyMVP
+# BusBuddy - School Bus Management System
 
 ![CI](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml/badge.svg)
 
 A .NET 8.0 Windows Forms application for managing school bus operations, built with SQL Server Express, Entity Framework Core, MaterialSkin.2 for UI, and Microsoft.Extensions.Logging for diagnostics.
 
-## Current Status (as of May 9, 2025)
-- **Build Status**: [![.NET Desktop CI](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml/badge.svg)](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml)
+## Current Status (as of May 10, 2025)
+- **Build Status**: [![CI](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml/badge.svg)](https://github.com/Bigessfour/BusBuddy/actions/workflows/ci.yml)
+- **Version**: 1.0.0-beta
 - **Errors**: 0 (resolved CS1061 in `BusBuddyContext.cs`, WFO1000 in `RouteEditorDialog.cs`)
 - **Warnings**: 0 (resolved NU1603 for EF Core packages)
 - **Current Floor**: 38 (stable base, database initialized)
-- **Progress**: Database rebuilt and initialized, application running, planning test coverage and UI enhancements
+- **Progress**: Database rebuilt and initialized, application running, implementing organized branch strategy
 
 ## Project Health
 - **Build Status**: 0 errors, 0 warnings
@@ -17,53 +18,236 @@ A .NET 8.0 Windows Forms application for managing school bus operations, built w
 - **Architectural Health**: Improved (migrated to EF Core with proper entity models)
 - **Log Errors**: No recent errors
 
-## Key Metrics
+## Project Structure
+```
+BusBuddy/
+├── Data/                 # Database and data access
+│   ├── BusBuddyContext.cs
+│   ├── DatabaseHelper.cs
+│   └── Interfaces/
+│       └── IDatabaseHelper.cs
+├── Forms/                # UI Windows Forms
+│   ├── Dashboard.cs
+│   ├── RouteEditorDialog.cs
+│   └── VehiclesManagementForm.cs
+├── Models/               # Domain models
+│   ├── Entities/         # Database entity models
+│   │   ├── Driver.cs
+│   │   ├── Route.cs
+│   │   └── Vehicle.cs
+│   └── ValueObjects/     # Value objects for entity properties
+│       └── Address.cs
+└── Tests/               # Test project
+    ├── DriverTests.cs
+    └── VehicleTests.cs
+```
+
+## Branching Strategy
+
+BusBuddy follows a tailored GitFlow branching model:
+
+### Long-lived Branches
+- **main**: Production-ready code, protected branch
+- **develop**: Integration branch for features
+
+### Short-lived Branches
+- **feature/form-{form-name}**: For UI form development (e.g., `feature/form-vehicle-management`)
+- **feature/model-{entity}**: For model/entity changes (e.g., `feature/model-driver-licensing`)
+- **feature/data-{component}**: For database-related changes (e.g., `feature/data-migration-fix`)
+- **bugfix/{issue-number}-{short-description}**: For bug fixes (e.g., `bugfix/423-fuel-calculation`)
+- **release/v{major}.{minor}.{patch}**: For release preparation (e.g., `release/v2.1.0`)
+- **hotfix/v{major}.{minor}.{patch+1}**: For emergency fixes (e.g., `hotfix/v2.1.1`)
+
+### Development Workflow
+
+1. **Start New Development**
+   ```pwsh
+   git checkout develop
+   git pull
+   git checkout -b feature/form-vehicle-management
+   # Make changes...
+   git add .
+   git commit -m "Add fuel tracking to vehicle management form"
+   git push -u origin feature/form-vehicle-management
+   ```
+
+2. **Create Pull Request** (via GitHub)
+   - Navigate to Pull Requests > New Pull Request
+   - Select base:develop and compare:feature/form-vehicle-management
+   - Add description and request review
+
+3. **Release Process**
+   ```pwsh
+   # After features are merged to develop
+   git checkout develop
+   git pull
+   git checkout -b release/v1.1.0
+   # Final testing and version updates...
+   git add .
+   git commit -m "Prepare release v1.1.0"
+   git push -u origin release/v1.1.0
+   ```
+
+4. **Finalize Release** (via Release Management workflow)
+   - Run the Release Management workflow with "finalize-release" option
+
+For more details, see the [branch-strategy.yml](/.github/workflows/branch-strategy.yml) workflow.
+
+## Automated Workflows
+
+Our project uses several GitHub Actions workflows for automation:
+
+- **CI**: Automatic build and test for protected branches
+  - Triggers on: push to main/develop/release*/hotfix*, PRs to main/develop
+  - Runs: restore, build, test
+
+- **Feature Branch Workflow**: Quality checks for feature development
+  - Triggers on: push to feature*/bugfix*, PRs to develop
+  - Runs: build, test, code quality analysis
+
+- **Auto Sync**: Keeps branches in sync
+  - Triggers: Daily at midnight, manual trigger
+  - Options: Sync main or develop branch
+
+- **Release Management**: Handles GitFlow release processes
+  - Options: Create/finalize release branch, create/finalize hotfix
+  - Requires: Version number input
+
+- **Auto Version and Release**: Smart versioning based on commits
+  - Version bump keywords: "breaking"/"major", "feature"/"minor"
+  - Skip release with: "[no-release]" in commit message
+
+## Technical Overview
+
+### Technology Stack
+- **Frontend**: Windows Forms with MaterialSkin.2 UI library
+- **Backend**: .NET 8.0 with Entity Framework Core
+- **Database**: SQL Server Express
+- **Logging**: Microsoft.Extensions.Logging with file output
+- **Testing**: xUnit with Moq for unit tests
+- **CI/CD**: GitHub Actions workflows
+
+### Key Metrics
 - **Classes**: 47
 - **Forms**: 16
 - **Untested Components**: 31 (e.g., `RouteManagementForm.cs`, `VehiclesManagementForm.cs`)
 - **Architecture Violations**: 22 (e.g., missing `[Required]` in `Models\Entities\Driver.cs`)
 
-## Core Build Guidelines
-To ensure stability and scalability, adhere to these principles:
-- **Modern UI**: Use MaterialSkin.2 for dark-themed, responsive forms (e.g., `Dashboard.cs`). Implement navigation sidebars and tab controls for improved UX.
-- **Real-Time Tracking**: Add placeholders for GPS integration in `Dashboard.cs` and `RouteManagementForm.cs` (e.g., `mapPanel`) until libraries like GMap.NET are validated.
-- **Automated Scheduling**: Plan schedule logic in `RouteManagementForm.cs` with placeholders for notifications, avoiding database changes until tested.
-- **Mobile Accessibility**: Design forms with future web/mobile compatibility, avoiding desktop-specific layouts.
-- **Safety/Compliance**: Implement validation in `DriversManagementForm.cs` and `VehiclesManagementForm.cs` for license/insurance expirations using `DatabaseHelper.cs`.
-- **Data-Driven Insights**: Plan analytics in `Dashboard.cs` or a future `ReportsForm.cs` with placeholders for charts (e.g., fuel trends) until Chart controls are added.
-- **Stability**: Preserve existing database logic (`BusBuddyContext.cs`) and dependencies. Test changes incrementally to maintain 0 errors where possible.
-- **Continuity**: Log all UI/feature additions to `busbuddy_errors.log` via `ILogger` for tracking.
+### Core Features
+- **Driver Management**: Track driver information, licenses, certifications
+- **Vehicle Management**: Monitor bus fleet, maintenance, fuel consumption
+- **Route Planning**: Optimize school bus routes and schedules
+- **Activity Trips**: Manage special events and field trips
+- **Maintenance Tracking**: Schedule and document vehicle maintenance
+- **Compliance Reporting**: Generate reports for regulatory compliance
 
-## Recommendations
-- **Fix Build Errors**: Add `using System;` to `Data\Interfaces\IDatabaseHelper.cs` to resolve 5 CS0246 errors.
-- **Increase Test Coverage**: Add unit tests for 31 untested components, prioritizing `RouteManagementForm.cs` and `VehiclesManagementForm.cs`.
-- **Address Violations**: Add `[Required]` attributes or nullable annotations to string properties in `Models\Entities\*.cs` and ensure entity classes have `Id` properties.
-- **Enhance UI**: Implement a `MaterialTabControl` in `Dashboard.cs` for tracking and analytics placeholders.
+## Development Guidelines
 
-## Getting Started
-1. Clone the repository.
-2. Restore NuGet packages (e.g., MaterialSkin.2, Microsoft.EntityFrameworkCore.SqlServer).
-3. Configure SQL Server Express connection in `appsettings.json`.
-4. Build and run via Visual Studio 2022+ with .NET 9.0 SDK.
-5. Apply the `using System;` fix to `IDatabaseHelper.cs` to resolve build errors.
+### Branch Naming Conventions
+- **Feature branches**: `feature/area-description` (e.g., `feature/form-route-editor`)
+- **Bug fixes**: `bugfix/number-description` (e.g., `bugfix/423-null-reference`)
+- **Release branches**: `release/vX.Y.Z` (e.g., `release/v1.2.0`)
+- **Hotfix branches**: `hotfix/vX.Y.Z` (e.g., `hotfix/v1.2.1`)
 
-## Setup Instructions
+### Coding Standards
+- **Modern UI**: MaterialSkin.2 for dark-themed forms with consistent navigation
+- **Model Validation**: Required attributes and nullable annotations on entity models
+- **Error Handling**: Structured exception handling with logging
+- **Testing**: Unit tests required for all new business logic
+- **Database Access**: Use EF Core for data access, avoid direct SQL except in legacy code
+
+## Setup & Development
+
+### Prerequisites
+- **Required**: 
+  - Windows 10/11
+  - .NET 8.0 SDK or newer
+  - SQL Server Express 2022
+  - Visual Studio 2022+ or VS Code
+
+- **Recommended**:
+  - Git for Windows
+  - SQL Server Management Studio
+
+### Getting Started
+
 1. **Clone the repository:**
    ```pwsh
    git clone https://github.com/Bigessfour/BusBuddy.git
    cd BusBuddy/BusBuddy
    ```
-2. **Restore NuGet packages:**
+
+2. **Set up branch structure:**
+   ```pwsh
+   # If develop branch doesn't exist:
+   git checkout -b develop
+   git push -u origin develop
+   ```
+
+3. **Restore NuGet packages:**
    ```pwsh
    dotnet restore
    ```
-3. **Configure SQL Server Express:**
-   - Edit `appsettings.json` with your SQL Server Express connection string.
-4. **Build and run:**
+
+4. **Configure database connection:**
+   - Edit `appsettings.json`:
+   ```json
+   {
+     "ConnectionStrings": {
+       "BusBuddyDatabase": "Server=localhost\\SQLEXPRESS;Database=BusBuddy;Trusted_Connection=True;TrustServerCertificate=True"
+     }
+   }
+   ```
+
+5. **Initialize database:**
+   ```pwsh
+   dotnet ef database update
+   ```
+
+6. **Build and run:**
    ```pwsh
    dotnet build
-   dotnet run --project BusBuddy.csproj
+   dotnet run
    ```
+
+### Common Development Tasks
+
+1. **Create a new feature branch:**
+   ```pwsh
+   git checkout develop
+   git pull
+   git checkout -b feature/form-new-feature
+   ```
+
+2. **Update database after model changes:**
+   ```pwsh
+   dotnet ef migrations add DescriptiveNameOfChange
+   dotnet ef database update
+   ```
+
+3. **Run tests:**
+   ```pwsh
+   dotnet test Tests/BusBuddy.Tests.csproj
+   ```
+
+4. **Check test coverage:**
+   ```pwsh
+   dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+   ```
+
+## Development Roadmap
+
+### Current Sprint (May 2025)
+- Complete driver management forms
+- Increase test coverage to 25%
+- Implement branch protection rules
+- Resolve remaining architecture violations
+
+### Future Plans
+- Implement real-time GPS tracking
+- Add mobile companion app integration
+- Develop analytics dashboard
+- Create comprehensive reporting system
 
 ## Testing
 - Run all xUnit tests:

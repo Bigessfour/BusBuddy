@@ -1,5 +1,15 @@
 name: CI
-on: [push, pull_request]
+on:
+  push:
+    branches: 
+      - main
+      - develop
+      - 'release/*'
+      - 'hotfix/*'
+  pull_request:
+    branches: 
+      - main
+      - develop
 jobs:
   build:
     runs-on: windows-latest

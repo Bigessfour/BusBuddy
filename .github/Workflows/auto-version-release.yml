@@ -1,0 +1,71 @@
+name: Auto Version and Release
+
+on:
+  push:
+    branches: 
+      - main
+      - 'release/*'
+    paths:
+      - '**/*.cs'
+      - '**/*.csproj'
+      - '!**/*.md'
+      - '!.github/**'
+
+jobs:
+  version-and-release:
+    runs-on: windows-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, '[no-release]')"
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.RELEASE_PAT }}  # Personal access token with repo scope
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    
+    - name: Determine version bump
+      id: bump
+      run: |
+        # Check commit message for keywords
+        if echo "${{ github.event.head_commit.message }}" | grep -i -E "breaking|major"; then
+          echo "bump=major" >> $GITHUB_OUTPUT
+        elif echo "${{ github.event.head_commit.message }}" | grep -i -E "feature|minor"; then
+          echo "bump=minor" >> $GITHUB_OUTPUT
+        else
+          echo "bump=patch" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+    
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        github_token: ${{ secrets.RELEASE_PAT }}
+        default_bump: ${{ steps.bump.outputs.bump }}
+        release_branches: main
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: |
+          Changes in this Release:
+          ${{ steps.tag_version.outputs.changelog }}
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}

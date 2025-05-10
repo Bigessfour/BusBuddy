@@ -1,0 +1,56 @@
+name: Auto Sync
+
+on:
+  # Schedule to run daily
+  schedule:
+    - cron: '0 0 * * *'  # Runs at midnight every day
+  
+  # Add manual trigger option
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to sync (main or develop)'
+        required: true
+        default: 'main'
+        type: choice
+        options:
+          - main
+          - develop
+
+jobs:
+  sync-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_PAT }}  # Needs a personal access token with repo scope
+      
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+      
+      # If you're syncing with an upstream repository
+      # Replace with your upstream repo details
+      - name: Add upstream repository
+        run: |
+          git remote add upstream https://github.com/Bigessfour/BusBuddy.git || true
+      
+      # Pull from upstream and push to origin for the specified branch
+      - name: Sync with upstream
+        run: |
+          git fetch upstream
+          git checkout ${{ github.event.inputs.branch || 'main' }}
+          git merge upstream/${{ github.event.inputs.branch || 'main' }} || (echo "Merge conflict detected, manual resolution needed" && exit 1)
+          git push origin ${{ github.event.inputs.branch || 'main' }}
+      
+      # If the sync was for main, also update develop
+      - name: Sync develop with main (if main was updated)
+        if: github.event.inputs.branch == 'main' || github.event.inputs.branch == null
+        run: |
+          # Update develop with changes from main
+          git checkout develop || git checkout -b develop
+          git merge main || (echo "Merge conflict detected, manual resolution needed" && exit 1)
+          git push origin develop

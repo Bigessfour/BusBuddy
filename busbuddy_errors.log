@@ -10,3 +10,14 @@ Dropped and rebuilt BusBuddy database with initial schema on %DATE%
 Verified application startup and database connectivity on %DATE%
 Updated README.md to reflect clean build and database setup on %DATE%
 Added GitHub Actions workflow build.yml on 05/09/2025 21:57:08
+[2025-05-10 00:48:51] Starting clean build artifacts process
+[2025-05-10 00:48:51] Current location: C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy
+[2025-05-10 00:48:51] Removing Tests\obj directory
+[2025-05-10 00:48:51] Successfully removed Tests\obj directory
+[2025-05-10 00:48:51] Removing Tests\bin directory
+[2025-05-10 00:48:51] Successfully removed Tests\bin directory
+[2025-05-10 00:48:51] Restoring dependencies using 'dotnet restore'
+[2025-05-10 00:48:53] Successfully restored dependencies
+[2025-05-10 00:48:53] Building the solution using 'dotnet build'
+[2025-05-10 00:48:59] Successfully built the solution
+[2025-05-10 00:48:59] Clean build artifacts process completed successfully

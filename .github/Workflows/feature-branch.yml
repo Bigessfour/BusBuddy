@@ -1,0 +1,47 @@
+name: Feature Branch Workflow
+
+on:
+  push:
+    branches: 
+      - 'feature/*'
+      - 'bugfix/*'
+  pull_request:
+    branches:
+      - develop
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-feature:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore BusBuddy.sln
+      
+      - name: Build
+        run: dotnet build BusBuddy.sln --no-restore
+      
+      - name: Test
+        run: dotnet test Tests\BusBuddy.Tests.csproj --no-build
+      
+      - name: Analyze code quality
+        run: |
+          dotnet tool install --global dotnet-format
+          dotnet format --verify-no-changes --severity info
+        continue-on-error: true
+      
+      # Optional - run additional checks for pull requests to develop
+      - name: Run additional checks for PRs
+        if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop'
+        run: |
+          echo "Running additional checks for PRs targeting develop branch"
+          # Additional checks could be added here, like more thorough testing
