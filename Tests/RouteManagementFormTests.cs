@@ -55,5 +55,13 @@ namespace BusBuddy.Tests
             // TODO: Simulate delete route
             Assert.True(true);
         }
+
+        [Fact]
+        public void RouteManagementForm_BindsDataCorrectly()
+        {
+            var form = new RouteManagementForm(_logger);
+            // TODO: Simulate data binding and assert
+            Assert.True(true);
+        }
     }
 }

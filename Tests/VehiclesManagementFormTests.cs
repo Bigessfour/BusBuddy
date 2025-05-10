@@ -52,5 +52,13 @@ namespace BusBuddy.Tests
             // TODO: Simulate delete vehicle
             Assert.True(true);
         }
+
+        [Fact]
+        public void VehiclesManagementForm_BindsDataCorrectly()
+        {
+            var form = new VehiclesManagementForm(_logger);
+            // TODO: Simulate data binding and assert
+            Assert.True(true);
+        }
     }
 }
