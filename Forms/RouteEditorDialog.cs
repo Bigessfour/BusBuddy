@@ -206,10 +206,8 @@ namespace BusBuddy.Forms
             };
             this.Controls.Add(btnCancel);
             this.AcceptButton = btnSave;
-            this.CancelButton = btnCancel;
-
-            // Do initial validation
-            ValidateInput(null, EventArgs.Empty);
+            this.CancelButton = btnCancel;            // Do initial validation
+            ValidateInput(this, EventArgs.Empty);
         }
 
         private void ValidateInput(object sender, EventArgs e)

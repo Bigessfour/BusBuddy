@@ -153,6 +153,16 @@
             <param name="name">Vehicle name to check</param>
             <returns>True if vehicle exists, false otherwise</returns>
         </member>
+        <member name="M:BusBuddy.Forms.Dashboard.InitializeTrackingTab">
+            <summary>
+            Initializes the tracking tab with GPS map placeholder
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.Dashboard.DrawVehicleLocationOnMap(System.String)">
+            <summary>
+            Simulates drawing a vehicle location on the map
+            </summary>
+        </member>
         <member name="M:BusBuddy.Forms.Dashboard.InitializeMapPanel">
             <summary>
             TODO: Integrate GMap.NET when validated.
@@ -173,6 +183,16 @@
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:BusBuddy.Forms.ReportsForm">
+            <summary>
+            Form for viewing and generating analytics reports
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.ReportsForm.LogToFile(System.String)">
+            <summary>
+            Helper method to log to busbuddy_errors.log file
             </summary>
         </member>
         <member name="T:BusBuddy.Forms.RouteEditorDialog">
@@ -197,11 +217,6 @@
         <member name="M:BusBuddy.Forms.RouteEditorDialog.InitializeComponent">
             <summary>
             Initializes form components
-            </summary>
-        </member>
-        <member name="M:BusBuddy.Forms.RouteManagementForm.InitializeMapPanel">
-            <summary>
-            TODO: Integrate GMap.NET when validated.
             </summary>
         </member>
         <member name="T:BusBuddy.Migrations.InitialCreate">

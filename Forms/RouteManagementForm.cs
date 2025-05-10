@@ -21,6 +21,14 @@ namespace BusBuddy.Forms
         private Button btnRefresh;
         private System.Windows.Forms.Timer refreshTimer;
         private readonly ILogger<RouteManagementForm> logger;
+        
+        // GPS tracking related fields
+        private Panel routeMapPanel;
+        private Button btnViewOnMap;
+        private Button btnOptimizeRoute;
+        private TabControl tabControlRoutes;
+        private TabPage tabPageList;
+        private TabPage tabPageMap;
 
         public RouteManagementForm(IDatabaseHelper dbHelper, ILogger<RouteManagementForm> logger)
         {
@@ -44,31 +52,59 @@ namespace BusBuddy.Forms
             };
             this.Controls.Add(lblTitle);
 
-            dgvRoutes = new DataGridView
+            tabControlRoutes = new TabControl
             {
                 Location = new Point(20, 50),
-                Size = new Size(640, 300),
+                Size = new Size(640, 300)
+            };
+
+            tabPageList = new TabPage("List View");
+            tabPageMap = new TabPage("Map View");
+
+            dgvRoutes = new DataGridView
+            {
+                Location = new Point(0, 0),
+                Size = new Size(630, 270),
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
                 ReadOnly = true,
                 DataSource = bindingSource
             };
-            this.Controls.Add(dgvRoutes);
+            tabPageList.Controls.Add(dgvRoutes);
+
+            routeMapPanel = new Panel
+            {
+                Location = new Point(0, 0),
+                Size = new Size(630, 270),
+                BackColor = Color.LightGray
+            };
+            tabPageMap.Controls.Add(routeMapPanel);
+
+            tabControlRoutes.TabPages.Add(tabPageList);
+            tabControlRoutes.TabPages.Add(tabPageMap);
+            this.Controls.Add(tabControlRoutes);
 
             btnAdd = new Button { Text = "Add", Location = new Point(20, 370), Size = new Size(80, 30) };
             btnEdit = new Button { Text = "Edit", Location = new Point(110, 370), Size = new Size(80, 30) };
             btnDelete = new Button { Text = "Delete", Location = new Point(200, 370), Size = new Size(80, 30) };
             btnRefresh = new Button { Text = "Refresh", Location = new Point(290, 370), Size = new Size(80, 30) };
+            btnViewOnMap = new Button { Text = "View on Map", Location = new Point(380, 370), Size = new Size(100, 30) };
+            btnOptimizeRoute = new Button { Text = "Optimize Route", Location = new Point(490, 370), Size = new Size(120, 30) };
+
             this.Controls.Add(btnAdd);
             this.Controls.Add(btnEdit);
             this.Controls.Add(btnDelete);
             this.Controls.Add(btnRefresh);
+            this.Controls.Add(btnViewOnMap);
+            this.Controls.Add(btnOptimizeRoute);
 
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
             btnDelete.Click += BtnDelete_Click;
             btnRefresh.Click += async (s, e) => await LoadRoutesDataAsync();
+            btnViewOnMap.Click += BtnViewOnMap_Click;
+            btnOptimizeRoute.Click += BtnOptimizeRoute_Click;
 
             refreshTimer = new System.Windows.Forms.Timer
             {
@@ -78,11 +114,9 @@ namespace BusBuddy.Forms
             this.Activated += (s, e) => refreshTimer.Start();
             this.Deactivate += (s, e) => refreshTimer.Stop();
             this.FormClosing += (s, e) => refreshTimer.Stop();
-            refreshTimer.Start();
-
-            _ = LoadRoutesDataAsync(); // Fire and forget with proper async handling
+            refreshTimer.Start();            _ = LoadRoutesDataAsync(); // Fire and forget with proper async handling
         }
-
+        
         private async System.Threading.Tasks.Task LoadRoutesDataAsync()
         {
             Cursor = Cursors.WaitCursor;
@@ -101,17 +135,7 @@ namespace BusBuddy.Forms
                 Cursor = Cursors.Default;
             }
         }
-
-        /// <summary>
-        /// TODO: Integrate GMap.NET when validated.
-        /// </summary>
-        public void InitializeMapPanel()
-        {
-            // Placeholder for future map panel integration
-            logger.LogInformation("InitializeMapPanel placeholder called");
-        }
-
-        private async void BtnAdd_Click(object? sender, EventArgs e)
+          private async void BtnAdd_Click(object sender, EventArgs e)
         {
             using (var dialog = new RouteEditorDialog())
             {
@@ -141,9 +165,7 @@ namespace BusBuddy.Forms
                     }
                 }
             }
-        }
-
-        private async void BtnEdit_Click(object? sender, EventArgs e)
+        }        private async void BtnEdit_Click(object sender, EventArgs e)
         {
             if (dgvRoutes.SelectedRows.Count != 1) return;
 
@@ -189,9 +211,7 @@ namespace BusBuddy.Forms
                     }
                 }
             }
-        }
-
-        private async void BtnDelete_Click(object? sender, EventArgs e)
+        }        private async void BtnDelete_Click(object sender, EventArgs e)
         {
             if (dgvRoutes.SelectedRows.Count != 1) return;
 
@@ -214,12 +234,46 @@ namespace BusBuddy.Forms
                                 success ? MessageBoxIcon.Information : MessageBoxIcon.Error);
                 await LoadRoutesDataAsync();
                 bindingSource.ResetBindings(false);
-            }
-            catch (Exception ex)
+            }            catch (Exception ex)
             {
                 logger.LogError(ex, $"Error deleting route: {ex.Message}");
                 MessageBox.Show($"Error deleting route: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+          private void BtnViewOnMap_Click(object sender, EventArgs e)
+        {
+            if (dgvRoutes.SelectedRows.Count != 1) return;
+
+            tabControlRoutes.SelectedTab = tabPageMap;
+            
+            // Placeholder for map view implementation
+            var row = dgvRoutes.SelectedRows[0];
+            string routeName = row.Cells["RouteName"].Value?.ToString() ?? string.Empty;
+            
+            Label mapPlaceholder = new Label
+            {
+                Text = $"Map view for route: {routeName}\nMap integration will be implemented in future updates.",
+                TextAlign = ContentAlignment.MiddleCenter,
+                Dock = DockStyle.Fill,
+                Font = new Font("Arial", 12)
+            };
+            
+            routeMapPanel.Controls.Clear();
+            routeMapPanel.Controls.Add(mapPlaceholder);
+            
+            logger.LogInformation($"User requested map view for route: {routeName}");
+        }
+          private void BtnOptimizeRoute_Click(object sender, EventArgs e)
+        {
+            if (dgvRoutes.SelectedRows.Count != 1) return;
+            
+            var row = dgvRoutes.SelectedRows[0];
+            string routeName = row.Cells["RouteName"].Value?.ToString() ?? string.Empty;
+            
+            MessageBox.Show($"Route optimization for '{routeName}' will be implemented in a future update.",
+                "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
+            logger.LogInformation($"User attempted to optimize route: {routeName}");
         }
 
         protected override void Dispose(bool disposing)

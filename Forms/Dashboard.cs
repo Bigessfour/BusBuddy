@@ -22,6 +22,18 @@ namespace BusBuddy.Forms
         private MaterialTabSelector materialTabSelector;
         private TabPage tabTracking;
         private TabPage tabAnalytics;
+        
+        // Analytics placeholders
+        private Panel fuelTrendChartPanel;
+        private Label fuelTrendChartLabel;
+        private Button btnViewDetailedReports;
+        
+        // GPS tracking placeholders
+        private Panel mapPanel;
+        private Label mapPlaceholderLabel;
+        private Button btnRefreshMap;
+        private Button btnTrackVehicle;
+        private ComboBox cboVehicles;
 
         // NOTE: All UI controls are automatically defined in Dashboard.Designer.cs
 
@@ -268,6 +280,181 @@ namespace BusBuddy.Forms
             this.Controls.Add(materialTabSelector);
             this.Controls.Add(materialTabControl);
             _logger.LogInformation("Added MaterialTabControl to Dashboard");
+
+            // Add map placeholder to Tracking tab
+            InitializeTrackingTab();
+        }
+        
+        /// <summary>
+        /// Initializes the tracking tab with GPS map placeholder
+        /// </summary>
+        private void InitializeTrackingTab()
+        {
+            try
+            {
+                // Create map panel as a placeholder for future GMap.NET integration
+                mapPanel = new Panel
+                {
+                    Dock = DockStyle.Fill,
+                    BackColor = Color.AliceBlue,
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+                
+                // Add a placeholder label
+                mapPlaceholderLabel = new Label
+                {
+                    Text = "GPS Tracking Map Placeholder\n\nThis area will display real-time vehicle locations\nusing GMap.NET or similar library in future implementation.",
+                    Font = new Font("Segoe UI", 12, FontStyle.Regular),
+                    ForeColor = Color.Navy,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Dock = DockStyle.Fill
+                };
+                
+                // Create controls panel for tracking options
+                Panel trackingControlsPanel = new Panel
+                {
+                    Dock = DockStyle.Bottom,
+                    Height = 60,
+                    BackColor = Color.WhiteSmoke
+                };
+                
+                // Vehicle selector dropdown
+                Label vehicleLabel = new Label
+                {
+                    Text = "Select Vehicle:",
+                    Location = new Point(10, 20),
+                    AutoSize = true
+                };
+                
+                cboVehicles = new ComboBox
+                {
+                    Location = new Point(110, 16),
+                    Width = 150,
+                    DropDownStyle = ComboBoxStyle.DropDownList
+                };
+                
+                // Add sample vehicles (would be populated from database in real implementation)
+                cboVehicles.Items.AddRange(new string[] { "Bus 001", "Bus 002", "Bus 003", "All Vehicles" });
+                cboVehicles.SelectedIndex = 3;  // Default to All Vehicles
+                
+                // Add tracking buttons
+                btnTrackVehicle = new Button
+                {
+                    Text = "Track Vehicle",
+                    Location = new Point(280, 15),
+                    Size = new Size(120, 30)
+                };
+                
+                btnRefreshMap = new Button
+                {
+                    Text = "Refresh Map",
+                    Location = new Point(420, 15),
+                    Size = new Size(120, 30)
+                };
+                
+                // Wire up event handlers
+                btnTrackVehicle.Click += (sender, e) => {
+                    string selectedVehicle = cboVehicles.SelectedItem.ToString();
+                    _logger.LogInformation($"Track vehicle selected: {selectedVehicle}");
+                    
+                    // Log to error file as requested
+                    string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Track vehicle requested: {selectedVehicle}";
+                    System.IO.File.AppendAllText("busbuddy_errors.log", logMessage + Environment.NewLine);
+                    
+                    // Update the map placeholder with vehicle info
+                    DrawVehicleLocationOnMap(selectedVehicle);
+                };
+                
+                btnRefreshMap.Click += (sender, e) => {
+                    _logger.LogInformation("Refresh map requested");
+                    
+                    // Log to error file as requested
+                    string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Map refresh requested";
+                    System.IO.File.AppendAllText("busbuddy_errors.log", logMessage + Environment.NewLine);
+                    
+                    // Simulate map refresh
+                    mapPlaceholderLabel.Text = "Map refreshed at " + DateTime.Now.ToString("HH:mm:ss") + 
+                        "\n\nGPS Tracking Map Placeholder\nThis is a simulated map refresh.";
+                };
+                
+                // Add controls to tracking controls panel
+                trackingControlsPanel.Controls.Add(vehicleLabel);
+                trackingControlsPanel.Controls.Add(cboVehicles);
+                trackingControlsPanel.Controls.Add(btnTrackVehicle);
+                trackingControlsPanel.Controls.Add(btnRefreshMap);
+                
+                // Add map placeholder and controls to tracking tab
+                mapPanel.Controls.Add(mapPlaceholderLabel);
+                tabTracking.Controls.Add(mapPanel);
+                tabTracking.Controls.Add(trackingControlsPanel);
+                
+                _logger.LogInformation("Tracking tab initialized successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error initializing tracking tab");
+                
+                // Log to error file as requested
+                string errorMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Error initializing tracking tab: {ex.Message}";
+                System.IO.File.AppendAllText("busbuddy_errors.log", errorMessage + Environment.NewLine);
+                
+                MessageBox.Show($"Error initializing tracking features: {ex.Message}", 
+                    "Tracking Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        /// <summary>
+        /// Simulates drawing a vehicle location on the map
+        /// </summary>
+        private void DrawVehicleLocationOnMap(string vehicleId)
+        {
+            try
+            {
+                // In a real implementation, this would use GMap.NET to plot vehicle location
+                // For now, we'll just update the placeholder text
+                
+                mapPanel.Paint += (sender, e) => {
+                    Graphics g = e.Graphics;
+                    
+                    // Draw a simple map background
+                    g.FillRectangle(Brushes.LightBlue, 50, 50, mapPanel.Width - 100, mapPanel.Height - 100);
+                    g.DrawRectangle(Pens.Blue, 50, 50, mapPanel.Width - 100, mapPanel.Height - 100);
+                    
+                    // Add some "roads"
+                    g.DrawLine(Pens.Gray, 100, 100, mapPanel.Width - 100, 100);
+                    g.DrawLine(Pens.Gray, 100, 150, mapPanel.Width - 100, 150);
+                    g.DrawLine(Pens.Gray, 100, 200, mapPanel.Width - 100, 200);
+                    g.DrawLine(Pens.Gray, 100, 100, 100, mapPanel.Height - 100);
+                    g.DrawLine(Pens.Gray, 200, 100, 200, mapPanel.Height - 100);
+                    
+                    // Draw a "vehicle" at a random position
+                    Random rand = new Random();
+                    int x = rand.Next(100, mapPanel.Width - 120);
+                    int y = rand.Next(100, mapPanel.Height - 120);
+                    
+                    g.FillEllipse(Brushes.Red, x, y, 20, 20);
+                    g.DrawEllipse(Pens.Black, x, y, 20, 20);
+                    g.DrawString(vehicleId, new Font("Arial", 8), Brushes.Black, x - 10, y + 25);
+                    
+                    // Add a legend
+                    g.DrawString("Map Legend:", new Font("Arial", 10, FontStyle.Bold), Brushes.Black, 60, 60);
+                    g.DrawString("● Vehicle Location", new Font("Arial", 8), Brushes.Black, 70, 80);
+                    g.DrawString("— Roads", new Font("Arial", 8), Brushes.Black, 70, 100);
+                };
+                
+                // Force repaint to show the "vehicle"
+                mapPanel.Invalidate();
+                
+                _logger.LogInformation($"Drew vehicle {vehicleId} on map");
+                string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Vehicle {vehicleId} drawn on map";
+                System.IO.File.AppendAllText("busbuddy_errors.log", logMessage + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error drawing vehicle on map");
+                string errorMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Error drawing vehicle on map: {ex.Message}";
+                System.IO.File.AppendAllText("busbuddy_errors.log", errorMessage + Environment.NewLine);
+            }
         }
 
         private void ApplyMaterialSkinTheme()
