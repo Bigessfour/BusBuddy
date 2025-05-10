@@ -1,3 +1,9 @@
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\Data\BusBuddyContext.cs
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\Data\BusBuddyContextFactory.cs
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\Data\DatabaseHelper.cs
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\Data\DatabaseInitializer.cs
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\Data\Interfaces\IDatabaseHelper.cs
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\Data\SqlServerDatabaseHelper.cs
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\appsettings.json
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\BusBuddy.exe
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\BusBuddy.deps.json
@@ -71,6 +77,7 @@ C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\Syst
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\System.Composition.TypedParts.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\System.Data.SqlClient.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\System.Data.SQLite.EF6.dll
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\System.Diagnostics.DiagnosticSource.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\System.IO.Pipelines.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\bin\Debug\net8.0-windows\System.Memory.Data.dll

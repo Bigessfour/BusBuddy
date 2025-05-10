@@ -89,7 +89,7 @@
             },
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[9.0.0, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -203,11 +203,11 @@
           "dependencies": {
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[9.0.0, )"
             },
             "Microsoft.Extensions.Logging.Console": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[9.0.0, )"
             },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
