@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: busbuddy-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=BusB#ddy!2025
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - busbuddy-sqlserver-data:/var/opt/mssql
+      - ./docker/sql:/docker-entrypoint-initdb.d
+    networks:
+      - busbuddy-network
+    restart: unless-stopped
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "BusB#ddy!2025" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  busbuddy-network:
+    driver: bridge
+
+volumes:
+  busbuddy-sqlserver-data:

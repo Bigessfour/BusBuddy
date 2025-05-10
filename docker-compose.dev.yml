@@ -1,0 +1,22 @@
+version: '3.8'
+
+# This override file is for development settings
+# Use with: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  sqlserver:
+    ports:
+      - "14330:1433"  # Use a different port to avoid conflicts with local SQL Server
+    environment:
+      - MSSQL_PID=Developer  # Use Developer edition for more features
+      - MSSQL_MEMORY_LIMIT_MB=2048  # Limit memory usage for development
+    volumes:
+      - ./docker/sql/dev:/docker-entrypoint-initdb.d/dev  # Additional dev-specific scripts
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        /opt/mssql/bin/sqlservr & 
+        sleep 30
+        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$$SA_PASSWORD" -i /docker-entrypoint-initdb.d/init-db.sql
+        tail -f /dev/null  # Keep container running

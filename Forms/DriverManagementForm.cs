@@ -277,12 +277,13 @@ namespace BusBuddy.Forms
             {
                 // Clear previous alerts
                 _expirationAlertPanel.Controls.Clear();
-                
-                // Get all drivers
+                  // Get all drivers
                 var allDrivers = await _driverService.GetAllDriversAsync();
                 
                 // Find drivers with licenses expiring in the next 30 days
+                // Handle null or default dates by checking if LicenseExpiration is not default
                 var expiringDrivers = allDrivers.Where(d => 
+                    d.LicenseExpiration != default &&
                     d.LicenseExpiration > DateTime.Now && 
                     d.LicenseExpiration < DateTime.Now.AddDays(30)
                 ).OrderBy(d => d.LicenseExpiration).ToList();

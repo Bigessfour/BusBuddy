@@ -1,0 +1,34 @@
+# Exclude binary files and build directories
+bin/
+obj/
+TestResults/
+
+# Node modules (if any)
+node_modules/
+
+# Git files
+.git/
+.gitignore
+
+# Local development files
+*.user
+*.suo
+*.vs
+.vs/
+
+# Editor directories and files
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Backup files
+*.bak
+*~
+
+# Test files
+Tests/
+TestResults/

@@ -63,8 +63,7 @@ namespace BusBuddy
                 Log.CloseAndFlush();
             }
         }
-        
-        private static void ConfigureServices(IServiceCollection services)
+          private static void ConfigureServices(IServiceCollection services)
         {
             // Configure logging
             services.AddLogging(builder => 
@@ -78,7 +77,16 @@ namespace BusBuddy
                 var configuration = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json")
                     .Build();
-                var connectionString = configuration.GetConnectionString("DefaultConnection");
+                
+                // Check for environment variable to use Docker connection
+                var useDocker = Environment.GetEnvironmentVariable("USE_DOCKER_DB")?.ToLower() == "true";
+                var connectionName = useDocker ? "DockerConnection" : "DefaultConnection";
+                
+                var connectionString = configuration.GetConnectionString(connectionName);
+                Log.Information($"Using database connection: {connectionName}");
+                
+                options.UseSqlServer(connectionString);
+                
                 options.UseSqlServer(connectionString);
             }, ServiceLifetime.Scoped);
               // Register data access helper

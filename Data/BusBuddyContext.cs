@@ -28,6 +28,10 @@ namespace BusBuddy.Data
                 .Property(f => f.FuelAmount).HasPrecision(18, 2);
             modelBuilder.Entity<FuelEntry>()
                 .Property(f => f.Mileage).HasPrecision(18, 2);
+            modelBuilder.Entity<FuelEntry>()
+                .Property(f => f.PricePerGallon).HasPrecision(18, 2);
+            modelBuilder.Entity<FuelEntry>()
+                .Property(f => f.TotalCost).HasPrecision(18, 2);
 
             // Decimal precision for Part
             modelBuilder.Entity<Part>()

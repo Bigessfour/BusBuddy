@@ -316,5 +316,53 @@ modelBuilder.Entity<RouteData>()
 ## Logging
 - All errors and feature additions are logged to `busbuddy_errors.log` via `ILogger`.
 
+## Troubleshooting and Maintenance
+- For common issues and solutions, see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+- Regular database backups should be scheduled using [BackupDatabase.ps1](./BackupDatabase.ps1)
+- For database schema details and relationship handling, see [DATABASE.md](./DATABASE.md)
+
+## Docker Support
+BusBuddy supports using a containerized SQL Server database for development and testing.
+
+### Prerequisites
+- Docker Desktop installed and running
+- PowerShell 7.0 or later
+
+### Using Docker Database
+1. **Start the Docker database**:
+   ```pwsh
+   .\Switch-DatabaseMode.ps1 -Mode docker
+   ```
+   This will:
+   - Set the environment variable to use Docker
+   - Start the SQL Server container if not running
+   - Configure the application to use the DockerConnection string
+
+2. **Switch back to local database**:
+   ```pwsh
+   .\Switch-DatabaseMode.ps1 -Mode local
+   ```
+
+3. **Advanced Docker Commands**:
+   ```pwsh
+   # Start all Docker services
+   docker-compose up -d
+   
+   # Start with development overrides
+   docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+   
+   # View container logs
+   docker-compose logs -f
+   
+   # Stop all containers
+   docker-compose down
+   ```
+
+4. **Connection Information**:
+   - Docker database server: `localhost,1433`
+   - Database: `BusBuddy`
+   - User: `BusBuddyApp`
+   - Password: `App@P@ss!2025`
+
 ---
 For more details, see the in-code comments and documentation.
