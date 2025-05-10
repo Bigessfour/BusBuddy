@@ -1,0 +1,6 @@
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net5.0\BusBuddy.Tests.csproj.AssemblyReference.cache
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net5.0\BusBuddy.Tests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net5.0\BusBuddy.Tests.AssemblyInfoInputs.cache
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net5.0\BusBuddy.Tests.AssemblyInfo.cs
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net5.0\BusBuddy.Tests.csproj.CoreCompileInputs.cache
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\obj\Debug\net5.0\BusBuddy.Tests.sourcelink.json
