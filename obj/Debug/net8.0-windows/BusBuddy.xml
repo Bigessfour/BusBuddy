@@ -123,6 +123,34 @@
             <param name="reassignToDriverId">Optional. If provided, reassigns dependent records to this driver instead of setting to null</param>
             <returns>True if successful, false otherwise</returns>
         </member>
+        <member name="M:BusBuddy.Data.Interfaces.IDatabaseHelper.DeleteVehicleAsync(System.Int32)">
+            <summary>
+            Deletes a vehicle by ID
+            </summary>
+            <param name="vehicleId">The ID of the vehicle to delete</param>
+            <returns>True if successful, false otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Data.Interfaces.IDatabaseHelper.GetDriverWithDetailsAsync(System.Int32)">
+            <summary>
+            Gets a driver by ID including related entities (use this when you need more than just the driver data)
+            </summary>
+            <param name="driverId">The driver ID</param>
+            <returns>The driver with related entities if found, null otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Data.Interfaces.IDatabaseHelper.BatchUpdateDriversAsync(System.Collections.Generic.IEnumerable{BusBuddy.Models.Entities.Driver})">
+            <summary>
+            Performs a batch update of drivers (much more efficient than updating one at a time)
+            </summary>
+            <param name="drivers">Collection of drivers to update</param>
+            <returns>Number of records successfully updated</returns>
+        </member>
+        <member name="M:BusBuddy.Data.Interfaces.IDatabaseHelper.GetDriversWithExpiringLicensesAsync(System.Int32)">
+            <summary>
+            Gets drivers with licenses expiring within the specified days
+            </summary>
+            <param name="daysThreshold">Number of days to check for expiration</param>
+            <returns>List of drivers with expiring licenses</returns>
+        </member>
         <member name="T:BusBuddy.Data.SqlServerDatabaseHelper">
             <summary>
             SQL Server implementation of the database helper
@@ -209,6 +237,13 @@
             <param name="driverId">The driver ID</param>
             <returns>The driver if found, null otherwise</returns>
         </member>
+        <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.GetDriverWithDetailsAsync(System.Int32)">
+            <summary>
+            Gets a driver by ID including related entities (use this when you need more than just the driver data)
+            </summary>
+            <param name="driverId">The driver ID</param>
+            <returns>The driver with related entities if found, null otherwise</returns>
+        </member>
         <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.AddDriverAsync(BusBuddy.Models.Entities.Driver)">
             <summary>
             Adds a new driver to the database
@@ -230,6 +265,27 @@
             <param name="driverId">The ID of the driver to delete</param>
             <param name="reassignToDriverId">Optional. If provided, reassigns dependent records to this driver instead of setting to null</param>
             <returns>True if successful, false otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.DeleteVehicleAsync(System.Int32)">
+            <summary>
+            Deletes a vehicle by ID
+            </summary>
+            <param name="vehicleId">The ID of the vehicle to delete</param>
+            <returns>True if successful, false otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.BatchUpdateDriversAsync(System.Collections.Generic.IEnumerable{BusBuddy.Models.Entities.Driver})">
+            <summary>
+            Performs a batch update of drivers (much more efficient than updating one at a time)
+            </summary>
+            <param name="drivers">Collection of drivers to update</param>
+            <returns>Number of records successfully updated</returns>
+        </member>
+        <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.GetDriversWithExpiringLicensesAsync(System.Int32)">
+            <summary>
+            Gets drivers with licenses expiring within the specified days
+            </summary>
+            <param name="daysThreshold">Number of days to check for expiration</param>
+            <returns>List of drivers with expiring licenses</returns>
         </member>
         <member name="T:BusBuddy.Extensions.DriverManagementExtensions">
             <summary>
@@ -299,6 +355,61 @@
             <param name="logger">The logger</param>
             <param name="driverToDelete">The driver to delete</param>
         </member>
+        <member name="T:BusBuddy.Forms.DriverEditorDialog">
+            <summary>
+            Dialog for adding or editing driver information
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.DriverEditorDialog.#ctor(BusBuddy.Data.Interfaces.IDatabaseHelper,Microsoft.Extensions.Logging.ILogger{BusBuddy.Forms.DriverEditorDialog},System.Nullable{System.Int32})">
+            <summary>
+            Initializes a new instance of the DriverEditorDialog
+            </summary>
+            <param name="dbHelper">The database helper for database operations</param>
+            <param name="logger">The logger for tracking operations</param>
+            <param name="driverId">The ID of the driver to edit, or null for a new driver</param>
+        </member>
+        <member name="T:BusBuddy.Forms.DriverManagementForm">
+            <summary>
+            Form for managing drivers, including license expiration alerts
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.DriverManagementForm.#ctor(BusBuddy.Services.DriverService,BusBuddy.Data.Interfaces.IDatabaseHelper,Microsoft.Extensions.Logging.ILogger{BusBuddy.Forms.DriverManagementForm})">
+            <summary>
+            Initializes a new instance of the DriverManagementForm class.
+            </summary>
+            <param name="driverService">The driver service for managing driver data</param>
+            <param name="dbHelper">The database helper for direct database operations</param>
+            <param name="logger">The logger for tracking operations</param>
+        </member>
+        <member name="M:BusBuddy.Forms.DriverManagementForm.LoadDriversAsync">
+            <summary>
+            Loads all drivers from the database and displays them in the grid
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.DriverManagementForm.DisplayLicenseExpirationAlertsAsync">
+            <summary>
+            Displays alerts for drivers with licenses expiring within 30 days
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.DriverManagementForm.ShowDriverForm(System.Nullable{System.Int32})">
+            <summary>
+            Shows the form for adding or editing a driver
+            </summary>
+            <param name="driverId">The ID of the driver to edit, or null for a new driver</param>
+        </member>
+        <member name="M:BusBuddy.Forms.DriverManagementForm.DeleteDriverAsync(BusBuddy.Models.Entities.Driver)">
+            <summary>
+            Safely deletes a driver with confirming dialog
+            </summary>
+            <param name="driver">The driver to delete</param>
+        </member>
+        <member name="M:BusBuddy.Forms.DriverManagementForm.GetDriversWithExpiringLicensesAsync(System.Int32)">
+            <summary>
+            Gets a list of drivers with licenses expiring within the specified days
+            </summary>
+            <param name="daysThreshold">Number of days to check for expiration</param>
+            <returns>List of drivers with expiring licenses</returns>
+        </member>
         <member name="T:BusBuddy.Forms.ReportsForm">
             <summary>
             Form for viewing and generating analytics reports
@@ -343,6 +454,9 @@
             <inheritdoc />
         </member>
         <member name="M:BusBuddy.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BusBuddy.Migrations.AddPerformanceIndices.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:BusBuddy.Models.Entities.ActivityTrip">

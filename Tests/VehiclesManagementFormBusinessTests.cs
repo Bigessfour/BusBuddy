@@ -333,11 +333,9 @@ namespace BusBuddy.Tests
             // Act - use reflection to call the private CheckInsuranceExpirations method
             var method = form.GetType().GetMethod("CheckInsuranceExpirations", 
                 BindingFlags.NonPublic | BindingFlags.Instance);
-            method.Invoke(form, null);
-
-            // Assert - should have shown at least one message box about expiring insurance
+            method.Invoke(form, null);            // Assert - should have shown at least one message box about expiring insurance
             Assert.Contains(CapturedDialogs, dialog => 
-                dialog.Text.Contains("insurance") && dialog.Text.Contains("expiring"));
+                dialog.Title.Contains("insurance") && dialog.Title.Contains("expiring"));
         }
     }
 }

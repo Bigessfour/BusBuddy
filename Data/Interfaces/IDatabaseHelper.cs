@@ -103,14 +103,20 @@ namespace BusBuddy.Data.Interfaces
         /// <param name="driver">The driver with updated information</param>
         /// <returns>True if successful, false otherwise</returns>
         Task<bool> UpdateDriverAsync(Driver driver);
-        
-        /// <summary>
+          /// <summary>
         /// Safely deletes a driver by handling all dependent records to avoid foreign key constraint violations
         /// </summary>
         /// <param name="driverId">The ID of the driver to delete</param>
         /// <param name="reassignToDriverId">Optional. If provided, reassigns dependent records to this driver instead of setting to null</param>
         /// <returns>True if successful, false otherwise</returns>
         Task<bool> DeleteDriverSafelyAsync(int driverId, int? reassignToDriverId = null);
+
+        /// <summary>
+        /// Deletes a vehicle by ID
+        /// </summary>
+        /// <param name="vehicleId">The ID of the vehicle to delete</param>
+        /// <returns>True if successful, false otherwise</returns>
+        Task<bool> DeleteVehicleAsync(int vehicleId);
 
         /// <summary>
         /// Gets a driver by ID including related entities (use this when you need more than just the driver data)

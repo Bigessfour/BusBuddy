@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "8bSrw0MI+xM=",
+  "dgSpecHash": "NGEobQxN8mc=",
   "success": true,
   "projectFilePath": "C:\\Users\\steve.mckitrick\\Desktop\\BusBuddy\\BusBuddy\\Tests\\BusBuddy.Tests.csproj",
   "expectedPackageFiles": [
@@ -131,10 +131,7 @@
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.core\\2.6.6\\xunit.core.2.6.6.nupkg.sha512",
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.extensibility.core\\2.6.6\\xunit.extensibility.core.2.6.6.nupkg.sha512",
     "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.extensibility.execution\\2.6.6\\xunit.extensibility.execution.2.6.6.nupkg.sha512",
-    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.runner.visualstudio\\2.5.7\\xunit.runner.visualstudio.2.5.7.nupkg.sha512",
-    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.15\\microsoft.netcore.app.ref.8.0.15.nupkg.sha512",
-    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.15\\microsoft.windowsdesktop.app.ref.8.0.15.nupkg.sha512",
-    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.15\\microsoft.aspnetcore.app.ref.8.0.15.nupkg.sha512"
+    "C:\\Users\\steve.mckitrick\\.nuget\\packages\\xunit.runner.visualstudio\\2.5.7\\xunit.runner.visualstudio.2.5.7.nupkg.sha512"
   ],
   "logs": []
 }

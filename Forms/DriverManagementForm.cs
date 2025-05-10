@@ -337,9 +337,11 @@ namespace BusBuddy.Forms
         /// </summary>
         /// <param name="driverId">The ID of the driver to edit, or null for a new driver</param>
         private void ShowDriverForm(int? driverId)
-        {
-            // Create a driver editor form (to be implemented)
-            using (var driverEditor = new DriverEditorDialog(_dbHelper, _logger, driverId))
+        {            // Create a driver editor form (to be implemented)
+            using (var driverEditor = new DriverEditorDialog(_dbHelper, 
+                (ILogger<DriverEditorDialog>)_logger.GetType().Assembly.CreateInstance(
+                    typeof(ILogger<DriverEditorDialog>).FullName ?? "ILogger<DriverEditorDialog>"), 
+                driverId))
             {
                 if (driverEditor.ShowDialog() == DialogResult.OK)
                 {
@@ -369,9 +371,11 @@ namespace BusBuddy.Forms
             if (result == DialogResult.Yes)
             {
                 try
-                {
-                    // Show the delete driver dialog to handle reassignment options
-                    using (var deleteDialog = new DeleteDriverDialog(_driverService, _logger, driver))
+                {                    // Show the delete driver dialog to handle reassignment options
+                    using (var deleteDialog = new DeleteDriverDialog(_driverService, 
+                        (ILogger<DeleteDriverDialog>)_logger.GetType().Assembly.CreateInstance(
+                            typeof(ILogger<DeleteDriverDialog>).FullName ?? "ILogger<DeleteDriverDialog>"), 
+                        driver))
                     {
                         // If the user confirmed the deletion and it was successful
                         if (deleteDialog.ShowDialog() == DialogResult.OK)

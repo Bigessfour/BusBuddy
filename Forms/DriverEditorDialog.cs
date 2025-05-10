@@ -218,11 +218,10 @@ namespace BusBuddy.Forms
         private async Task LoadDriverDataAsync()
         {
             try
-            {
-                if (!_driverId.HasValue)
+            {                if (!_driverId.HasValue)
                     return;
                 
-                var driver = await _dbHelper.GetDriverAsync(_driverId.Value);
+                var driver = await _dbHelper.GetDriverByIdAsync(_driverId.Value);
                 if (driver != null)
                 {
                     txtFirstName.Text = driver.FirstName;

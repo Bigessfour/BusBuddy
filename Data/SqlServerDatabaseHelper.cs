@@ -402,6 +402,35 @@ namespace BusBuddy.Data
                 _logger.LogError(ex, "Error deleting driver with ID {DriverId}", driverId);
                 return false;
             }
+        }        /// <summary>
+        /// Deletes a vehicle by ID
+        /// </summary>
+        /// <param name="vehicleId">The ID of the vehicle to delete</param>
+        /// <returns>True if successful, false otherwise</returns>
+        public async Task<bool> DeleteVehicleAsync(int vehicleId)
+        {
+            try
+            {
+                _logger.LogInformation("Deleting vehicle with ID: {VehicleId}", vehicleId);
+                
+                var vehicle = await _context.Vehicles.FindAsync(vehicleId);
+                if (vehicle == null)
+                {
+                    _logger.LogWarning("Vehicle with ID {VehicleId} not found for deletion", vehicleId);
+                    return false;
+                }
+                
+                _context.Vehicles.Remove(vehicle);
+                await _context.SaveChangesAsync();
+                
+                _logger.LogInformation("Vehicle with ID {VehicleId} deleted successfully", vehicleId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting vehicle with ID: {VehicleId}", vehicleId);
+                return false;
+            }
         }
 
         /// <summary>
