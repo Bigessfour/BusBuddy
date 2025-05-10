@@ -30,6 +30,7 @@ C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\bin\Debug\net8.0-window
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\bin\Debug\net8.0-windows\Microsoft.EntityFrameworkCore.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\bin\Debug\net8.0-windows\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\bin\Debug\net8.0-windows\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\bin\Debug\net8.0-windows\Microsoft.EntityFrameworkCore.InMemory.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\bin\Debug\net8.0-windows\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\bin\Debug\net8.0-windows\Microsoft.EntityFrameworkCore.SqlServer.dll
 C:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy\Tests\bin\Debug\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll

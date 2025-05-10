@@ -253,5 +253,116 @@ namespace BusBuddy.Data
                 throw;
             }
         }
+        
+        /// <summary>
+        /// Gets all drivers from the database
+        /// </summary>
+        /// <returns>List of drivers</returns>
+        public async Task<IEnumerable<Driver>> GetDriversAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Getting all drivers");
+                return await _context.Drivers.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting drivers");
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// Gets a driver by ID
+        /// </summary>
+        /// <param name="driverId">The driver ID</param>
+        /// <returns>The driver if found, null otherwise</returns>
+        public async Task<Driver> GetDriverByIdAsync(int driverId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting driver with ID {DriverId}", driverId);
+                return await _context.Drivers.FindAsync(driverId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting driver with ID {DriverId}", driverId);
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// Adds a new driver to the database
+        /// </summary>
+        /// <param name="driver">The driver to add</param>
+        /// <returns>The added driver with ID populated</returns>
+        public async Task<Driver> AddDriverAsync(Driver driver)
+        {
+            try
+            {
+                _logger.LogInformation("Adding driver {DriverName}", driver.FullName);
+                _context.Drivers.Add(driver);
+                await _context.SaveChangesAsync();
+                return driver;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding driver {DriverName}", driver.FullName);
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// Updates an existing driver
+        /// </summary>
+        /// <param name="driver">The driver with updated information</param>
+        /// <returns>True if successful, false otherwise</returns>
+        public async Task<bool> UpdateDriverAsync(Driver driver)
+        {
+            try
+            {
+                _logger.LogInformation("Updating driver with ID {DriverId}", driver.Id);
+                _context.Entry(driver).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating driver with ID {DriverId}", driver.Id);
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// Safely deletes a driver by handling all dependent records to avoid foreign key constraint violations
+        /// </summary>
+        /// <param name="driverId">The ID of the driver to delete</param>
+        /// <param name="reassignToDriverId">Optional. If provided, reassigns dependent records to this driver instead of setting to null</param>
+        /// <returns>True if successful, false otherwise</returns>
+        public async Task<bool> DeleteDriverSafelyAsync(int driverId, int? reassignToDriverId = null)
+        {
+            try
+            {
+                _logger.LogInformation("Safely deleting driver with ID {DriverId}", driverId);
+                // Use the DbContext implementation with our logger
+                var result = await _context.DeleteDriverSafelyAsync(driverId, reassignToDriverId, _logger);
+                
+                if (result)
+                {
+                    _logger.LogInformation("Successfully deleted driver with ID {DriverId}", driverId);
+                }
+                else
+                {
+                    _logger.LogWarning("Failed to delete driver with ID {DriverId}", driverId);
+                }
+                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting driver with ID {DriverId}", driverId);
+                return false;
+            }
+        }
     }
 }

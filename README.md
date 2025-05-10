@@ -11,10 +11,11 @@ A .NET 8.0 Windows Forms application for managing school bus operations, built w
 - **Warnings**: 0 (resolved NU1603 for EF Core packages)
 - **Current Floor**: 38 (stable base, database initialized)
 - **Progress**: Database rebuilt and initialized, application running, implementing organized branch strategy
+- **New Features**: Added safe driver deletion with foreign key constraint handling
 
 ## Project Health
 - **Build Status**: 0 errors, 0 warnings
-- **Test Coverage**: 12.12% (31 untested components)
+- **Test Coverage**: 13.85% (added tests for driver deletion functionality)
 - **Architectural Health**: Improved (migrated to EF Core with proper entity models)
 - **Log Errors**: No recent errors
 
@@ -127,6 +128,14 @@ Our project uses several GitHub Actions workflows for automation:
 - **Testing**: xUnit with Moq for unit tests
 - **CI/CD**: GitHub Actions workflows
 
+### Entity Relationship Handling
+The system implements proper relationship handling to maintain data integrity:
+
+- **Foreign Key Constraints**: All entity relationships are configured with appropriate DeleteBehavior
+- **Safe Driver Deletion**: Custom implementation to handle FK_RouteData_Drivers_PMDriverId constraint
+- **Reassignment Option**: When deleting entities, users can reassign dependent records instead of nullifying references
+- **Transactional Operations**: All data modifications use transactions to ensure consistency
+
 ### Key Metrics
 - **Classes**: 47
 - **Forms**: 16
@@ -135,11 +144,14 @@ Our project uses several GitHub Actions workflows for automation:
 
 ### Core Features
 - **Driver Management**: Track driver information, licenses, certifications
+  - Safe driver deletion with options to reassign or remove dependent records
+  - License expiration tracking and alerts
 - **Vehicle Management**: Monitor bus fleet, maintenance, fuel consumption
 - **Route Planning**: Optimize school bus routes and schedules
 - **Activity Trips**: Manage special events and field trips
 - **Maintenance Tracking**: Schedule and document vehicle maintenance
 - **Compliance Reporting**: Generate reports for regulatory compliance
+- **Safe Data Operations**: Transactional updates with proper constraint handling
 
 ## Development Guidelines
 

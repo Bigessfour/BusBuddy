@@ -4,6 +4,14 @@
         <name>BusBuddy</name>
     </assembly>
     <members>
+        <member name="M:BusBuddy.Data.BusBuddyContext.DeleteDriverSafelyAsync(System.Int32,System.Nullable{System.Int32},Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Safely deletes a driver by handling all dependent records to avoid foreign key constraint violations.
+            </summary>        /// <param name="driverId">The ID of the driver to delete.</param>
+            <param name="reassignToDriverId">Optional. If provided, reassigns RouteData to this driver instead of setting to null.</param>
+            <param name="logger">Optional. ILogger for logging errors.</param>
+            <returns>True if deleted, false if not found or error.</returns>
+        </member>
         <member name="T:BusBuddy.Data.Interfaces.IDatabaseHelper">
             <summary>
             Interface for database operations
@@ -80,6 +88,41 @@
             <param name="routeId">The ID of the route to delete</param>
             <returns>True if successful, false otherwise</returns>
         </member>
+        <member name="M:BusBuddy.Data.Interfaces.IDatabaseHelper.GetDriversAsync">
+            <summary>
+            Gets all drivers from the database
+            </summary>
+            <returns>List of drivers</returns>
+        </member>
+        <member name="M:BusBuddy.Data.Interfaces.IDatabaseHelper.GetDriverByIdAsync(System.Int32)">
+            <summary>
+            Gets a driver by ID
+            </summary>
+            <param name="driverId">The driver ID</param>
+            <returns>The driver if found, null otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Data.Interfaces.IDatabaseHelper.AddDriverAsync(BusBuddy.Models.Entities.Driver)">
+            <summary>
+            Adds a new driver to the database
+            </summary>
+            <param name="driver">The driver to add</param>
+            <returns>The added driver with ID populated</returns>
+        </member>
+        <member name="M:BusBuddy.Data.Interfaces.IDatabaseHelper.UpdateDriverAsync(BusBuddy.Models.Entities.Driver)">
+            <summary>
+            Updates an existing driver
+            </summary>
+            <param name="driver">The driver with updated information</param>
+            <returns>True if successful, false otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Data.Interfaces.IDatabaseHelper.DeleteDriverSafelyAsync(System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            Safely deletes a driver by handling all dependent records to avoid foreign key constraint violations
+            </summary>
+            <param name="driverId">The ID of the driver to delete</param>
+            <param name="reassignToDriverId">Optional. If provided, reassigns dependent records to this driver instead of setting to null</param>
+            <returns>True if successful, false otherwise</returns>
+        </member>
         <member name="T:BusBuddy.Data.SqlServerDatabaseHelper">
             <summary>
             SQL Server implementation of the database helper
@@ -153,6 +196,55 @@
             <param name="name">Vehicle name to check</param>
             <returns>True if vehicle exists, false otherwise</returns>
         </member>
+        <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.GetDriversAsync">
+            <summary>
+            Gets all drivers from the database
+            </summary>
+            <returns>List of drivers</returns>
+        </member>
+        <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.GetDriverByIdAsync(System.Int32)">
+            <summary>
+            Gets a driver by ID
+            </summary>
+            <param name="driverId">The driver ID</param>
+            <returns>The driver if found, null otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.AddDriverAsync(BusBuddy.Models.Entities.Driver)">
+            <summary>
+            Adds a new driver to the database
+            </summary>
+            <param name="driver">The driver to add</param>
+            <returns>The added driver with ID populated</returns>
+        </member>
+        <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.UpdateDriverAsync(BusBuddy.Models.Entities.Driver)">
+            <summary>
+            Updates an existing driver
+            </summary>
+            <param name="driver">The driver with updated information</param>
+            <returns>True if successful, false otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Data.SqlServerDatabaseHelper.DeleteDriverSafelyAsync(System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            Safely deletes a driver by handling all dependent records to avoid foreign key constraint violations
+            </summary>
+            <param name="driverId">The ID of the driver to delete</param>
+            <param name="reassignToDriverId">Optional. If provided, reassigns dependent records to this driver instead of setting to null</param>
+            <returns>True if successful, false otherwise</returns>
+        </member>
+        <member name="T:BusBuddy.Extensions.DriverManagementExtensions">
+            <summary>
+            Extension methods for handling driver management
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Extensions.DriverManagementExtensions.ShowSafeDeleteDriverDialog(System.Windows.Forms.Form,System.IServiceProvider,BusBuddy.Models.Entities.Driver)">
+            <summary>
+            Shows a dialog to safely delete a driver
+            </summary>
+            <param name="parent">The parent form</param>
+            <param name="serviceProvider">The service provider</param>
+            <param name="driver">The driver to delete</param>
+            <returns>DialogResult indicating the result of the operation</returns>
+        </member>
         <member name="M:BusBuddy.Forms.Dashboard.InitializeTrackingTab">
             <summary>
             Initializes the tracking tab with GPS map placeholder
@@ -184,6 +276,19 @@
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
             </summary>
+        </member>
+        <member name="T:BusBuddy.Forms.DeleteDriverDialog">
+            <summary>
+            Dialog for safely deleting a driver
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Forms.DeleteDriverDialog.#ctor(BusBuddy.Services.DriverService,Microsoft.Extensions.Logging.ILogger{BusBuddy.Forms.DeleteDriverDialog},BusBuddy.Models.Entities.Driver)">
+            <summary>
+            Initializes a new instance of the DeleteDriverDialog class
+            </summary>
+            <param name="driverService">The driver service</param>
+            <param name="logger">The logger</param>
+            <param name="driverToDelete">The driver to delete</param>
         </member>
         <member name="T:BusBuddy.Forms.ReportsForm">
             <summary>
@@ -780,6 +885,60 @@
             <summary>
             ZIP Code
             </summary>
+        </member>
+        <member name="T:BusBuddy.Services.DriverService">
+            <summary>
+            Service for managing drivers
+            </summary>
+        </member>
+        <member name="M:BusBuddy.Services.DriverService.#ctor(BusBuddy.Data.Interfaces.IDatabaseHelper,Microsoft.Extensions.Logging.ILogger{BusBuddy.Services.DriverService})">
+            <summary>
+            Initializes a new instance of the DriverService class
+            </summary>
+            <param name="dbHelper">The database helper</param>
+            <param name="logger">The logger</param>
+        </member>
+        <member name="M:BusBuddy.Services.DriverService.GetAllDriversAsync">
+            <summary>
+            Gets all drivers
+            </summary>
+            <returns>List of drivers</returns>
+        </member>
+        <member name="M:BusBuddy.Services.DriverService.GetDriverByIdAsync(System.Int32)">
+            <summary>
+            Gets a driver by ID
+            </summary>
+            <param name="id">The driver ID</param>
+            <returns>The driver if found, null otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Services.DriverService.AddDriverAsync(BusBuddy.Models.Entities.Driver)">
+            <summary>
+            Adds a new driver
+            </summary>
+            <param name="driver">The driver to add</param>
+            <returns>The added driver with ID populated</returns>
+        </member>
+        <member name="M:BusBuddy.Services.DriverService.UpdateDriverAsync(BusBuddy.Models.Entities.Driver)">
+            <summary>
+            Updates an existing driver
+            </summary>
+            <param name="driver">The driver with updated information</param>
+            <returns>True if successful, false otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Services.DriverService.DeleteDriverAsync(System.Int32)">
+            <summary>
+            Safely deletes a driver by first handling any dependent records
+            </summary>
+            <param name="driverId">The ID of the driver to delete</param>
+            <returns>True if successful, false otherwise</returns>
+        </member>
+        <member name="M:BusBuddy.Services.DriverService.DeleteDriverAndReassignAsync(System.Int32,System.Int32)">
+            <summary>
+            Safely deletes a driver with the option to reassign related records to another driver
+            </summary>
+            <param name="driverId">The ID of the driver to delete</param>
+            <param name="reassignToDriverId">The ID of the driver to reassign related records to</param>
+            <returns>True if successful, false otherwise</returns>
         </member>
     </members>
 </doc>

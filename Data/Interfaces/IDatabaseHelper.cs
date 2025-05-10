@@ -70,13 +70,46 @@ namespace BusBuddy.Data.Interfaces
         /// </summary>
         /// <param name="route">The route with updated information</param>
         /// <returns>True if successful, false otherwise</returns>
-        Task<bool> UpdateRouteAsync(Route route);
-
-        /// <summary>
+        Task<bool> UpdateRouteAsync(Route route);        /// <summary>
         /// Deletes a route
         /// </summary>
         /// <param name="routeId">The ID of the route to delete</param>
         /// <returns>True if successful, false otherwise</returns>
         Task<bool> DeleteRouteAsync(int routeId);
+
+        /// <summary>
+        /// Gets all drivers from the database
+        /// </summary>
+        /// <returns>List of drivers</returns>
+        Task<IEnumerable<Driver>> GetDriversAsync();
+        
+        /// <summary>
+        /// Gets a driver by ID
+        /// </summary>
+        /// <param name="driverId">The driver ID</param>
+        /// <returns>The driver if found, null otherwise</returns>
+        Task<Driver> GetDriverByIdAsync(int driverId);
+        
+        /// <summary>
+        /// Adds a new driver to the database
+        /// </summary>
+        /// <param name="driver">The driver to add</param>
+        /// <returns>The added driver with ID populated</returns>
+        Task<Driver> AddDriverAsync(Driver driver);
+        
+        /// <summary>
+        /// Updates an existing driver
+        /// </summary>
+        /// <param name="driver">The driver with updated information</param>
+        /// <returns>True if successful, false otherwise</returns>
+        Task<bool> UpdateDriverAsync(Driver driver);
+        
+        /// <summary>
+        /// Safely deletes a driver by handling all dependent records to avoid foreign key constraint violations
+        /// </summary>
+        /// <param name="driverId">The ID of the driver to delete</param>
+        /// <param name="reassignToDriverId">Optional. If provided, reassigns dependent records to this driver instead of setting to null</param>
+        /// <returns>True if successful, false otherwise</returns>
+        Task<bool> DeleteDriverSafelyAsync(int driverId, int? reassignToDriverId = null);
     }
 }

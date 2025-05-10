@@ -81,9 +81,11 @@ namespace BusBuddy
                 var connectionString = configuration.GetConnectionString("DefaultConnection");
                 options.UseSqlServer(connectionString);
             }, ServiceLifetime.Scoped);
-            
-            // Register data access helper
+              // Register data access helper
             services.AddScoped<IDatabaseHelper, SqlServerDatabaseHelper>();
+            
+            // Register services
+            services.AddScoped<Services.DriverService>();
             
             // Register forms
             services.AddTransient<Dashboard>();
