@@ -1,0 +1,44 @@
+name: .NET Desktop CI
+
+# Trigger the workflow on push or pull request to specified branches
+on:
+  push:
+    branches: [ master, "Fresh Start" ]
+  pull_request:
+    branches: [ master, "Fresh Start" ]
+
+jobs:
+  build:
+    # Use Windows runner since this is a Windows Forms project
+    runs-on: windows-latest
+
+    # Use a matrix strategy to build in both Debug and Release configurations
+    strategy:
+      matrix:
+        configuration: [ Debug, Release ]
+
+    steps:
+    # Checkout the repository code
+    - uses: actions/checkout@v3
+
+    # Set up the .NET SDK (adjust version based on your project)
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'  # Adjust to match your project's TargetFramework (e.g., 6.0.x for net6.0-windows)
+
+    # Cache NuGet packages to speed up builds
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: ${{ runner.os }}-nuget-
+
+    # Restore dependencies using the solution file
+    - name: Restore dependencies
+      run: dotnet restore BusBuddy.sln
+
+    # Build the project in the specified configuration
+    - name: Build
+      run: dotnet build BusBuddy.sln --configuration ${{ matrix.configuration }} --no-restore
