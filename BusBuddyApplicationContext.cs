@@ -3,12 +3,11 @@ using System.IO;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using BusBuddyMVP.Forms;
-using BusBuddyMVP.Forms.Interfaces;
+using BusBuddy.Forms;
 using System.Threading;
 using System.Diagnostics;
 
-namespace BusBuddyMVP
+namespace BusBuddy
 {    public class BusBuddyApplicationContext : ApplicationContext
     {
         private IServiceProvider _serviceProvider;

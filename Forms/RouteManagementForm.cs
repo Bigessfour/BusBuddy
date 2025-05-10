@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using BusBuddy.Models;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using BusBuddy.Data;
-using BusBuddy.Forms.Dialogs; // Added for RouteEditorDialog
+using BusBuddy.Data.Interfaces;
+using BusBuddy.Models.Entities;
 
 namespace BusBuddy.Forms
-{
-    public partial class RouteManagementForm : Form
+{    public partial class RouteManagementForm : Form
     {
-        private DatabaseHelper dbHelper;
+        private IDatabaseHelper dbHelper;
         private BindingSource bindingSource;
         private DataGridView dgvRoutes;
         private Button btnAdd;
@@ -21,7 +20,7 @@ namespace BusBuddy.Forms
         private System.Windows.Forms.Timer refreshTimer;
         private readonly ILogger<RouteManagementForm> logger;
 
-        public RouteManagementForm(DatabaseHelper dbHelper, ILogger<RouteManagementForm> logger)
+        public RouteManagementForm(IDatabaseHelper dbHelper, ILogger<RouteManagementForm> logger)
         {
             this.dbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -4,12 +4,12 @@ using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using BusBuddy.Data;
+using BusBuddy.Data.Interfaces;
 
 namespace BusBuddy.Forms
-{
-    public partial class Dashboard : Form
+{    public partial class Dashboard : Form
     {
-        private readonly DatabaseHelper _databaseHelper;
+        private readonly IDatabaseHelper _databaseHelper;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<Dashboard> _logger;
         private BindingSource bindingSource = new BindingSource();
@@ -17,7 +17,7 @@ namespace BusBuddy.Forms
         // NOTE: All UI controls are automatically defined in Dashboard.Designer.cs
 
         public Dashboard(
-            DatabaseHelper databaseHelper,
+            IDatabaseHelper databaseHelper,
             IServiceProvider serviceProvider,
             ILogger<Dashboard> logger)
         {

@@ -1,6 +1,6 @@
 name: .NET Desktop CI
 
-# Trigger the workflow on push or pull request to specified branches
+# This workflow runs when you push code or create a pull request to the specified branches
 on:
   push:
     branches: [ master, "Fresh Start" ]
@@ -8,26 +8,28 @@ on:
     branches: [ master, "Fresh Start" ]
 
 jobs:
-  build:
-    # Use Windows runner since this is a Windows Forms project
+  build-and-test:
+    # Use a Windows runner since BusBuddy is a Windows Forms project
     runs-on: windows-latest
 
-    # Use a matrix strategy to build in both Debug and Release configurations
+    # Build in both Debug and Release configurations to catch configuration-specific issues
     strategy:
       matrix:
         configuration: [ Debug, Release ]
 
     steps:
-    # Checkout the repository code
+    # Step 1: Checkout your code from the repository
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Fetches all history for better coverage reporting
 
-    # Set up the .NET SDK (adjust version based on your project)
+    # Step 2: Set up the .NET SDK (version should match your project's TargetFramework)
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0.x'  # Adjust to match your project's TargetFramework (e.g., 6.0.x for net6.0-windows)
+        dotnet-version: '8.0.x'  # Adjust to match your project's TargetFramework (e.g., 9.0.x if using .NET 9)
 
-    # Cache NuGet packages to speed up builds
+    # Step 3: Cache NuGet packages to speed up builds (saves time by reusing downloaded packages)
     - name: Cache NuGet packages
       uses: actions/cache@v3
       with:
@@ -35,10 +37,43 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
         restore-keys: ${{ runner.os }}-nuget-
 
-    # Restore dependencies using the solution file
+    # Step 4: Restore dependencies (downloads required packages like Entity Framework, MaterialSkin.2)
     - name: Restore dependencies
       run: dotnet restore BusBuddy.sln
 
-    # Build the project in the specified configuration
+    # Step 5: Format code and check for style issues (helps you learn coding standards)
+    - name: Format and Check Code Style
+      run: dotnet format BusBuddy.sln --verify-no-changes --severity warn
+      continue-on-error: true  # Won't fail the build, just warns you
+
+    # Step 6: Build the project (compiles your code to catch syntax errors)
     - name: Build
       run: dotnet build BusBuddy.sln --configuration ${{ matrix.configuration }} --no-restore
+
+    # Step 7: Run tests with coverage (runs xUnit tests and measures how much code is tested)
+    - name: Test with Coverage
+      run: dotnet test BusBuddy.sln --configuration ${{ matrix.configuration }} --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      continue-on-error: true  # Won't fail the build if tests fail, but you'll see the results
+
+    # Step 8: Generate a test coverage report (shows which parts of your code need more tests)
+    - name: Generate Coverage Report
+      run: dotnet reportgenerator -reports:"**/coverage.opencover.xml" -targetdir:"coveragereport" -reporttypes:Html
+      if: always()  # Runs even if the test step fails
+
+    # Step 9: Upload the coverage report (you can download this to see untested code)
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report-${{ matrix.configuration }}
+        path: coveragereport
+      if: always()
+
+    # Step 10: Upload build artifacts (useful for debugging if the build fails)
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-${{ matrix.configuration }}
+        path: |
+          **/bin/**
+          **/obj/**
+      if: always()
