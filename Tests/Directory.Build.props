@@ -4,21 +4,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <!-- Define package versions to be used across all projects -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-    <PackageVersion Include="xunit" Version="2.4.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
-    <PackageVersion Include="coverlet.collector" Version="3.2.0" />
-    <PackageVersion Include="Moq" Version="4.18.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="6.0.16" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.16" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.16" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.16" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.16" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageVersion Include="MaterialSkin.2" Version="2.3.1" />
+    <!-- Removed duplicate PackageVersion items. These are managed by the root Directory.Packages.props -->
   </ItemGroup>
 </Project>
