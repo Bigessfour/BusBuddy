@@ -1,0 +1,53 @@
+# Base image with .NET SDK for building
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy project files and restore dependencies
+COPY ["BusBuddy.csproj", "./"]
+COPY ["Directory.Packages.props", "./"]
+RUN dotnet restore "BusBuddy.csproj"
+
+# Copy necessary source files
+COPY ["Pages/", "Pages/"]
+COPY ["Components/", "Components/"]
+COPY ["Controllers/", "Controllers/"]
+COPY ["DTOs/", "DTOs/"]
+COPY ["Services/", "Services/"]
+COPY ["Models/", "Models/"]
+COPY ["Data/", "Data/"]
+COPY ["Entities/", "Entities/"]
+COPY ["Hubs/", "Hubs/"]
+COPY ["Forms/", "Forms/"]
+COPY ["Extensions/", "Extensions/"]
+COPY ["Infrastructure/", "Infrastructure/"]
+COPY ["wwwroot/", "wwwroot/"]
+COPY ["App.razor", "./"]
+COPY ["_Imports.razor", "./"]
+COPY ["WebStartup.cs", "./"]
+COPY ["Program.cs", "./"]
+COPY ["appsettings.json", "./"]
+
+# Build the application specifically focused on the web components
+RUN dotnet build "BusBuddy.csproj" -c Release -o /app/build
+
+# Publish the application
+RUN dotnet publish "BusBuddy.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# Set environment variables for dashboard focus
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:5000
+ENV DASHBOARD_MODE=true
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:5000/health || exit 1
+
+# Expose port
+EXPOSE 5000
+
+ENTRYPOINT ["dotnet", "BusBuddy.dll"]

@@ -27,7 +27,7 @@ services:
   blazor:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.blazor
     container_name: busbuddy-blazor
     depends_on:
       sqlserver:
@@ -55,7 +55,6 @@ services:
 
 networks:
   busbuddy-network:
-    driver: bridge
 
 volumes:
   busbuddy-sqlserver-data:

@@ -4,7 +4,7 @@ services:
   # SQL Server Database
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: busbuddy-sqlserver
+    container_name: busbuddy-dashboard-db
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=BusB#ddy!2025
@@ -15,7 +15,7 @@ services:
       - busbuddy-sqlserver-data:/var/opt/mssql
       - ./docker/sql:/docker-entrypoint-initdb.d
     networks:
-      - busbuddy-network
+      - busbuddy-dashboard-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "bash", "-c", "</dev/tcp/localhost/1433"]
@@ -23,12 +23,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Blazor Application
-  blazor:
+  # Blazor Dashboard Application
+  blazor-dashboard:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: busbuddy-blazor
+      dockerfile: Dockerfile.blazor-dashboard
+    container_name: busbuddy-blazor-dashboard
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -37,14 +37,9 @@ services:
       - USE_DOCKER_DB=true
       - CONNECTION_STRING=Server=sqlserver;Database=BusBuddy;User Id=BusBuddyApp;Password=App@P@ss!2025;TrustServerCertificate=True;Encrypt=False
     ports:
-      - "5000:5000"
-      - "5001:5001"
+      - "5500:5000"  # Map to port 5500 to avoid conflicts with other containers
     networks:
-      - busbuddy-network
-    volumes:
-      - ./:/app
-      - /app/bin
-      - /app/obj
+      - busbuddy-dashboard-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
@@ -52,9 +47,14 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    volumes:
+      # Mount only what's needed for hot-reload during development
+      - ./Pages:/app/Pages
+      - ./Components:/app/Components
+      - ./wwwroot:/app/wwwroot
 
 networks:
-  busbuddy-network:
+  busbuddy-dashboard-network:
     driver: bridge
 
 volumes:

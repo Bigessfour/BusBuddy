@@ -1,0 +1,343 @@
+@page "/modern-dashboard"
+@namespace BusBuddy.Pages
+@using BusBuddy.DTOs
+@using BusBuddy.Services.Dashboard
+@using System.Text.Json
+@using Microsoft.JSInterop
+@inject DashboardService DashboardService
+@inject IJSRuntime JSRuntime
+@implements IDisposable
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">BusBuddy Dashboard</h1>
+        <div class="header-actions">
+            <a href="/dashboard" class="btn-dashboard me-3" style="background-color: #6c757d;">
+                <i class="bi bi-arrow-left"></i> Classic View
+            </a>
+            <div class="connection-status me-3">
+                <span class="status-indicator @(isConnected ? "status-connected" : "status-disconnected")"></span>
+                <span>@(isConnected ? "Connected" : "Disconnected")</span>
+            </div>
+            <button class="btn-dashboard" @onclick="RefreshDashboard">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <div class="metrics">
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-bus-front"></i></div>
+            <div class="metric-title">Active Buses</div>
+            <div class="metric-value">@(metrics?.TotalVehicles ?? 0)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-map"></i></div>
+            <div class="metric-title">Active Routes</div>
+            <div class="metric-value">@(metrics?.TotalRoutes ?? 0)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-person"></i></div>
+            <div class="metric-title">Drivers</div>
+            <div class="metric-value">@(metrics?.TotalDrivers ?? 0)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-exclamation-diamond"></i></div>
+            <div class="metric-title">Active Alerts</div>
+            <div class="metric-value">@(alerts?.Count(a => a.IsActive) ?? 0)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-speedometer2"></i></div>
+            <div class="metric-title">Total Mileage</div>
+            <div class="metric-value">@((metrics?.TotalMileage ?? 0).ToString("N1"))</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-calendar-check"></i></div>
+            <div class="metric-title">Trips Today</div>
+            <div class="metric-value">@(metrics?.TripsToday ?? 0)</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <span>Route Status</span>
+                    <button class="btn-dashboard btn-sm" @onclick="RenderChartAsync">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </button>
+                </div>
+                <div class="section-content">
+                    <div class="chart-container">
+                        <canvas id="routeStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <span>Current Alerts</span>
+                    <span class="badge badge-@(GetAlertCountClass())">@(alerts?.Count(a => a.IsActive) ?? 0) Active</span>
+                </div>
+                <div class="section-content">
+                    @if (alerts == null || !alerts.Any(a => a.IsActive))
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                            <p class="mt-2">No active alerts at this time</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Route</th>
+                                    <th>Message</th>
+                                    <th>Severity</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var alert in alerts.Where(a => a.IsActive).OrderByDescending(a => a.CreatedAt))
+                                {
+                                    <tr>
+                                        <td>@alert.Route?.RouteName</td>
+                                        <td>@alert.Message</td>
+                                        <td>
+                                            <span class="badge badge-@GetSeverityClass(alert.Severity)">@alert.Severity</span>
+                                        </td>
+                                        <td>@alert.CreatedAt.ToString("HH:mm:ss")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <span>Recent Activity</span>
+                </div>
+                <div class="section-content">
+                    <div class="activity-feed">
+                        @if (metrics?.RecentActivity == null || !metrics.RecentActivity.Any())
+                        {
+                            <p class="text-center">No recent activity</p>
+                        }
+                        else
+                        {
+                            @foreach (var activity in metrics.RecentActivity.OrderByDescending(a => a.Timestamp).Take(5))
+                            {
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="bi @GetActivityIcon(activity.ActivityType)"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">@activity.Description</div>
+                                        <div class="activity-time">@activity.Timestamp.ToString("g")</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <span>Route Details</span>
+                </div>
+                <div class="section-content">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Start Location</th>
+                                <th>End Location</th>
+                                <th>Distance (mi)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (routes == null || !routes.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center">No routes available</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var route in routes)
+                                {
+                                    <tr>
+                                        <td>@route.RouteID</td>
+                                        <td>@route.RouteName</td>
+                                        <td>@route.StartLocation</td>
+                                        <td>@route.EndLocation</td>
+                                        <td>@route.Distance.ToString("N1")</td>
+                                        <td><span class="badge badge-@GetRouteStatusClass(route.Status)">@route.Status</span></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private DashboardMetricsDto? metrics;
+    private List<AlertDto>? alerts;
+    private List<RouteDto>? routes;
+    private Dictionary<string, int> routeStatusCounts = new Dictionary<string, int>();
+    private bool isConnected = true;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDashboardDataAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && routeStatusCounts.Any())
+        {
+            await RenderChartAsync();
+        }
+    }
+
+    private async Task LoadDashboardDataAsync()
+    {
+        try {
+            isConnected = true;
+            var dashboardData = await DashboardService.GetDashboardMetricsAsync();
+            metrics = new DashboardMetricsDto
+            {
+                TotalDrivers = dashboardData.TotalDrivers,
+                TotalRoutes = dashboardData.TotalRoutes,
+                TotalVehicles = dashboardData.TotalVehicles,
+                TotalMileage = dashboardData.TotalMileage,
+                TripsToday = dashboardData.TripsToday,
+                RecentActivity = dashboardData.RecentActivity
+            };
+            
+            // Get route status counts for the chart
+            var trips = await DashboardService.GetActiveTripsAsync();
+            routeStatusCounts = trips
+                .GroupBy(t => t.Status)
+                .ToDictionary(g => g.Key, g => g.Count());
+                
+            alerts = await DashboardService.GetActiveAlertsAsync();
+            routes = await DashboardService.GetRoutesAsync();
+            
+            StateHasChanged();
+            
+            if (routeStatusCounts.Any())
+            {
+                await RenderChartAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            isConnected = false;
+            Console.WriteLine($"Error loading dashboard data: {ex.Message}");
+            StateHasChanged();
+        }
+    }
+
+    private async Task RenderChartAsync()
+    {
+        try
+        {
+            var labels = routeStatusCounts.Keys.ToArray();
+            var data = routeStatusCounts.Values.ToArray();
+            var colors = new[] { "#36A2EB", "#FF6384", "#FFCE56", "#4BC0C0" };
+
+            await JSRuntime.InvokeVoidAsync("renderPieChart", "routeStatusChart", labels, data, colors);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error rendering chart: {ex.Message}");
+        }
+    }
+
+    // Auto-refresh timer
+    private System.Threading.Timer? _timer;
+    private readonly TimeSpan _refreshInterval = TimeSpan.FromSeconds(30);
+
+    protected override void OnInitialized()
+    {
+        // Start the timer for auto-refresh
+        _timer = new System.Threading.Timer(async _ =>
+        {
+            await RefreshDashboard();
+            await InvokeAsync(StateHasChanged);
+        }, null, _refreshInterval, _refreshInterval);
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    public async Task RefreshDashboard()
+    {
+        await LoadDashboardDataAsync();
+    }
+
+    private string GetSeverityClass(string severity)
+    {
+        return severity?.ToLower() switch
+        {
+            "critical" => "danger",
+            "warning" => "warning",
+            "info" => "info",
+            _ => "secondary"
+        };
+    }
+    
+    private string GetAlertCountClass()
+    {
+        var count = alerts?.Count(a => a.IsActive) ?? 0;
+        return count == 0 ? "success" : (count < 3 ? "warning" : "danger");
+    }
+    
+    private string GetRouteStatusClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "active" => "success",
+            "delayed" => "warning",
+            "cancelled" => "danger",
+            "completed" => "info",
+            _ => "secondary"
+        };
+    }
+    
+    private string GetActivityIcon(string activityType)
+    {
+        return activityType?.ToLower() switch
+        {
+            "route" => "bi-map",
+            "driver" => "bi-person",
+            "vehicle" => "bi-bus-front",
+            "alert" => "bi-exclamation-triangle",
+            "system" => "bi-gear",
+            _ => "bi-activity"
+        };
+    }
+}

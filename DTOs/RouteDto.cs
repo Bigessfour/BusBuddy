@@ -36,5 +36,10 @@ namespace BusBuddy.DTOs
         /// When the route was last updated
         /// </summary>
         public DateTime LastUpdated { get; set; }
+        
+        /// <summary>
+        /// Current status of the route
+        /// </summary>
+        public string Status { get; set; } = "Inactive";
     }
 }

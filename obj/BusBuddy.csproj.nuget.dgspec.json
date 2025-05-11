@@ -49,9 +49,24 @@
               "version": "[2.3.1, )",
               "versionCentrallyManaged": true
             },
+            "Microsoft.AspNetCore": {
+              "target": "Package",
+              "version": "[2.2.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.Hosting": {
+              "target": "Package",
+              "version": "[2.2.7, )",
+              "versionCentrallyManaged": true
+            },
             "Microsoft.AspNetCore.Mvc.Core": {
               "target": "Package",
               "version": "[2.2.5, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.SignalR": {
+              "target": "Package",
+              "version": "[1.1.0, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.AspNetCore.SignalR.Client": {
@@ -81,17 +96,22 @@
             },
             "Microsoft.Extensions.Caching.Memory": {
               "target": "Package",
-              "version": "[6.0.2, )",
+              "version": "[6.0.3, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[6.0.2, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.Extensions.Hosting": {
               "target": "Package",
               "version": "[6.0.1, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Logging": {
               "target": "Package",
-              "version": "[6.0.0, )",
+              "version": "[6.0.1, )",
               "versionCentrallyManaged": true
             },
             "System.Data.SQLite": {
@@ -101,19 +121,29 @@
             }
           },
           "centralPackageVersions": {
+            "AngleSharp": "[1.2.0, )",
+            "bunit": "[1.39.5, )",
+            "bunit.core": "[1.39.5, )",
+            "bunit.web": "[1.39.5, )",
             "coverlet.collector": "[6.0.2, )",
             "Dapper": "[2.1.35, )",
+            "FluentAssertions": "[6.12.0, )",
             "MaterialSkin.2": "[2.3.1, )",
+            "Microsoft.AspNetCore": "[2.2.0, )",
+            "Microsoft.AspNetCore.Hosting": "[2.2.7, )",
             "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
+            "Microsoft.AspNetCore.Mvc.Testing": "[6.0.16, )",
+            "Microsoft.AspNetCore.SignalR": "[1.1.0, )",
             "Microsoft.AspNetCore.SignalR.Client": "[6.0.16, )",
             "Microsoft.EntityFrameworkCore": "[6.0.16, )",
             "Microsoft.EntityFrameworkCore.Design": "[6.0.16, )",
             "Microsoft.EntityFrameworkCore.InMemory": "[6.0.16, )",
             "Microsoft.EntityFrameworkCore.SqlServer": "[6.0.16, )",
             "Microsoft.EntityFrameworkCore.Tools": "[6.0.16, )",
-            "Microsoft.Extensions.Caching.Memory": "[6.0.2, )",
-            "Microsoft.Extensions.DependencyInjection": "[6.0.1, )",
-            "Microsoft.Extensions.Logging": "[6.0.0, )",
+            "Microsoft.Extensions.Caching.Memory": "[6.0.3, )",
+            "Microsoft.Extensions.DependencyInjection": "[6.0.2, )",
+            "Microsoft.Extensions.Hosting": "[6.0.1, )",
+            "Microsoft.Extensions.Logging": "[6.0.1, )",
             "Microsoft.NET.Test.Sdk": "[17.11.0, )",
             "Moq": "[4.20.72, )",
             "System.Data.SQLite": "[1.0.118, )",
@@ -132,6 +162,9 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             },

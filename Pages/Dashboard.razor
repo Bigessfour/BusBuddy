@@ -9,28 +9,61 @@
 
 <h1>BusBuddy Dashboard</h1>
 
-<div class="d-flex justify-content-end mb-3">
-    <button class="btn btn-primary" @onclick="RefreshDashboard">Refresh Dashboard</button>
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        <a href="/modern-dashboard" class="btn btn-outline-primary">Try Modern Dashboard</a>
+    </div>
+    <div>
+        <button class="btn btn-primary" @onclick="RefreshDashboard">Refresh Dashboard</button>
+    </div>
 </div>
 
-<div class="metrics mt-4">
-    <div class="metric-card">
-        <div>Active Buses</div>
-        <div class="metric-value">@(metrics?.TotalVehicles ?? 0)</div>
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">BusBuddy Dashboard</h1>
+        <div class="header-actions">
+            <div class="connection-status me-3">
+                <span class="status-indicator @(_isConnected ? "status-connected" : "status-disconnected")"></span>
+                <span>@(_isConnected ? "Connected" : "Disconnected")</span>
+            </div>
+            <button class="btn-dashboard" @onclick="RefreshDashboard">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
     </div>
-    <div class="metric-card">
-        <div>Active Routes</div>
-        <div class="metric-value">@(metrics?.TotalRoutes ?? 0)</div>
+
+    <div class="metrics">
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-bus-front"></i></div>
+            <div class="metric-title">Active Buses</div>
+            <div class="metric-value">@(metrics?.TotalVehicles ?? 0)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-map"></i></div>
+            <div class="metric-title">Active Routes</div>
+            <div class="metric-value">@(metrics?.TotalRoutes ?? 0)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-person"></i></div>
+            <div class="metric-title">Drivers</div>
+            <div class="metric-value">@(metrics?.TotalDrivers ?? 0)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-exclamation-diamond"></i></div>
+            <div class="metric-title">Active Alerts</div>
+            <div class="metric-value">@(alerts?.Count(a => a.IsActive) ?? 0)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-speedometer2"></i></div>
+            <div class="metric-title">Total Mileage</div>
+            <div class="metric-value">@((metrics?.TotalMileage ?? 0).ToString("N1"))</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon"><i class="bi bi-calendar-check"></i></div>
+            <div class="metric-title">Trips Today</div>
+            <div class="metric-value">@(metrics?.TripsToday ?? 0)</div>
+        </div>
     </div>
-    <div class="metric-card">
-        <div>Drivers</div>
-        <div class="metric-value">@(metrics?.TotalDrivers ?? 0)</div>
-    </div>
-    <div class="metric-card">
-        <div>Active Alerts</div>
-        <div class="metric-value">@(alerts?.Count(a => a.IsActive) ?? 0)</div>
-    </div>
-</div>
 
 <div class="row mt-4">
     <div class="col-md-6">
@@ -70,18 +103,18 @@
                     }
                 </tbody>
             </table>
-        }
-    </div>
+        }    </div>
+</div>
 </div>
 
 @code {
     private DashboardMetricsDto? metrics;
     private List<AlertDto>? alerts;
     private Dictionary<string, int> routeStatusCounts = new Dictionary<string, int>();
-
-    protected override async Task OnInitializedAsync()
+    private bool _isConnected = false;    protected override async Task OnInitializedAsync()
     {
         await LoadDashboardDataAsync();
+        _isConnected = true;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

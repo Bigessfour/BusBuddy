@@ -20,6 +20,7 @@ namespace BusBuddy.Services.Dashboard
         Task<DashboardDto> GetDashboardMetricsAsync();
         Task<List<TripDto>> GetActiveTripsAsync();
         Task<List<AlertDto>> GetActiveAlertsAsync();
+        Task<List<RouteDto>> GetRoutesAsync();
         Task<(DashboardDto, Dictionary<string, int>)> GetDashboardOverviewAsync();
     }
 
@@ -246,6 +247,66 @@ namespace BusBuddy.Services.Dashboard
             {
                 _logger.LogError(ex, "Error retrieving active alerts");
                 return new List<AlertDto>();
+            }
+        }
+
+        /// <summary>
+        /// Gets active bus routes with status information
+        /// </summary>
+        /// <returns>A list of route DTOs with status information</returns>
+        public async Task<List<RouteDto>> GetRoutesAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Retrieving route data with status information");
+                
+                // First get the base route data
+                var routes = await _dbContext.Routes
+                    .Select(r => new RouteDto
+                    {
+                        RouteID = r.Id,
+                        RouteName = r.RouteName,
+                        StartLocation = r.StartLocation,
+                        EndLocation = r.EndLocation,
+                        Distance = r.Distance,
+                        LastUpdated = r.LastModified
+                    })
+                    .ToListAsync();
+                
+                // Then get the latest trips to determine route status
+                var activeTrips = await _dbContext.Trips
+                    .Where(t => t.Status != "Completed" && t.Status != "Cancelled")
+                    .ToListAsync();
+                
+                // Update route status based on associated trips
+                foreach (var route in routes)
+                {
+                    var routeTrips = activeTrips.Where(t => t.RouteId == route.RouteID);
+                    if (!routeTrips.Any())
+                    {
+                        route.Status = "Inactive";
+                    }
+                    else if (routeTrips.Any(t => t.Status == "Delayed"))
+                    {
+                        route.Status = "Delayed";
+                    }
+                    else if (routeTrips.Any(t => t.Status == "InProgress"))
+                    {
+                        route.Status = "Active";
+                    }
+                    else
+                    {
+                        route.Status = "Scheduled";
+                    }
+                }
+
+                _logger.LogInformation("Retrieved {Count} routes with status information", routes.Count);
+                return routes;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving routes with status");
+                throw;
             }
         }
 

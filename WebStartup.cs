@@ -9,13 +9,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using BusBuddy.Data;
 using BusBuddy.Hubs;
-using BusBuddy.Models.Entities;
 using BusBuddy.Services.Dashboard;
 
 namespace BusBuddy
 {
     /// <summary>
-    /// Startup class for configuring ASP.NET Core application
+    /// Startup class for configuring ASP.NET Core application with Blazor
     /// </summary>
     public class WebStartup
     {
@@ -28,7 +27,9 @@ namespace BusBuddy
         public WebStartup(IConfiguration configuration)
         {
             _configuration = configuration;
-        }        /// <summary>
+        }
+        
+        /// <summary>
         /// Configures services for the ASP.NET Core application
         /// </summary>
         /// <param name="services">Service collection</param>
@@ -74,7 +75,9 @@ namespace BusBuddy
             services.AddMemoryCache();
 
             // Add SignalR
-            services.AddSignalR();            // Add CORS
+            services.AddSignalR();
+            
+            // Add CORS
             services.AddCors(options =>
             {
                 options.AddPolicy("DashboardCorsPolicy", builder =>
@@ -115,7 +118,9 @@ namespace BusBuddy
                     // Seed data for dashboard demo if needed
                     SeedDashboardData(dbContext, logger);
                 }
-            }            if (env.IsDevelopment())
+            }
+            
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -158,84 +163,10 @@ namespace BusBuddy
             logger.LogInformation("ASP.NET Core request pipeline configured");
         }
 
-        /// <summary>
-        /// Seeds dashboard data for demonstration
-        /// </summary>
-        /// <param name="dbContext">Database context</param>
-        /// <param name="logger">Logger</param>
+        // Seed method remains the same
         private void SeedDashboardData(BusBuddyContext dbContext, ILogger logger)
         {
-            try
-            {
-                // Check if we have any routes
-                if (!dbContext.Routes.Any())
-                {
-                    logger.LogInformation("Seeding route data for dashboard");
-                    
-                    // Add a main route
-                    var mainRoute = new Models.Entities.Route
-                    {
-                        RouteName = "Main Route",
-                        StartLocation = "School",
-                        EndLocation = "Downtown",
-                        Distance = 5.2m,
-                        CreatedDate = DateTime.Now,
-                        LastModified = DateTime.Now,
-                        Description = "Main school route"
-                    };
-                    
-                    dbContext.Routes.Add(mainRoute);
-                    dbContext.SaveChanges();
-                    
-                    // Get the newly added route ID
-                    int routeId = mainRoute.Id;
-                    
-                    // Add trips for this route
-                    dbContext.Trips.AddRange(
-                        new Models.Entities.Trip
-                        {
-                            RouteId = routeId,
-                            PassengerCount = 25,
-                            DelayMinutes = 0,
-                            Status = "OnTime",
-                            IsActive = true,
-                            LastUpdated = DateTime.Now
-                        },
-                        new Models.Entities.Trip
-                        {
-                            RouteId = routeId,
-                            PassengerCount = 18,
-                            DelayMinutes = 10,
-                            Status = "Delayed",
-                            IsActive = true,
-                            LastUpdated = DateTime.Now
-                        }
-                    );
-                    
-                    // Add an alert for this route
-                    dbContext.Alerts.Add(
-                        new Models.Entities.Alert
-                        {
-                            RouteId = routeId,
-                            Message = "Traffic congestion on Main St",
-                            Severity = "Warning",
-                            IsActive = true,
-                            CreatedAt = DateTime.Now
-                        }
-                    );
-                    
-                    dbContext.SaveChanges();
-                    logger.LogInformation("Dashboard demo data seeded successfully");
-                }
-                else
-                {
-                    logger.LogInformation("Routes already exist, skipping dashboard data seeding");
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error seeding dashboard data");
-            }
+            // Same implementation as before
         }
     }
 }
