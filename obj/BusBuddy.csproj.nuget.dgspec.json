@@ -31,21 +31,21 @@
           }
         },
         "warningProperties": {
+          "allWarningsAsErrors": true,
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.200"
+        }
       },
       "frameworks": {
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.35, )",
+              "versionCentrallyManaged": true
+            },
             "MaterialSkin.2": {
               "target": "Package",
               "version": "[2.3.1, )",
@@ -130,6 +130,11 @@
               "version": "[4.18.4, )",
               "versionCentrallyManaged": true
             },
+            "System.Data.SQLite.Core": {
+              "target": "Package",
+              "version": "[1.0.118, )",
+              "versionCentrallyManaged": true
+            },
             "xunit": {
               "target": "Package",
               "version": "[2.4.2, )",
@@ -144,25 +149,27 @@
             }
           },
           "centralPackageVersions": {
-            "coverlet.collector": "3.2.0",
-            "MaterialSkin.2": "2.3.1",
-            "Microsoft.AspNetCore.Hosting": "2.2.7",
-            "Microsoft.AspNetCore.Mvc.Core": "2.2.5",
-            "Microsoft.AspNetCore.SignalR.Client": "6.0.16",
-            "Microsoft.EntityFrameworkCore": "6.0.16",
-            "Microsoft.EntityFrameworkCore.Design": "6.0.16",
-            "Microsoft.EntityFrameworkCore.SqlServer": "6.0.16",
-            "Microsoft.EntityFrameworkCore.Tools": "6.0.16",
-            "Microsoft.Extensions.Caching.Memory": "6.0.1",
-            "Microsoft.Extensions.Configuration": "6.0.0",
-            "Microsoft.Extensions.DependencyInjection": "6.0.1",
-            "Microsoft.Extensions.Hosting": "6.0.1",
-            "Microsoft.Extensions.Logging": "6.0.0",
-            "Microsoft.Extensions.Logging.Console": "6.0.0",
-            "Microsoft.NET.Test.Sdk": "17.5.0",
-            "Moq": "4.18.4",
-            "xunit": "2.4.2",
-            "xunit.runner.visualstudio": "2.4.5"
+            "coverlet.collector": "[3.2.0, )",
+            "Dapper": "[2.1.35, )",
+            "MaterialSkin.2": "[2.3.1, )",
+            "Microsoft.AspNetCore.Hosting": "[2.2.7, )",
+            "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
+            "Microsoft.AspNetCore.SignalR.Client": "[6.0.16, )",
+            "Microsoft.EntityFrameworkCore": "[6.0.16, )",
+            "Microsoft.EntityFrameworkCore.Design": "[6.0.16, )",
+            "Microsoft.EntityFrameworkCore.SqlServer": "[6.0.16, )",
+            "Microsoft.EntityFrameworkCore.Tools": "[6.0.16, )",
+            "Microsoft.Extensions.Caching.Memory": "[6.0.1, )",
+            "Microsoft.Extensions.Configuration": "[6.0.0, )",
+            "Microsoft.Extensions.DependencyInjection": "[6.0.1, )",
+            "Microsoft.Extensions.Hosting": "[6.0.1, )",
+            "Microsoft.Extensions.Logging": "[6.0.0, )",
+            "Microsoft.Extensions.Logging.Console": "[6.0.0, )",
+            "Microsoft.NET.Test.Sdk": "[17.5.0, )",
+            "Moq": "[4.18.4, )",
+            "System.Data.SQLite.Core": "[1.0.118, )",
+            "xunit": "[2.4.2, )",
+            "xunit.runner.visualstudio": "[2.4.5, )"
           },
           "imports": [
             "net461",
@@ -186,7 +193,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.428\\RuntimeIdentifierGraph.json"
         }
       }
     }

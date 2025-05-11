@@ -31,6 +31,7 @@
           }
         },
         "warningProperties": {
+          "allWarningsAsErrors": true,
           "warnAsError": [
             "NU1605"
           ]
@@ -40,6 +41,11 @@
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.35, )",
+              "versionCentrallyManaged": true
+            },
             "MaterialSkin.2": {
               "target": "Package",
               "version": "[2.3.1, )",
@@ -124,6 +130,11 @@
               "version": "[4.18.4, )",
               "versionCentrallyManaged": true
             },
+            "System.Data.SQLite.Core": {
+              "target": "Package",
+              "version": "[1.0.118, )",
+              "versionCentrallyManaged": true
+            },
             "xunit": {
               "target": "Package",
               "version": "[2.4.2, )",
@@ -139,6 +150,7 @@
           },
           "centralPackageVersions": {
             "coverlet.collector": "[3.2.0, )",
+            "Dapper": "[2.1.35, )",
             "MaterialSkin.2": "[2.3.1, )",
             "Microsoft.AspNetCore.Hosting": "[2.2.7, )",
             "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
@@ -155,6 +167,7 @@
             "Microsoft.Extensions.Logging.Console": "[6.0.0, )",
             "Microsoft.NET.Test.Sdk": "[17.5.0, )",
             "Moq": "[4.18.4, )",
+            "System.Data.SQLite.Core": "[1.0.118, )",
             "xunit": "[2.4.2, )",
             "xunit.runner.visualstudio": "[2.4.5, )"
           },
@@ -225,39 +238,47 @@
           "dependencies": {
             "Microsoft.Extensions.Caching.Memory": {
               "target": "Package",
-              "version": "[6.0.1, )"
+              "version": "[6.0.1, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
-              "version": "[6.0.1, )"
+              "version": "[6.0.1, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Logging": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[6.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
-              "version": "[17.5.0, )"
+              "version": "[17.5.0, )",
+              "versionCentrallyManaged": true
             },
             "Moq": {
               "target": "Package",
-              "version": "[4.18.4, )"
+              "version": "[4.18.4, )",
+              "versionCentrallyManaged": true
             },
             "coverlet.collector": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[3.2.0, )"
+              "version": "[3.2.0, )",
+              "versionCentrallyManaged": true
             },
             "xunit": {
               "target": "Package",
-              "version": "[2.4.2, )"
+              "version": "[2.4.2, )",
+              "versionCentrallyManaged": true
             },
             "xunit.runner.visualstudio": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[2.4.5, )"
+              "version": "[2.4.5, )",
+              "versionCentrallyManaged": true
             }
           },
           "centralPackageVersions": {

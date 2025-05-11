@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SQLite; // Using System.Data.SQLite.Core package
 using System.IO;
 using Microsoft.Extensions.Logging;
 using Dapper;

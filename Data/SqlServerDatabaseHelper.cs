@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
+using BusBuddy.Infrastructure;
 
 namespace BusBuddy.Data
 {
@@ -531,7 +532,7 @@ namespace BusBuddy.Data
         /// Gets drivers available during a specific time range using TimeProvider
         /// </summary>
         public async Task<IEnumerable<Driver>> GetDriversAvailableDuringAsync(TimeSpan startTime, TimeSpan endTime, 
-            TimeProvider timeProvider)
+            Infrastructure.TimeProvider timeProvider)
         {
             var currentTime = timeProvider.GetLocalNow();
             var today = currentTime.Date;
