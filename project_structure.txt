@@ -1,0 +1,240 @@
+=============================================
+BusBuddy Project Structure
+=============================================
+Generated: 2025-05-10 20:02:14
+Root Path: c:\Users\steve.mckitrick\Desktop\BusBuddy\BusBuddy
+=============================================
+
+|- _Imports.razor
+|- .dockerignore
+|- .env
+|- .gitignore
+|- App.razor
+|- appsettings.json
+|- architecture_violations.json
+|- busbuddy_automation.py
+|- busbuddy_errors.log
+|- BusBuddy.csproj
+|- BusBuddy.csproj.bak
+|- BusBuddy.sln
+|- BusBuddy.sln.bak
+|- BusBuddy.sln.new
+|- BusBuddyApplicationContext.cs
+|- dashboard-demo.html
+|- docker-compose.dev.yml
+|- docker-compose.yml
+|- GitSetup.bat
+|- LogBackup.cs
+|- Program.cs
+|- Program.cs.new
+|- project_structure.txt
+|- SetGitConfig.bat
+|- WebStartup.cs
+|+ .github/
+|  |+ Workflows/
+|  |  |- auto-sync.yml
+|  |  |- auto-version-release-updated.yml
+|  |  |- auto-version-release.yml
+|  |  |- branch-strategy.yml
+|  |  |- build.yml
+|  |  |- ci.yml
+|  |  |- ci.yml.new
+|  |  |- dotnet-desktop.yaml
+|  |  |- feature-branch.yml
+|  |  |- release-management.yml
+|+ Components/
+|  |- DashboardWidget.razor
+|+ Controllers/
+|  |- DashboardController.cs
+|  |- DashboardController.cs.bak
+|+ Data/
+|  |- BusBuddyContext.cs
+|  |- BusBuddyContextFactory.cs
+|  |- DatabaseHelper.cs
+|  |- DatabaseInitializer.cs
+|  |- SqlServerDatabaseHelper.cs
+|  |+ Interfaces/
+|  |  |- IDatabaseHelper.cs
+|+ Deprecated/
+|+ docker/
+|  |+ sql/
+|  |  |- init-db.sql
+|  |  |- run-initialization.sh
+|+ Docs/
+|  |- .gitkeep
+|  |- DASHBOARD-INSTRUCTIONS.md
+|  |- DASHBOARD.md
+|  |- DATABASE.md
+|  |- FileOrganization.md
+|  |- github-test.md
+|  |- IMPROVEMENTS.md
+|  |- MessageBoxHandler-Summary.md
+|  |- README.md
+|  |- REBUILD-PLAN.md
+|  |- TROUBLESHOOTING.md
+|  |- WarningFixesSummary.md
+|+ DTOs/
+|  |- AlertDto.cs
+|  |- DashboardDto.cs
+|  |- DashboardMetricsDto.cs
+|  |- IDashboardData.cs
+|  |- RouteDto.cs
+|  |- TripDto.cs
+|+ Entities/
+|  |- ActivityTrip.cs
+|  |- Alert.cs
+|  |- BaseEntity.cs
+|  |- Destination.cs
+|  |- Driver.cs
+|  |- Route.cs
+|  |- Trip.cs
+|  |- Vehicle.cs
+|+ Extensions/
+|  |- DriverManagementExtensions.cs
+|+ Forms/
+|  |- Dashboard.cs
+|  |- Dashboard.Designer.cs
+|  |- DeleteDriverDialog.cs
+|  |- DriverEditorDialog.cs
+|  |- DriverManagementForm.cs
+|  |- ReportsForm.cs
+|  |- RouteEditorDialog.cs
+|  |- RouteManagementForm.cs
+|  |- VehiclesManagementForm.cs
+|  |+ busbuddy-dashboard/
+|  |  |- package-lock.json
+|  |  |- package.json
+|  |  |- run-dashboard.cmd
+|  |  |- start-app.cmd
+|  |  |- tsconfig.json
+|  |  |+ backend/
+|  |  |  |+ api/
+|  |  |  |  |- .env
+|  |  |  |  |- index.js
+|  |  |+ public/
+|  |  |  |- index.html
+|  |  |  |- manifest.json
+|  |  |+ src/
+|  |  |  |- App.tsx
+|  |  |  |- Dashboard.tsx
+|  |  |  |- index.css
+|  |  |  |- index.tsx
+|  |  |  |- reportWebVitals.ts
+|+ Hubs/
+|  |- DashboardHub.cs
+|+ logs/
+|  |- busbuddy20250509.log
+|  |- busbuddy20250510.log
+|+ Migrations/
+|  |- 20250510033855_InitialCreate.cs
+|  |- 20250510033855_InitialCreate.Designer.cs
+|  |- 20250510123000_AddPerformanceIndices.cs
+|  |- 20250510123000_AddPerformanceIndices.Designer.cs
+|  |- 20250510185500_AddTripsAndAlerts.cs
+|  |- 20250510185500_AddTripsAndAlerts.Designer.cs
+|  |- BusBuddyContextModelSnapshot.cs
+|+ Models/
+|  |- Destination.cs
+|  |+ Entities/
+|  |  |- ActivityTrip.cs
+|  |  |- Alert.cs
+|  |  |- Destination.cs
+|  |  |- Driver.cs
+|  |  |- FuelEntry.cs
+|  |  |- Maintenance.cs
+|  |  |- Part.cs
+|  |  |- Route.cs
+|  |  |- RouteData.cs
+|  |  |- Trip.cs
+|  |  |- Vehicle.cs
+|  |+ Logs/
+|  |  |- LogEntry.cs
+|+ Pages/
+|  |- _Host.cshtml
+|  |- _ViewStart.cshtml
+|  |- Dashboard.razor
+|  |- Dashboard.razor.new
+|  |- Index.cshtml
+|  |- MainLayout.razor
+|+ Properties/
+|  |- launchSettings.json
+|+ Scripts/
+|  |- .gitkeep
+|  |- BackupDatabase.ps1
+|  |- BuildAndCheckWarnings.ps1
+|  |- CleanBuildArtifacts.ps1
+|  |- CompleteGitHubSetup.ps1
+|  |- ExecuteOrganization.bat
+|  |- ExecuteOrganization.ps1
+|  |- FixNullability.ps1
+|  |- Force-UninstallDockerDesktop.ps1
+|  |- GetFileStructure.ps1
+|  |- LaunchDashboard.ps1
+|  |- Manage-Docker.ps1
+|  |- Migrate-DockerData.ps1
+|  |- OrganizeProjectFiles.ps1
+|  |- RunFileStructure.bat
+|  |- RunTests.ps1
+|  |- RunTestsAfterFixes.ps1
+|  |- ScheduleBackup.ps1
+|  |- SetGitConfig.ps1
+|  |- SimpleCleaner.ps1
+|  |- Switch-DatabaseMode.ps1
+|  |- Test-DockerDatabase.ps1
+|  |- TestGitHubConnectivity.ps1
+|+ Services/
+|  |- DriverService.cs
+|  |+ Dashboard/
+|  |  |- DashboardService.cs
+|  |  |- DashboardService.cs.bak
+|  |  |- DashboardUpdatesService.cs
+|+ Tests/
+|  |- ActivityTripTests.cs
+|  |- BusBuddy.Tests.csproj
+|  |- BusBuddy.Tests.csproj.bak
+|  |- BusBuddy.Tests.csproj.new
+|  |- DashboardTests.cs
+|  |- DeleteDriverTests.cs
+|  |- DestinationTests.cs
+|  |- DriverTests.cs
+|  |- ForeignKeyConstraintTests.cs
+|  |- FuelEntryTests.cs
+|  |- MaintenanceTests.cs
+|  |- PartTests.cs
+|  |- RouteEntityTests.cs
+|  |- RouteManagementForm_LoadingTests_Fixed.cs.bak
+|  |- RouteManagementForm_LoadingTests.cs
+|  |- RouteManagementForm_LoadingTests.cs.bak
+|  |- RouteManagementForm_LoadingTests.cs.bak2
+|  |- RouteManagementForm_LoadingTests.cs.bak3
+|  |- RouteManagementForm_LoadingTests.cs.corrupted
+|  |- RouteManagementFormTests.cs
+|  |- VehiclesManagementForm_DataDisplayTests_Fixed.cs.bak
+|  |- VehiclesManagementForm_DataDisplayTests.cs
+|  |- VehiclesManagementForm_DataDisplayTests.cs.bak
+|  |- VehiclesManagementForm_DataDisplayTests.cs.bak2
+|  |- VehiclesManagementForm_DataDisplayTests.cs.bak3
+|  |- VehiclesManagementForm_DataDisplayTests.cs.bak4
+|  |- VehiclesManagementForm_DataDisplayTests.cs.corrupted
+|  |- VehiclesManagementFormBusinessTests.cs
+|  |- VehiclesManagementFormTests.cs
+|  |- VehicleTests.cs
+|  |+ Utilities/
+|  |  |- MessageBoxHandler.cs
+|  |  |- MessageBoxHandlerTestBase.cs
+|+ wwwroot/
+|  |+ css/
+|  |  |- site.css
+|  |+ js/
+|  |  |- dashboard.js
+
+=============================================
+Summary Statistics
+=============================================
+Total Files: 187
+Total Directories: 35
+PowerShell Scripts: 20
+Markdown Files: 11
+C# Files: 86
+=============================================
+

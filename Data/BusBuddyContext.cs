@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using BusBuddy.Models.Entities;
 using BusBuddy.Models.ValueObjects;
 using BusBuddy.Models.Logs;
+using RouteEntity = BusBuddy.Models.Entities.Route;
+using RouteDataEntity = BusBuddy.Models.Entities.RouteData;
 
 namespace BusBuddy.Data
 {    public class BusBuddyContext : DbContext
@@ -11,13 +13,13 @@ namespace BusBuddy.Data
 
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
-        public DbSet<Route> Routes { get; set; }
+        public DbSet<RouteEntity> Routes { get; set; }
         public DbSet<ActivityTrip> ActivityTrips { get; set; }
         public DbSet<Destination> Destinations { get; set; }
         public DbSet<FuelEntry> FuelEntries { get; set; }
         public DbSet<Maintenance> Maintenances { get; set; }
         public DbSet<Part> Parts { get; set; }
-        public DbSet<RouteData> RouteData { get; set; }
+        public DbSet<RouteDataEntity> RouteData { get; set; }
         public DbSet<LogEntry> LogEntries { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<Alert> Alerts { get; set; }

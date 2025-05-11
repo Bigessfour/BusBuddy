@@ -95,10 +95,9 @@ namespace BusBuddy.Services.Dashboard
                 
                 // Calculate total mileage
                 var totalMileage = await _dbContext.Routes.SumAsync(r => r.Distance);
-                
-                // Count trips scheduled for today
+                  // Count trips scheduled for today
                 var tripsToday = await _dbContext.ActivityTrips
-                    .CountAsync(t => t.Date.Date == today);
+                    .CountAsync(t => t.DepartureTime.Date == today);
                 
                 // Calculate on-time performance
                 var totalTrips = await _dbContext.Trips.CountAsync();
@@ -108,8 +107,7 @@ namespace BusBuddy.Services.Dashboard
                     : 100;
                 
                 // Get route status counts for pie chart
-                var trips = await GetActiveTripsAsync();
-                var routeStatusCounts = trips
+                var trips = await GetActiveTripsAsync();                var routeStatusCounts = trips
                     .GroupBy(t => t.Status)
                     .ToDictionary(g => g.Key, g => g.Count());
                 
@@ -118,14 +116,14 @@ namespace BusBuddy.Services.Dashboard
                     .Include(t => t.Driver)
                     .Include(t => t.Vehicle)
                     .Include(t => t.Route)
-                    .OrderByDescending(t => t.Date)
+                    .OrderByDescending(t => t.DepartureTime)
                     .Take(10)
                     .Select(t => new ActivitySummaryDto
                     {
                         ActivityId = t.Id,
                         ActivityType = "Trip",
                         Description = $"{t.ActivityName} with {t.Driver.FullName}",
-                        Timestamp = t.Date
+                        Timestamp = t.DepartureTime
                     })
                     .ToListAsync();
 
@@ -248,6 +246,37 @@ namespace BusBuddy.Services.Dashboard
             {
                 _logger.LogError(ex, "Error retrieving active alerts");
                 return new List<AlertDto>();
+            }
+        }
+
+        /// <summary>
+        /// Gets dashboard overview data (metrics and route status)
+        /// </summary>
+        /// <returns>Dashboard overview data with metrics and route status counts</returns>
+        public async Task<(DashboardDto, Dictionary<string, int>)> GetDashboardOverviewAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Retrieving dashboard overview");
+                
+                // Get metrics
+                var metrics = await GetDashboardMetricsAsync();
+                
+                // Get active trips
+                var trips = await GetActiveTripsAsync();
+                
+                // Calculate route status counts
+                var routeStatusCounts = trips
+                    .GroupBy(t => t.Status)
+                    .ToDictionary(g => g.Key, g => g.Count());
+                
+                _logger.LogInformation("Retrieved dashboard overview");
+                return (metrics, routeStatusCounts);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving dashboard overview");
+                return (new DashboardDto(), new Dictionary<string, int>());
             }
         }
     }

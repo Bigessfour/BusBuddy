@@ -37,30 +37,4 @@ namespace BusBuddy.DTOs
         /// </summary>
         public List<ActivitySummaryDto> RecentActivity { get; set; } = new();
     }
-
-    /// <summary>
-    /// Summary of recent activity
-    /// </summary>
-    public class ActivitySummaryDto
-    {
-        /// <summary>
-        /// Activity ID
-        /// </summary>
-        public int ActivityId { get; set; }
-        
-        /// <summary>
-        /// Activity type (e.g., "Trip", "Maintenance", "Fuel")
-        /// </summary>
-        public string ActivityType { get; set; } = string.Empty;
-        
-        /// <summary>
-        /// Brief description of the activity
-        /// </summary>
-        public string Description { get; set; } = string.Empty;
-        
-        /// <summary>
-        /// When the activity occurred
-        /// </summary>
-        public System.DateTime Timestamp { get; set; }
-    }
 }
