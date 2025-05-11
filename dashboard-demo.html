@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BusBuddy Dashboard Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #1976d2;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .metric-card {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .notification {
+            padding: 10px 15px;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f8e9;
+            border-radius: 3px;
+        }
+        .connection-status {
+            font-weight: bold;
+        }
+        .connected {
+            color: #4caf50;
+        }
+        .disconnected {
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BusBuddy Dashboard</h1>
+        
+        <div class="status">
+            SignalR Status: <span id="connection-status" class="connection-status disconnected">Disconnected</span>
+            <button id="refresh-button" onclick="refreshData()">Refresh Data</button>
+        </div>
+        
+        <h2>Metrics</h2>
+        <div class="metrics" id="metrics-container">
+            <div class="metric-card">
+                <div>Total Routes</div>
+                <div class="metric-value" id="total-routes">-</div>
+            </div>
+            <div class="metric-card">
+                <div>Total Drivers</div>
+                <div class="metric-value" id="total-drivers">-</div>
+            </div>
+            <div class="metric-card">
+                <div>Total Vehicles</div>
+                <div class="metric-value" id="total-vehicles">-</div>
+            </div>
+            <div class="metric-card">
+                <div>Total Mileage</div>
+                <div class="metric-value" id="total-mileage">-</div>
+            </div>
+            <div class="metric-card">
+                <div>Trips Today</div>
+                <div class="metric-value" id="trips-today">-</div>
+            </div>
+        </div>
+
+        <h2>Routes</h2>
+        <table id="routes-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Start Location</th>
+                    <th>End Location</th>
+                    <th>Distance (mi)</th>
+                    <th>Last Updated</th>
+                </tr>
+            </thead>
+            <tbody id="routes-body">
+                <tr>
+                    <td colspan="6">Loading routes data...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Recent Activity</h2>
+        <div id="activity-container">
+            <p>Waiting for activity...</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        // API URLs
+        const API_URL = 'http://localhost:5000/api/dashboard';
+        const HUB_URL = 'http://localhost:5000/hub/dashboard';
+
+        // DOM Elements
+        const totalRoutes = document.getElementById('total-routes');
+        const totalDrivers = document.getElementById('total-drivers');
+        const totalVehicles = document.getElementById('total-vehicles');
+        const totalMileage = document.getElementById('total-mileage');
+        const tripsToday = document.getElementById('trips-today');
+        const routesBody = document.getElementById('routes-body');
+        const activityContainer = document.getElementById('activity-container');
+        const connectionStatus = document.getElementById('connection-status');
+
+        // SignalR connection
+        let connection = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboardData();
+            setupSignalR();
+        });
+
+        // Load initial dashboard data
+        async function loadDashboardData() {
+            try {
+                await loadMetrics();
+                await loadRoutes();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Load metrics
+        async function loadMetrics() {
+            const response = await fetch(`${API_URL}/metrics`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            // Update metrics
+            totalRoutes.textContent = data.totalRoutes;
+            totalDrivers.textContent = data.totalDrivers;
+            totalVehicles.textContent = data.totalVehicles;
+            totalMileage.textContent = data.totalMileage.toFixed(2);
+            tripsToday.textContent = data.tripsToday;
+            
+            // Update activity
+            updateActivityDisplay(data.recentActivity);
+        }
+
+        // Load routes
+        async function loadRoutes() {
+            const response = await fetch(`${API_URL}/routes`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const routes = await response.json();
+            updateRoutesTable(routes);
+        }
+
+        // Update routes table
+        function updateRoutesTable(routes) {
+            if (!routes || routes.length === 0) {
+                routesBody.innerHTML = '<tr><td colspan="6">No routes found</td></tr>';
+                return;
+            }
+
+            routesBody.innerHTML = routes.map(route => `
+                <tr>
+                    <td>${route.routeID}</td>
+                    <td>${route.routeName}</td>
+                    <td>${route.startLocation}</td>
+                    <td>${route.endLocation}</td>
+                    <td>${route.distance.toFixed(2)}</td>
+                    <td>${formatDate(route.lastUpdated)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Update activity display
+        function updateActivityDisplay(activities) {
+            if (!activities || activities.length === 0) {
+                activityContainer.innerHTML = '<p>No recent activity</p>';
+                return;
+            }
+
+            activityContainer.innerHTML = activities.map(activity => `
+                <div class="notification">
+                    <strong>${activity.activityType}</strong>: ${activity.description}
+                    <div><small>${formatDate(activity.timestamp)}</small></div>
+                </div>
+            `).join('');
+        }
+
+        // Setup SignalR connection
+        async function setupSignalR() {
+            try {
+                connection = new signalR.HubConnectionBuilder()
+                    .withUrl(HUB_URL)
+                    .withAutomaticReconnect()
+                    .build();
+
+                // Handle connection events
+                connection.onreconnecting(() => {
+                    connectionStatus.textContent = 'Reconnecting...';
+                    connectionStatus.className = 'connection-status disconnected';
+                });
+
+                connection.onreconnected(() => {
+                    connectionStatus.textContent = 'Connected';
+                    connectionStatus.className = 'connection-status connected';
+                });
+
+                connection.onclose(() => {
+                    connectionStatus.textContent = 'Disconnected';
+                    connectionStatus.className = 'connection-status disconnected';
+                });
+
+                // Handle incoming messages
+                connection.on('ReceiveMetricsUpdate', (metrics) => {
+                    totalRoutes.textContent = metrics.totalRoutes;
+                    totalDrivers.textContent = metrics.totalDrivers;
+                    totalVehicles.textContent = metrics.totalVehicles;
+                    totalMileage.textContent = metrics.totalMileage.toFixed(2);
+                    tripsToday.textContent = metrics.tripsToday;
+                    updateActivityDisplay(metrics.recentActivity);
+                });
+
+                connection.on('ReceiveRoutesUpdate', (routes) => {
+                    updateRoutesTable(routes);
+                });
+
+                connection.on('ReceiveActivityNotification', (activity) => {
+                    const newNotification = document.createElement('div');
+                    newNotification.className = 'notification';
+                    newNotification.innerHTML = `
+                        <strong>${activity.activityType}</strong>: ${activity.description}
+                        <div><small>${formatDate(activity.timestamp)}</small></div>
+                    `;
+                    activityContainer.prepend(newNotification);
+                });
+
+                // Start connection
+                await connection.start();
+                connectionStatus.textContent = 'Connected';
+                connectionStatus.className = 'connection-status connected';
+
+                // Join the dashboard group
+                await connection.invoke('JoinGroup', 'dashboard');
+            } catch (error) {
+                console.error('Error setting up SignalR:', error);
+                connectionStatus.textContent = 'Connection Failed';
+                connectionStatus.className = 'connection-status disconnected';
+            }
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString();
+        }
+
+        // Refresh data
+        async function refreshData() {
+            try {
+                await loadDashboardData();
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+            }
+        }
+    </script>
+</body>
+</html>

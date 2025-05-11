@@ -1,6 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">    <PropertyGroup>
       <OutputType>WinExe</OutputType>
       <TargetFramework>net8.0-windows</TargetFramework>
       <Nullable>enable</Nullable>
@@ -17,11 +15,12 @@
       <Compile Remove="Tests\**" />
       <EmbeddedResource Remove="Tests\**" />
       <None Remove="Tests\**" />
-    </ItemGroup>
-
-    <ItemGroup>
+    </ItemGroup>    <ItemGroup>
       <PackageReference Include="Dapper" Version="2.1.35" />
       <PackageReference Include="MaterialSkin" Version="0.2.1" />
+      <PackageReference Include="Microsoft.AspNetCore.App" />
+      <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
