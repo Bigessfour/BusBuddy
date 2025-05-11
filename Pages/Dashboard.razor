@@ -1,0 +1,144 @@
+@page "/dashboard"
+@namespace BusBuddy.Pages
+@using BusBuddy.DTOs
+@using BusBuddy.Services.Dashboard
+@using System.Text.Json
+@inject DashboardService DashboardService
+@inject IJSRuntime JSRuntime
+
+<h1>BusBuddy Dashboard</h1>
+
+<div class="metrics mt-4">
+    <div class="metric-card">
+        <div>Active Buses</div>
+        <div class="metric-value">@(metrics?.TotalVehicles ?? 0)</div>
+    </div>
+    <div class="metric-card">
+        <div>Active Routes</div>
+        <div class="metric-value">@(metrics?.TotalRoutes ?? 0)</div>
+    </div>
+    <div class="metric-card">
+        <div>Drivers</div>
+        <div class="metric-value">@(metrics?.TotalDrivers ?? 0)</div>
+    </div>
+    <div class="metric-card">
+        <div>Active Alerts</div>
+        <div class="metric-value">@(alerts?.Count(a => a.IsActive) ?? 0)</div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h2>Route Status</h2>
+        <div class="chart-container" style="position: relative; height:300px; width:100%">
+            <canvas id="routeStatusChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h2>Current Alerts</h2>
+        @if (alerts == null || !alerts.Any())
+        {
+            <p>No active alerts at this time.</p>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Route</th>
+                        <th>Message</th>
+                        <th>Severity</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var alert in alerts.Where(a => a.IsActive).OrderByDescending(a => a.CreatedAt))
+                    {
+                        <tr>
+                            <td>@alert.Route?.RouteName</td>
+                            <td>@alert.Message</td>
+                            <td>
+                                <span class="badge @GetSeverityClass(alert.Severity)">@alert.Severity</span>
+                            </td>
+                            <td>@alert.CreatedAt.ToString("HH:mm:ss")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@code {
+    private DashboardMetricsDto? metrics;
+    private List<AlertDto>? alerts;
+    private Dictionary<string, int> routeStatusCounts = new Dictionary<string, int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDashboardDataAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && routeStatusCounts.Any())
+        {
+            await RenderChartAsync();
+        }
+    }
+
+    private async Task LoadDashboardDataAsync()
+    {
+        try
+        {
+            metrics = await DashboardService.GetDashboardMetricsAsync();
+            
+            // Get route status counts for the chart
+            var trips = await DashboardService.GetActiveTripsAsync();
+            routeStatusCounts = trips
+                .GroupBy(t => t.Status)
+                .ToDictionary(g => g.Key, g => g.Count());
+                
+            alerts = await DashboardService.GetActiveAlertsAsync();
+            
+            StateHasChanged();
+            
+            if (routeStatusCounts.Any())
+            {
+                await RenderChartAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading dashboard data: {ex.Message}");
+            // In a real app, you might want to display an error message
+        }
+    }
+
+    private async Task RenderChartAsync()
+    {
+        try
+        {
+            var labels = routeStatusCounts.Keys.ToArray();
+            var data = routeStatusCounts.Values.ToArray();
+            var colors = new[] { "#36A2EB", "#FF6384", "#FFCE56", "#4BC0C0" };
+
+            await JSRuntime.InvokeVoidAsync("renderPieChart", "routeStatusChart", labels, data, colors);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error rendering chart: {ex.Message}");
+        }
+    }
+
+    private string GetSeverityClass(string severity)
+    {
+        return severity.ToLower() switch
+        {
+            "critical" => "bg-danger",
+            "warning" => "bg-warning",
+            "info" => "bg-info",
+            _ => "bg-secondary"
+        };
+    }
+}

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
 using BusBuddy.Data;
 using BusBuddy.DTOs;
 using BusBuddy.Models.Entities;
@@ -12,21 +13,23 @@ namespace BusBuddy.Services.Dashboard
 {
     /// <summary>
     /// Service for dashboard-related functionality
-    /// </summary>
-    public class DashboardService
+    /// </summary>    public class DashboardService
     {
         private readonly BusBuddyContext _dbContext;
         private readonly ILogger<DashboardService> _logger;
+        private readonly IMemoryCache _cache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DashboardService"/> class.
         /// </summary>
         /// <param name="dbContext">Database context</param>
         /// <param name="logger">Logger instance</param>
-        public DashboardService(BusBuddyContext dbContext, ILogger<DashboardService> logger)
+        /// <param name="cache">Memory cache</param>
+        public DashboardService(BusBuddyContext dbContext, ILogger<DashboardService> logger, IMemoryCache cache)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         /// <summary>
@@ -118,6 +121,105 @@ namespace BusBuddy.Services.Dashboard
             {
                 _logger.LogError(ex, "Error retrieving dashboard metrics");
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets active trips
+        /// </summary>
+        /// <returns>List of active trips</returns>
+        public async Task<List<TripDto>> GetActiveTripsAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Retrieving active trips");
+                
+                // Check cache first
+                if (_cache.TryGetValue("ActiveTrips", out List<TripDto>? cachedTrips))
+                {
+                    _logger.LogInformation("Retrieved active trips from cache");
+                    return cachedTrips!;
+                }
+                
+                var trips = await _dbContext.Trips
+                    .Include(t => t.Route)
+                    .Where(t => t.IsActive)
+                    .Select(t => new TripDto
+                    {
+                        TripId = t.TripId,
+                        RouteId = t.RouteId,
+                        RouteName = t.Route!.RouteName,
+                        PassengerCount = t.PassengerCount,
+                        DelayMinutes = t.DelayMinutes,
+                        Status = t.Status,
+                        IsActive = t.IsActive,
+                        LastUpdated = t.LastUpdated
+                    })
+                    .ToListAsync();
+
+                // Cache the results for 1 minute
+                _cache.Set("ActiveTrips", trips, TimeSpan.FromMinutes(1));
+                
+                _logger.LogInformation("Retrieved {Count} active trips", trips.Count);
+                return trips;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving active trips");
+                return new List<TripDto>();
+            }
+        }
+
+        /// <summary>
+        /// Gets active alerts
+        /// </summary>
+        /// <returns>List of active alerts</returns>
+        public async Task<List<AlertDto>> GetActiveAlertsAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Retrieving active alerts");
+                
+                // Check cache first
+                if (_cache.TryGetValue("ActiveAlerts", out List<AlertDto>? cachedAlerts))
+                {
+                    _logger.LogInformation("Retrieved active alerts from cache");
+                    return cachedAlerts!;
+                }
+                
+                var alerts = await _dbContext.Alerts
+                    .Include(a => a.Route)
+                    .Where(a => a.IsActive)
+                    .Select(a => new AlertDto
+                    {
+                        AlertId = a.AlertId,
+                        RouteId = a.RouteId,
+                        Route = new RouteDto
+                        {
+                            RouteID = a.Route!.Id,
+                            RouteName = a.Route.RouteName,
+                            StartLocation = a.Route.StartLocation,
+                            EndLocation = a.Route.EndLocation,
+                            Distance = a.Route.Distance,
+                            LastUpdated = a.Route.LastModified
+                        },
+                        Message = a.Message,
+                        Severity = a.Severity,
+                        IsActive = a.IsActive,
+                        CreatedAt = a.CreatedAt
+                    })
+                    .ToListAsync();
+
+                // Cache the results for 1 minute
+                _cache.Set("ActiveAlerts", alerts, TimeSpan.FromMinutes(1));
+                
+                _logger.LogInformation("Retrieved {Count} active alerts", alerts.Count);
+                return alerts;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving active alerts");
+                return new List<AlertDto>();
             }
         }
     }

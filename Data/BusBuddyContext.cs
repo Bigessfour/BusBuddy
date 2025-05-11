@@ -5,8 +5,7 @@ using BusBuddy.Models.ValueObjects;
 using BusBuddy.Models.Logs;
 
 namespace BusBuddy.Data
-{
-    public class BusBuddyContext : DbContext
+{    public class BusBuddyContext : DbContext
     {
         public BusBuddyContext(DbContextOptions<BusBuddyContext> options) : base(options) { }
 
@@ -20,6 +19,8 @@ namespace BusBuddy.Data
         public DbSet<Part> Parts { get; set; }
         public DbSet<RouteData> RouteData { get; set; }
         public DbSet<LogEntry> LogEntries { get; set; }
+        public DbSet<Trip> Trips { get; set; }
+        public DbSet<Alert> Alerts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

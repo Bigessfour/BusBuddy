@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -15,6 +16,7 @@ namespace BusBuddy.Controllers
     /// </summary>
     [ApiController]
     [Route("api/dashboard")]
+    // [Authorize] - Temporarily disabled for testing
     public class DashboardController : ControllerBase
     {
         private readonly DashboardService _dashboardService;
@@ -79,7 +81,9 @@ namespace BusBuddy.Controllers
                 _logger.LogError(ex, "Error getting dashboard metrics");
                 return StatusCode(500, new { message = "Internal server error retrieving metrics" });
             }
-        }        /// <summary>
+        }
+
+        /// <summary>
         /// Compatibility endpoint for the existing React dashboard
         /// </summary>
         /// <returns>List of bus routes in the format expected by the React dashboard</returns>
@@ -116,6 +120,62 @@ namespace BusBuddy.Controllers
             // which expects the route data at /api/busroutes
             _logger.LogInformation("GET /api/busroutes called (legacy compatibility endpoint)");
             return await GetBusRoutes();
+        }
+
+        /// <summary>
+        /// Gets dashboard overview data (metrics and route status)
+        /// </summary>
+        /// <returns>Dashboard overview data</returns>
+        [HttpGet("overview")]
+        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult> GetOverview()
+        {
+            try
+            {
+                _logger.LogInformation("GET api/dashboard/overview called");
+                
+                var metrics = await _dashboardService.GetDashboardMetricsAsync();
+                var trips = await _dashboardService.GetActiveTripsAsync();
+                
+                // Calculate route status counts
+                var routeStatusCounts = trips
+                    .GroupBy(t => t.Status)
+                    .ToDictionary(g => g.Key, g => g.Count());
+                
+                return Ok(new
+                {
+                    metrics,
+                    routeStatusCounts
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting dashboard overview");
+                return StatusCode(500, new { message = "Internal server error retrieving overview data" });
+            }
+        }
+
+        /// <summary>
+        /// Gets active alerts
+        /// </summary>
+        /// <returns>List of active alerts</returns>
+        [HttpGet("alerts")]
+        [ProducesResponseType(typeof(List<AlertDto>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<List<AlertDto>>> GetAlerts()
+        {
+            try
+            {
+                _logger.LogInformation("GET api/dashboard/alerts called");
+                var alerts = await _dashboardService.GetActiveAlertsAsync();
+                return Ok(alerts);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting alerts");
+                return StatusCode(500, new { message = "Internal server error retrieving alerts" });
+            }
         }
     }
 }

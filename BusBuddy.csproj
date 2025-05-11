@@ -8,6 +8,9 @@
       <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>      <AnalysisLevel>none</AnalysisLevel>      <NoWarn>$(NoWarn);1591;8603;8618;1998;8602;8600;8601;8604;8605;8622;0414;NU1701</NoWarn>
       <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+      <!-- Add support for Blazor Server -->
+      <UseRazorSourceGenerator>true</UseRazorSourceGenerator>
+      <RazorCompileOnPublish>false</RazorCompileOnPublish>
     </PropertyGroup>
 
     <!-- Exclude Test files from compilation -->
@@ -36,6 +39,10 @@
       <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
       <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
       <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+      <!-- Add Blazor Server packages -->
+      <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>

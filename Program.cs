@@ -84,12 +84,11 @@ namespace BusBuddy
         {
             Log.Information("Starting ASP.NET Core web server");
             
-            // Build web host
-            var host = Host.CreateDefaultBuilder()
+            // Build web host            var host = Host.CreateDefaultBuilder()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<WebStartup>();
-                    webBuilder.UseUrls("http://localhost:5000");
+                    webBuilder.UseUrls("http://localhost:5000", "https://localhost:5001");
                     webBuilder.UseSerilog();
                 })
                 .Build();

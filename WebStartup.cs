@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using BusBuddy.Data;
 using BusBuddy.Hubs;
+using BusBuddy.Models.Entities;
 using BusBuddy.Services.Dashboard;
 
 namespace BusBuddy
@@ -45,9 +47,18 @@ namespace BusBuddy
             });
 
             // Add controllers
-            services.AddControllers();            // Add dashboard services
+            services.AddControllers();
+            
+            // Add dashboard services
             services.AddScoped<DashboardService>();
             services.AddScoped<DashboardUpdatesService>();
+            
+            // Add Blazor Server
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+
+            // Add memory cache
+            services.AddMemoryCache();
 
             // Add SignalR
             services.AddSignalR();
@@ -70,9 +81,24 @@ namespace BusBuddy
         /// </summary>
         /// <param name="app">Application builder</param>
         /// <param name="env">Web hosting environment</param>
+        /// <param name="logger">Logger</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<WebStartup> logger)
         {
             logger.LogInformation("Configuring ASP.NET Core request pipeline");
+
+            // Ensure database is created and migrations are applied
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetService<BusBuddyContext>();
+                if (dbContext != null)
+                {
+                    dbContext.Database.EnsureCreated();
+                    logger.LogInformation("Database created or verified");
+                    
+                    // Seed data for dashboard demo if needed
+                    SeedDashboardData(dbContext, logger);
+                }
+            }
 
             if (env.IsDevelopment())
             {
@@ -97,9 +123,95 @@ namespace BusBuddy
 
                 // Map SignalR hub
                 endpoints.MapHub<DashboardHub>("/hub/dashboard");
+                
+                // Map Blazor Hub
+                endpoints.MapBlazorHub();
+                
+                // Map fallback to _Host.cshtml
+                endpoints.MapFallbackToPage("/_Host");
             });
 
             logger.LogInformation("ASP.NET Core request pipeline configured");
+        }
+
+        /// <summary>
+        /// Seeds dashboard data for demonstration
+        /// </summary>
+        /// <param name="dbContext">Database context</param>
+        /// <param name="logger">Logger</param>
+        private void SeedDashboardData(BusBuddyContext dbContext, ILogger logger)
+        {
+            try
+            {
+                // Check if we have any routes
+                if (!dbContext.Routes.Any())
+                {
+                    logger.LogInformation("Seeding route data for dashboard");
+                    
+                    // Add a main route
+                    var mainRoute = new Models.Entities.Route
+                    {
+                        RouteName = "Main Route",
+                        StartLocation = "School",
+                        EndLocation = "Downtown",
+                        Distance = 5.2m,
+                        CreatedDate = DateTime.Now,
+                        LastModified = DateTime.Now,
+                        Description = "Main school route"
+                    };
+                    
+                    dbContext.Routes.Add(mainRoute);
+                    dbContext.SaveChanges();
+                    
+                    // Get the newly added route ID
+                    int routeId = mainRoute.Id;
+                    
+                    // Add trips for this route
+                    dbContext.Trips.AddRange(
+                        new Models.Entities.Trip
+                        {
+                            RouteId = routeId,
+                            PassengerCount = 25,
+                            DelayMinutes = 0,
+                            Status = "OnTime",
+                            IsActive = true,
+                            LastUpdated = DateTime.Now
+                        },
+                        new Models.Entities.Trip
+                        {
+                            RouteId = routeId,
+                            PassengerCount = 18,
+                            DelayMinutes = 10,
+                            Status = "Delayed",
+                            IsActive = true,
+                            LastUpdated = DateTime.Now
+                        }
+                    );
+                    
+                    // Add an alert for this route
+                    dbContext.Alerts.Add(
+                        new Models.Entities.Alert
+                        {
+                            RouteId = routeId,
+                            Message = "Traffic congestion on Main St",
+                            Severity = "Warning",
+                            IsActive = true,
+                            CreatedAt = DateTime.Now
+                        }
+                    );
+                    
+                    dbContext.SaveChanges();
+                    logger.LogInformation("Dashboard demo data seeded successfully");
+                }
+                else
+                {
+                    logger.LogInformation("Routes already exist, skipping dashboard data seeding");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error seeding dashboard data");
+            }
         }
     }
 }
