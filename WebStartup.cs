@@ -107,10 +107,14 @@ namespace BusBuddy
             else
             {
                 app.UseExceptionHandler("/error");
-            }
-
-            // Enable CORS
+            }            // Enable CORS
             app.UseCors("DashboardCorsPolicy");
+            
+            // Serve static files
+            app.UseStaticFiles();
+            
+            // Add HTTPS redirection
+            app.UseHttpsRedirection();
 
             // Configure routing
             app.UseRouting();

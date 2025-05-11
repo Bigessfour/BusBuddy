@@ -92,16 +92,18 @@ namespace BusBuddy
                     webBuilder.UseSerilog();
                 })
                 .Build();
-                
-            // Start web host in background thread
+                  // Start web host in background thread
             var webServerThread = new System.Threading.Thread(() =>
             {
                 host.Run();
             });
-            webServerThread.IsBackground = true;
+            webServerThread.IsBackground = true;            webServerThread.Priority = System.Threading.ThreadPriority.AboveNormal; // Raise priority for web server
             webServerThread.Start();
             
-            Log.Information("ASP.NET Core web server started on http://localhost:5000");
+            // Wait a short period to let the web server start properly
+            System.Threading.Thread.Sleep(1000);
+            
+            Log.Information("ASP.NET Core web server started on http://localhost:5000 and https://localhost:5001");
             return host;
         }          private static void ConfigureServices(IServiceCollection services)
         {

@@ -5,8 +5,13 @@
 @using System.Text.Json
 @inject DashboardService DashboardService
 @inject IJSRuntime JSRuntime
+@implements IDisposable
 
 <h1>BusBuddy Dashboard</h1>
+
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-primary" @onclick="RefreshDashboard">Refresh Dashboard</button>
+</div>
 
 <div class="metrics mt-4">
     <div class="metric-card">
@@ -113,9 +118,7 @@
             Console.WriteLine($"Error loading dashboard data: {ex.Message}");
             // In a real app, you might want to display an error message
         }
-    }
-
-    private async Task RenderChartAsync()
+    }    private async Task RenderChartAsync()
     {
         try
         {
@@ -129,6 +132,30 @@
         {
             Console.WriteLine($"Error rendering chart: {ex.Message}");
         }
+    }
+
+    // Auto-refresh timer
+    private System.Threading.Timer? _timer;
+    private readonly TimeSpan _refreshInterval = TimeSpan.FromSeconds(30);
+
+    protected override void OnInitialized()
+    {
+        // Start the timer for auto-refresh
+        _timer = new System.Threading.Timer(async _ =>
+        {
+            await RefreshDashboard();
+            await InvokeAsync(StateHasChanged);
+        }, null, _refreshInterval, _refreshInterval);
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    public async Task RefreshDashboard()
+    {
+        await LoadDashboardDataAsync();
     }
 
     private string GetSeverityClass(string severity)
