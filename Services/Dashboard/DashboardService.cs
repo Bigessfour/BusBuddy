@@ -7,13 +7,26 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
 using BusBuddy.Data;
 using BusBuddy.DTOs;
-using BusBuddy.Models.Entities;
+using BusBuddy.Entities;
 
 namespace BusBuddy.Services.Dashboard
 {
     /// <summary>
+    /// Service interface for dashboard functionality
+    /// </summary>
+    public interface IDashboardService
+    {
+        Task<List<RouteDto>> GetAllRoutesAsync();
+        Task<DashboardDto> GetDashboardMetricsAsync();
+        Task<List<TripDto>> GetActiveTripsAsync();
+        Task<List<AlertDto>> GetActiveAlertsAsync();
+        Task<(DashboardDto, Dictionary<string, int>)> GetDashboardOverviewAsync();
+    }
+
+    /// <summary>
     /// Service for dashboard-related functionality
-    /// </summary>    public class DashboardService
+    /// </summary>    
+    public class DashboardService : IDashboardService
     {
         private readonly BusBuddyContext _dbContext;
         private readonly ILogger<DashboardService> _logger;
@@ -62,13 +75,11 @@ namespace BusBuddy.Services.Dashboard
                 _logger.LogError(ex, "Error retrieving bus routes");
                 throw;
             }
-        }
-
-        /// <summary>
+        }        /// <summary>
         /// Gets dashboard metrics
         /// </summary>
         /// <returns>Dashboard metrics DTO</returns>
-        public async Task<DashboardMetricsDto> GetDashboardMetricsAsync()
+        public async Task<DashboardDto> GetDashboardMetricsAsync()
         {
             try
             {
@@ -80,6 +91,7 @@ namespace BusBuddy.Services.Dashboard
                 var totalRoutes = await _dbContext.Routes.CountAsync();
                 var totalDrivers = await _dbContext.Drivers.CountAsync();
                 var totalVehicles = await _dbContext.Vehicles.CountAsync();
+                var activeAlerts = await _dbContext.Alerts.CountAsync(a => a.IsActive);
                 
                 // Calculate total mileage
                 var totalMileage = await _dbContext.Routes.SumAsync(r => r.Distance);
@@ -87,6 +99,19 @@ namespace BusBuddy.Services.Dashboard
                 // Count trips scheduled for today
                 var tripsToday = await _dbContext.ActivityTrips
                     .CountAsync(t => t.Date.Date == today);
+                
+                // Calculate on-time performance
+                var totalTrips = await _dbContext.Trips.CountAsync();
+                var onTimeTrips = await _dbContext.Trips.CountAsync(t => t.DelayMinutes <= 5);
+                decimal onTimePercentage = totalTrips > 0 
+                    ? Math.Round((decimal)onTimeTrips / totalTrips * 100, 1) 
+                    : 100;
+                
+                // Get route status counts for pie chart
+                var trips = await GetActiveTripsAsync();
+                var routeStatusCounts = trips
+                    .GroupBy(t => t.Status)
+                    .ToDictionary(g => g.Key, g => g.Count());
                 
                 // Get recent activity (last 10 trips)
                 var recentTrips = await _dbContext.ActivityTrips
@@ -99,18 +124,21 @@ namespace BusBuddy.Services.Dashboard
                     {
                         ActivityId = t.Id,
                         ActivityType = "Trip",
-                        Description = $"{t.Route.RouteName} - {t.Driver.FullName} - {t.Vehicle.VehicleNumber}",
+                        Description = $"{t.ActivityName} with {t.Driver.FullName}",
                         Timestamp = t.Date
                     })
                     .ToListAsync();
 
-                var metrics = new DashboardMetricsDto
+                var metrics = new DashboardDto
                 {
                     TotalRoutes = totalRoutes,
                     TotalDrivers = totalDrivers,
                     TotalVehicles = totalVehicles,
                     TotalMileage = totalMileage,
                     TripsToday = tripsToday,
+                    ActiveAlertCount = activeAlerts,
+                    OnTimePerformance = onTimePercentage,
+                    RouteStatusCounts = routeStatusCounts,
                     RecentActivity = recentTrips
                 };
 

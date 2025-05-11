@@ -1,0 +1,96 @@
+@namespace BusBuddy.Components
+@using BusBuddy.DTOs
+
+<div class="dashboard-widget @(IsWide ? "wide" : "")" style="@AdditionalStyles">
+    <div class="widget-header">
+        <h3>@Title</h3>
+        @if (!string.IsNullOrEmpty(Subtitle))
+        {
+            <div class="widget-subtitle">@Subtitle</div>
+        }
+    </div>
+    <div class="widget-content">
+        @if (IsLoading)
+        {
+            <div class="loading-indicator">
+                <div class="spinner"></div>
+                <div>Loading...</div>
+            </div>
+        }
+        else if (Data != null)
+        {
+            @ChildContent
+        }
+        else
+        {
+            <div class="no-data">No data available</div>
+        }
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Widget title
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Optional widget subtitle
+    /// </summary>
+    [Parameter]
+    public string Subtitle { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Flag indicating if the widget is loading data
+    /// </summary>
+    [Parameter]
+    public bool IsLoading { get; set; }
+    
+    /// <summary>
+    /// Flag indicating if the widget should take up twice the width
+    /// </summary>
+    [Parameter]
+    public bool IsWide { get; set; }
+    
+    /// <summary>
+    /// Additional CSS styles to apply to the widget
+    /// </summary>
+    [Parameter]
+    public string AdditionalStyles { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Dashboard data provided to the widget
+    /// </summary>
+    [Parameter]
+    public IDashboardData? Data { get; set; }
+    
+    /// <summary>
+    /// Content to be displayed within the widget
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>
+    /// Retrieves a metric value from the data
+    /// </summary>
+    /// <param name="metricName">Name of the metric to retrieve</param>
+    /// <typeparam name="T">Type to cast the result to</typeparam>
+    /// <returns>Metric value cast to the specified type</returns>
+    public T GetMetric<T>(string metricName)
+    {
+        if (Data == null)
+        {
+            return default!;
+        }
+        
+        try
+        {
+            return (T)Data.GetKeyMetric(metricName);
+        }
+        catch
+        {
+            return default!;
+        }
+    }
+}
