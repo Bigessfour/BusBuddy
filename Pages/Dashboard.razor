@@ -96,7 +96,8 @@
     {
         try
         {
-            metrics = await DashboardService.GetDashboardMetricsAsync();
+            var dashboardData = await DashboardService.GetDashboardMetricsAsync();
+            metrics = MapDashboardDataToMetrics(dashboardData);
             
             // Get route status counts for the chart
             var trips = await DashboardService.GetActiveTripsAsync();
@@ -175,9 +176,12 @@
     {
         return new DashboardMetricsDto
         {
-            ActiveDrivers = dashboardData.ActiveDrivers,
-            ActiveRoutes = dashboardData.ActiveRoutes,
-            // Map any other properties that exist in both types
+            TotalDrivers = dashboardData.TotalDrivers,
+            TotalRoutes = dashboardData.TotalRoutes,
+            TotalVehicles = dashboardData.TotalVehicles,
+            TotalMileage = dashboardData.TotalMileage,
+            TripsToday = dashboardData.TripsToday,
+            RecentActivity = dashboardData.RecentActivity
         };
     }
 }

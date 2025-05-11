@@ -31,7 +31,7 @@ namespace BusBuddy.Tests
             _testRunner = new STATestRunner(_output as IMessageSink);
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public void Form_InitializesAndDisplaysCorrectly()
         {
             _testRunner.RunTest(() =>
@@ -70,7 +70,7 @@ namespace BusBuddy.Tests
             });
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public void AddButton_ShowsAndHidesEditPanel()
         {
             _testRunner.RunTest(() =>
@@ -123,7 +123,7 @@ namespace BusBuddy.Tests
             });
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public void VehicleFormValidation_WorksCorrectly()
         {
             _testRunner.RunTest(() =>
@@ -196,7 +196,7 @@ namespace BusBuddy.Tests
             });
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public void ResizeForm_ControlsResizeCorrectly()
         {
             _testRunner.RunTest(() =>
@@ -234,3 +234,4 @@ namespace BusBuddy.Tests
         }
     }
 }
+

@@ -1,0 +1,29 @@
+# Development-focused Dockerfile for BusBuddy ASP.NET Core Application
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+WORKDIR /app
+
+# Install necessary tools for development
+RUN apt-get update && \
+    apt-get install -y curl procps net-tools vim && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy project files
+COPY *.csproj .
+COPY Directory.Packages.props .
+RUN dotnet restore
+
+# Copy the rest of the files
+COPY . .
+
+# Set environment variables
+ENV ASPNETCORE_URLS="http://+:5000;https://+:5001"
+ENV ASPNETCORE_ENVIRONMENT="Development"
+ENV USE_DOCKER_DB="true"
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+
+# Expose ports
+EXPOSE 5000
+EXPOSE 5001
+
+# Use "dotnet watch" for hot reload during development
+ENTRYPOINT ["dotnet", "watch", "run", "--urls", "http://+:5000;https://+:5001"]

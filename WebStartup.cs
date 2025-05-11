@@ -28,9 +28,7 @@ namespace BusBuddy
         public WebStartup(IConfiguration configuration)
         {
             _configuration = configuration;
-        }
-
-        /// <summary>
+        }        /// <summary>
         /// Configures services for the ASP.NET Core application
         /// </summary>
         /// <param name="services">Service collection</param>
@@ -39,10 +37,25 @@ namespace BusBuddy
             // Add database context
             services.AddDbContext<BusBuddyContext>(options =>
             {
-                // Use the same connection string as the main application
+                // Check if we're running in Docker environment
                 var useDocker = Environment.GetEnvironmentVariable("USE_DOCKER_DB")?.ToLower() == "true";
-                var connectionName = useDocker ? "DockerConnection" : "DefaultConnection";
-                var connectionString = _configuration.GetConnectionString(connectionName);
+                var connectionString = "";
+                
+                // If CONNECTION_STRING environment variable is set, use it directly (Docker container)
+                var envConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+                if (!string.IsNullOrEmpty(envConnectionString))
+                {
+                    connectionString = envConnectionString;
+                    Console.WriteLine("Using connection string from environment variable");
+                }
+                else
+                {
+                    // Otherwise use from appsettings.json
+                    var connectionName = useDocker ? "DockerConnection" : "DefaultConnection";
+                    connectionString = _configuration.GetConnectionString(connectionName);
+                    Console.WriteLine($"Using {connectionName} connection string from configuration");
+                }
+                
                 options.UseSqlServer(connectionString);
             });
 
@@ -61,17 +74,21 @@ namespace BusBuddy
             services.AddMemoryCache();
 
             // Add SignalR
-            services.AddSignalR();
-
-            // Add CORS
+            services.AddSignalR();            // Add CORS
             services.AddCors(options =>
             {
                 options.AddPolicy("DashboardCorsPolicy", builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000") // React frontend
-                           .AllowAnyMethod()
-                           .AllowAnyHeader()
-                           .AllowCredentials();
+                    // Allow CORS from both localhost and Docker container hostnames
+                    builder.WithOrigins(
+                            "http://localhost:3000",     // Local development
+                            "http://dashboard:3000",     // Docker container dashboard service
+                            "http://localhost:5050",     // External mapped dashboard API port
+                            "http://dashboard:5000"      // Docker container dashboard API
+                        )
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
                 });
             });
         }
@@ -98,27 +115,29 @@ namespace BusBuddy
                     // Seed data for dashboard demo if needed
                     SeedDashboardData(dbContext, logger);
                 }
-            }
-
-            if (env.IsDevelopment())
+            }            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseExceptionHandler("/error");
-            }            
-            // Enable CORS
-            app.UseCors("DashboardCorsPolicy");
+            }
             
             // Serve static files
             app.UseStaticFiles();
             
-            // Add HTTPS redirection
-            app.UseHttpsRedirection();
+            // Add HTTPS redirection (skip in Docker environment)
+            if (Environment.GetEnvironmentVariable("USE_DOCKER_DB")?.ToLower() != "true")
+            {
+                app.UseHttpsRedirection();
+            }
 
             // Configure routing
             app.UseRouting();
+            
+            // Enable CORS - should be after UseRouting and before UseEndpoints
+            app.UseCors("DashboardCorsPolicy");
 
             // Configure endpoints
             app.UseEndpoints(endpoints =>

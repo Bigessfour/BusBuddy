@@ -48,7 +48,7 @@ namespace BusBuddy.Tests
             }
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task LoadRoutes_ShouldHandleEmptyRouteList()
         {
             // Arrange
@@ -108,7 +108,7 @@ namespace BusBuddy.Tests
                 Times.AtLeastOnce);
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task LoadRoutes_ShouldPopulateDataGridWithRoutes()
         {
             // Arrange
@@ -173,7 +173,7 @@ namespace BusBuddy.Tests
                 Times.AtLeastOnce);
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task LoadRoutes_ShouldHandleDatabaseException()
         {
             // Arrange
@@ -237,3 +237,4 @@ namespace BusBuddy.Tests
         }
     }
 }
+

@@ -60,7 +60,7 @@ namespace BusBuddy.Tests
                 });
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ValidateVehicle_ValidInput_ReturnsTrue()
         {
             // Arrange
@@ -87,7 +87,7 @@ namespace BusBuddy.Tests
             Assert.True(result);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ValidateVehicle_MissingRequiredField_ReturnsFalse()
         {
             // Arrange
@@ -114,7 +114,7 @@ namespace BusBuddy.Tests
             Assert.False(result);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ValidateVehicle_InvalidYear_ReturnsFalse()
         {
             // Arrange
@@ -141,7 +141,7 @@ namespace BusBuddy.Tests
             Assert.False(result);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ValidateVehicle_InvalidCapacity_ReturnsFalse()
         {
             // Arrange
@@ -168,7 +168,7 @@ namespace BusBuddy.Tests
             Assert.False(result);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ValidateVehicle_ExpiredInsurance_ReturnsFalse()
         {
             // Arrange
@@ -195,7 +195,7 @@ namespace BusBuddy.Tests
             Assert.False(result);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ShowVehicleForm_EditMode_PopulatesFormWithVehicleData()
         {
             // Arrange
@@ -227,7 +227,7 @@ namespace BusBuddy.Tests
             _dbHelperMock.Verify(x => x.GetVehicle(1), Times.Once);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ShowVehicleForm_AddMode_CreatesNewVehicleForm()
         {
             // Arrange
@@ -242,7 +242,7 @@ namespace BusBuddy.Tests
             _dbHelperMock.Verify(x => x.GetVehicle(It.IsAny<int>()), Times.Never);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task DeleteVehicle_ConfirmsBeforeDeleting()
         {
             // Arrange
@@ -273,7 +273,7 @@ namespace BusBuddy.Tests
             Assert.NotEmpty(CapturedDialogs); // Verify a confirmation dialog was shown
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task DeleteVehicle_CancelsWhenUserClicksNo()
         {
             // Arrange
@@ -302,7 +302,7 @@ namespace BusBuddy.Tests
             Assert.NotEmpty(CapturedDialogs); // Verify a confirmation dialog was shown
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void CheckInsuranceExpirations_IdentifiesExpiringInsurance()
         {
             // Arrange - one vehicle with insurance expiring soon
@@ -339,3 +339,4 @@ namespace BusBuddy.Tests
         }
     }
 }
+

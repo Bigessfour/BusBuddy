@@ -49,7 +49,7 @@ namespace BusBuddy.Tests
             timer?.Stop();
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void RouteManagementForm_InitializesCorrectly()
         {
             var form = new RouteManagementForm(_dbHelperMock.Object, _loggerMock.Object);
@@ -57,7 +57,7 @@ namespace BusBuddy.Tests
             Assert.NotNull(form);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task SaveRoute_ValidRoute_SavesSuccessfully()
         {
             // Arrange
@@ -91,7 +91,7 @@ namespace BusBuddy.Tests
             _dbHelperMock.Verify(x => x.AddRouteAsync(It.IsAny<Route>()), Times.Once);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task SaveRoute_InvalidRoute_ReturnsFalse()
         {
             // Arrange
@@ -117,7 +117,7 @@ namespace BusBuddy.Tests
             _dbHelperMock.Verify(x => x.AddRouteAsync(It.IsAny<Route>()), Times.Never);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task SaveRoute_UpdateExisting_UpdatesSuccessfully()
         {
             // Arrange
@@ -147,7 +147,7 @@ namespace BusBuddy.Tests
             _dbHelperMock.Verify(x => x.UpdateRouteAsync(It.IsAny<Route>()), Times.Once);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task DeleteRoute_ConfirmedDeletion_DeletesSuccessfully()
         {
             // Arrange
@@ -180,7 +180,7 @@ namespace BusBuddy.Tests
             Assert.NotEmpty(CapturedDialogs); // Verify a dialog was shown
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task DeleteRoute_CanceledDeletion_DoesNotDelete()
         {
             // Arrange
@@ -210,7 +210,7 @@ namespace BusBuddy.Tests
             Assert.NotEmpty(CapturedDialogs); // Verify a dialog was shown
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ValidateRoute_ValidInput_ReturnsTrue()
         {
             // Arrange
@@ -233,7 +233,7 @@ namespace BusBuddy.Tests
             Assert.True(result);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ValidateRoute_EmptyRouteName_ReturnsFalse()
         {
             // Arrange
@@ -256,7 +256,7 @@ namespace BusBuddy.Tests
             Assert.False(result);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void ValidateRoute_NegativeDistance_ReturnsFalse()
         {
             // Arrange
@@ -280,3 +280,4 @@ namespace BusBuddy.Tests
         }
     }
 }
+

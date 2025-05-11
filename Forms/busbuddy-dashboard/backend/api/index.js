@@ -7,20 +7,29 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+// Enable CORS with specific configuration for Docker environment
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://dashboard:3000', 'http://webapp:5000', 'http://webapp:5001'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(express.json());
 
 const dbConfig = {
   user: process.env.DB_USER || 'BusBuddyApp',
-  password: process.env.DB_PASS || 'App@P@ss!2025',
-  server: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'BusBuddy',
+  password: process.env.DB_PASSWORD || 'App@P@ss!2025', // Updated to match Docker env var name
+  server: process.env.DB_SERVER || 'localhost',  // Updated to match Docker env var name
+  database: process.env.DB_DATABASE || 'BusBuddy', // Updated to match Docker env var name
   options: {
-    encrypt: false, // For local dev
+    encrypt: false, 
     trustServerCertificate: true,
   },
   port: parseInt(process.env.DB_PORT, 10) || 1433,
 };
+
+// Log database connection details (without password)
+console.log(`Connecting to SQL Server at ${dbConfig.server}:${dbConfig.port} as ${dbConfig.user}, database: ${dbConfig.database}`);
 
 app.get('/api/busroutes', async (req, res) => {
   try {

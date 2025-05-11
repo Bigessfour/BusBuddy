@@ -6,6 +6,7 @@ using BusBuddy.Data.Interfaces;
 using BusBuddy.Models.Entities;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace BusBuddy.Forms
 {
@@ -19,15 +20,15 @@ namespace BusBuddy.Forms
         private readonly int? _driverId;
         
         // UI controls
-        private TextBox txtFirstName;
-        private TextBox txtLastName;
-        private TextBox txtLicenseNumber;
-        private DateTimePicker dtpLicenseExpiration;
-        private TextBox txtPhoneNumber;
-        private TextBox txtEmail;
-        private Button btnSave;
-        private Button btnCancel;
-        private Label lblValidationMessage;
+        private TextBox? txtFirstName;
+        private TextBox? txtLastName;
+        private TextBox? txtLicenseNumber;
+        private DateTimePicker? dtpLicenseExpiration;
+        private TextBox? txtPhoneNumber;
+        private TextBox? txtEmail;
+        private Button? btnSave;
+        private Button? btnCancel;
+        private Label? lblValidationMessage;
         
         // Track whether this is an edit operation
         private bool _isEditing;
@@ -38,19 +39,25 @@ namespace BusBuddy.Forms
         /// <param name="dbHelper">The database helper for database operations</param>
         /// <param name="logger">The logger for tracking operations</param>
         /// <param name="driverId">The ID of the driver to edit, or null for a new driver</param>
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
         public DriverEditorDialog(IDatabaseHelper dbHelper, ILogger<DriverEditorDialog> logger, int? driverId)
         {
             _dbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _driverId = driverId;
             _isEditing = driverId.HasValue;
-            
+
             InitializeComponent();
             Text = _isEditing ? "Edit Driver" : "Add New Driver";
-            
+        }
+
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        protected override async void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
             if (_isEditing)
             {
-                LoadDriverDataAsync().ConfigureAwait(false);
+                await LoadDriverDataAsync();
             }
         }
         
@@ -67,7 +74,9 @@ namespace BusBuddy.Forms
             var lblTitle = new Label
             {
                 Text = "Driver Information",
+#if WINDOWS
                 Font = new Font("Arial", 14, FontStyle.Bold),
+#endif
                 Location = new Point(20, 20),
                 Size = new Size(300, 30)
             };
@@ -224,12 +233,12 @@ namespace BusBuddy.Forms
                 var driver = await _dbHelper.GetDriverByIdAsync(_driverId.Value);
                 if (driver != null)
                 {
-                    txtFirstName.Text = driver.FirstName;
-                    txtLastName.Text = driver.LastName;
-                    txtLicenseNumber.Text = driver.LicenseNumber;
-                    dtpLicenseExpiration.Value = driver.LicenseExpiration;
-                    txtPhoneNumber.Text = driver.PhoneNumber;
-                    txtEmail.Text = driver.Email;
+                    txtFirstName!.Text = driver.FirstName;
+                    txtLastName!.Text = driver.LastName;
+                    txtLicenseNumber!.Text = driver.LicenseNumber;
+                    dtpLicenseExpiration!.Value = driver.LicenseExpiration;
+                    txtPhoneNumber!.Text = driver.PhoneNumber;
+                    txtEmail!.Text = driver.Email;
                 }
                 else
                 {
@@ -247,62 +256,62 @@ namespace BusBuddy.Forms
             }
         }
         
-        private void ValidateInput(object sender, EventArgs e)
+        private void ValidateInput(object? sender, EventArgs e)
         {
             bool isValid = true;
             string errorMessage = "";
             
             // Check required fields
-            if (string.IsNullOrWhiteSpace(txtFirstName.Text))
+            if (string.IsNullOrWhiteSpace(txtFirstName!.Text))
             {
                 isValid = false;
                 errorMessage += "• First name is required\n";
             }
             
-            if (string.IsNullOrWhiteSpace(txtLastName.Text))
+            if (string.IsNullOrWhiteSpace(txtLastName!.Text))
             {
                 isValid = false;
                 errorMessage += "• Last name is required\n";
             }
             
-            if (string.IsNullOrWhiteSpace(txtLicenseNumber.Text))
+            if (string.IsNullOrWhiteSpace(txtLicenseNumber!.Text))
             {
                 isValid = false;
                 errorMessage += "• License number is required\n";
             }
             
             // Check license expiration date
-            if (dtpLicenseExpiration.Value < DateTime.Today)
+            if (dtpLicenseExpiration!.Value < DateTime.Today)
             {
                 isValid = false;
                 errorMessage += "• License has already expired\n";
             }
             
-            if (string.IsNullOrWhiteSpace(txtPhoneNumber.Text))
+            if (string.IsNullOrWhiteSpace(txtPhoneNumber!.Text))
             {
                 isValid = false;
                 errorMessage += "• Phone number is required\n";
             }
-            else if (!IsValidPhoneNumber(txtPhoneNumber.Text))
+            else if (!IsValidPhoneNumber(txtPhoneNumber!.Text))
             {
                 isValid = false;
                 errorMessage += "• Invalid phone number format\n";
             }
             
-            if (string.IsNullOrWhiteSpace(txtEmail.Text))
+            if (string.IsNullOrWhiteSpace(txtEmail!.Text))
             {
                 isValid = false;
                 errorMessage += "• Email is required\n";
             }
-            else if (!IsValidEmail(txtEmail.Text))
+            else if (!IsValidEmail(txtEmail!.Text))
             {
                 isValid = false;
                 errorMessage += "• Invalid email address format\n";
             }
             
             // Update UI
-            lblValidationMessage.Text = errorMessage;
-            btnSave.Enabled = isValid;
+            lblValidationMessage!.Text = errorMessage;
+            btnSave!.Enabled = isValid;
         }
         
         private bool IsValidPhoneNumber(string phoneNumber)
@@ -325,27 +334,27 @@ namespace BusBuddy.Forms
             }
         }
         
-        private async void BtnSave_Click(object sender, EventArgs e)
+        private async void BtnSave_Click(object? sender, EventArgs e)
         {
             try
             {
                 // Disable the button to prevent double-clicks
-                btnSave.Enabled = false;
+                btnSave!.Enabled = false;
                 Cursor = Cursors.WaitCursor;
                 
                 // Create a driver object from form data
                 var driver = new Driver
                 {
-                    FirstName = txtFirstName.Text.Trim(),
-                    LastName = txtLastName.Text.Trim(),
-                    LicenseNumber = txtLicenseNumber.Text.Trim(),
-                    LicenseExpiration = dtpLicenseExpiration.Value,
-                    PhoneNumber = txtPhoneNumber.Text.Trim(),
-                    Email = txtEmail.Text.Trim()
+                    FirstName = txtFirstName!.Text.Trim(),
+                    LastName = txtLastName!.Text.Trim(),
+                    LicenseNumber = txtLicenseNumber!.Text.Trim(),
+                    LicenseExpiration = dtpLicenseExpiration!.Value,
+                    PhoneNumber = txtPhoneNumber!.Text.Trim(),
+                    Email = txtEmail!.Text.Trim()
                 };
                 
                 bool success;
-                if (_isEditing)
+                if (_isEditing && _driverId.HasValue)
                 {
                     // Update existing driver
                     driver.Id = _driverId.Value;
@@ -370,7 +379,7 @@ namespace BusBuddy.Forms
                 {
                     MessageBox.Show("Failed to save driver information.", 
                         "Save Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    btnSave.Enabled = true;
+                    btnSave!.Enabled = true;
                 }
             }
             catch (Exception ex)
@@ -378,7 +387,7 @@ namespace BusBuddy.Forms
                 _logger.LogError(ex, "Error saving driver");
                 MessageBox.Show($"Error saving driver: {ex.Message}", 
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                btnSave.Enabled = true;
+                btnSave!.Enabled = true;
             }
             finally
             {

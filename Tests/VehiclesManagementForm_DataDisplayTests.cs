@@ -32,7 +32,7 @@ namespace BusBuddy.Tests
             _dbHelperMock = new Mock<IDatabaseHelper>();
         }
         
-        [Fact]        
+        [Fact, WindowsOnly]        
         public async Task LoadVehicles_ShouldPopulateDataGridWithVehicles()
         {
             // Arrange
@@ -110,7 +110,7 @@ namespace BusBuddy.Tests
                 Times.AtLeastOnce);
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task LoadVehicles_ShouldHandleEmptyVehicleList()
         {
             // Arrange
@@ -163,7 +163,7 @@ namespace BusBuddy.Tests
                 Times.AtLeastOnce);
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public async Task LoadVehicles_ShouldHandleDatabaseException()
         {
             // Arrange
@@ -220,3 +220,4 @@ namespace BusBuddy.Tests
         }
     }
 }
+

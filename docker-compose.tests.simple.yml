@@ -1,0 +1,13 @@
+version: '3.8'
+
+# BusBuddy Tests - Simplified compose file for quick testing without dependencies
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests.simple
+    environment:
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - ASPNETCORE_ENVIRONMENT=Testing
+    volumes:
+      - ./TestResults:/app/SimpleTests/TestResults

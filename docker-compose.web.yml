@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: busbuddy-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=BusB#ddy!2025
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - busbuddy-sqlserver-data:/var/opt/mssql
+      - ./docker/sql:/docker-entrypoint-initdb.d
+    networks:
+      - busbuddy-network
+    restart: unless-stopped
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "BusB#ddy!2025" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Dashboard React Application
+  web:
+    build:
+      context: ./Forms/busbuddy-dashboard
+      dockerfile: Dockerfile
+    container_name: busbuddy-web
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      - DB_USER=BusBuddyApp
+      - DB_PASSWORD=App@P@ss!2025
+      - DB_SERVER=sqlserver
+      - DB_DATABASE=BusBuddy
+      - DB_PORT=1433
+      - PORT=5000
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:5000/api
+    ports:
+      - "3000:3000"  # React app
+      - "5050:5000"  # Dashboard API server
+    volumes:
+      - ./Forms/busbuddy-dashboard:/app/src
+    networks:
+      - busbuddy-network
+    command: npm start
+    develop:
+      watch:
+        - action: sync
+          path: ./Forms/busbuddy-dashboard
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./Forms/busbuddy-dashboard/package.json
+
+networks:
+  busbuddy-network:
+    driver: bridge
+
+volumes:
+  busbuddy-sqlserver-data:

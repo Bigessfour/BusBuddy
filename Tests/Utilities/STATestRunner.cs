@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -13,6 +13,8 @@ namespace BusBuddy.Tests.Utilities
     public class STATestRunner
     {
         private readonly IMessageSink _diagnosticMessageSink;
+        private static readonly bool IsRunningInContainer = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"));
+        private static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         
         public STATestRunner(IMessageSink diagnosticMessageSink)
         {
@@ -26,15 +28,25 @@ namespace BusBuddy.Tests.Utilities
         /// <returns>True if the test passes, false otherwise</returns>
         public bool RunTest(Action testMethod)
         {
+            if (IsRunningInContainer || !IsWindows)
+            {
+                throw new SkipException("This test requires Windows and cannot run in a container");
+            }
+
             Exception exception = null;
             var thread = new Thread(() => 
             {
                 try 
                 {
-                    // Set up Windows message pump for UI testing
-                    Application.SetHighDpiMode(HighDpiMode.SystemAware);
-                    Application.EnableVisualStyles();
-                    Application.SetCompatibleTextRenderingDefault(false);
+                    #if !CONTAINER
+                    if (IsWindows) 
+                    {
+                        // Only call Windows Forms API when actually running on Windows
+                        System.Windows.Forms.Application.SetHighDpiMode(System.Windows.Forms.HighDpiMode.SystemAware);
+                        System.Windows.Forms.Application.EnableVisualStyles();
+                        System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+                    }
+                    #endif
                     
                     // Run the test method
                     testMethod();

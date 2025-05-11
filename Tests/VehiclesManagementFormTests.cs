@@ -6,6 +6,7 @@ using BusBuddy.Models.Entities;
 using System.Collections.Generic;
 using Moq;
 using System;
+using BusBuddy.Tests.Utilities;
 
 namespace BusBuddy.Tests
 {
@@ -53,7 +54,7 @@ namespace BusBuddy.Tests
                 });
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void VehiclesManagementForm_InitializesCorrectly()
         {
             var form = new VehiclesManagementForm(_dbHelperMock.Object, _loggerMock.Object);
@@ -73,7 +74,7 @@ namespace BusBuddy.Tests
             Assert.True(true);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void VehiclesManagementForm_CanAddVehicle()
         {
             // Arrange
@@ -89,7 +90,7 @@ namespace BusBuddy.Tests
             Assert.True(true);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void VehiclesManagementForm_CanEditVehicle()
         {
             // Arrange
@@ -105,7 +106,7 @@ namespace BusBuddy.Tests
             Assert.True(true);
         }
 
-        [Fact]
+        [Fact, WindowsOnly]
         public void VehiclesManagementForm_CanDeleteVehicle()
         {
             // Arrange
@@ -117,7 +118,7 @@ namespace BusBuddy.Tests
             Assert.True(true);
         }
         
-        [Fact]
+        [Fact, WindowsOnly]
         public void VehiclesManagementForm_ChecksInsuranceExpiration()
         {
             // Arrange
@@ -142,3 +143,4 @@ namespace BusBuddy.Tests
         }
     }
 }
+
