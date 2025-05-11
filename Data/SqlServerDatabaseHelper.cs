@@ -6,6 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using BusBuddy.Data.Interfaces;
 using BusBuddy.Models.Entities;
+using RouteEntity = BusBuddy.Models.Entities.Route;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel;
 
 namespace BusBuddy.Data
 {
@@ -51,10 +56,12 @@ namespace BusBuddy.Data
                 _logger.LogError(ex, "Error initializing database");
                 throw;
             }
-        }        /// <summary>
+        }
+
+        /// <summary>
         /// Gets all routes from the database
         /// </summary>
-        public async Task<IEnumerable<Route>> GetRoutesAsync()
+        public async Task<IEnumerable<RouteEntity>> GetRoutesAsync()
         {
             try
             {
@@ -68,10 +75,12 @@ namespace BusBuddy.Data
                 _logger.LogError(ex, "Error getting routes");
                 throw;
             }
-        }        /// <summary>
+        }
+
+        /// <summary>
         /// Gets a route by ID
         /// </summary>
-        public async Task<Route> GetRouteByIdAsync(int routeId)
+        public async Task<RouteEntity> GetRouteByIdAsync(int routeId)
         {
             try
             {
@@ -89,7 +98,7 @@ namespace BusBuddy.Data
         /// <summary>
         /// Adds a new route to the database
         /// </summary>
-        public async Task<Route> AddRouteAsync(Route route)
+        public async Task<RouteEntity> AddRouteAsync(RouteEntity route)
         {
             try
             {
@@ -119,7 +128,7 @@ namespace BusBuddy.Data
         /// <summary>
         /// Updates an existing route
         /// </summary>
-        public async Task<bool> UpdateRouteAsync(Route route)
+        public async Task<bool> UpdateRouteAsync(RouteEntity route)
         {
             try
             {
@@ -177,7 +186,9 @@ namespace BusBuddy.Data
                 _logger.LogError(ex, "Error deleting route with ID: {RouteId}", routeId);
                 throw;
             }
-        }        /// <summary>
+        }
+
+        /// <summary>
         /// Gets all vehicles from the database
         /// </summary>
         /// <returns>List of vehicles</returns>
@@ -195,7 +206,9 @@ namespace BusBuddy.Data
                 _logger.LogError(ex, "Error getting vehicles");
                 throw;
             }
-        }        /// <summary>
+        }
+
+        /// <summary>
         /// Gets a vehicle by ID
         /// </summary>
         /// <param name="id">The vehicle ID</param>
@@ -252,7 +265,8 @@ namespace BusBuddy.Data
                 throw;
             }
         }
-          /// <summary>
+
+        /// <summary>
         /// Gets all drivers from the database
         /// </summary>
         /// <returns>List of drivers</returns>
@@ -271,7 +285,8 @@ namespace BusBuddy.Data
                 throw;
             }
         }
-          /// <summary>
+
+        /// <summary>
         /// Gets a driver by ID
         /// </summary>
         /// <param name="driverId">The driver ID</param>
@@ -342,7 +357,8 @@ namespace BusBuddy.Data
                 throw;
             }
         }
-          /// <summary>
+
+        /// <summary>
         /// Updates an existing driver
         /// </summary>
         /// <param name="driver">The driver with updated information</param>
@@ -402,7 +418,9 @@ namespace BusBuddy.Data
                 _logger.LogError(ex, "Error deleting driver with ID {DriverId}", driverId);
                 return false;
             }
-        }        /// <summary>
+        }
+
+        /// <summary>
         /// Deletes a vehicle by ID
         /// </summary>
         /// <param name="vehicleId">The ID of the vehicle to delete</param>
@@ -490,6 +508,44 @@ namespace BusBuddy.Data
                 _logger.LogError(ex, "Error getting drivers with licenses expiring in next {Days} days", daysThreshold);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Gets all routes as a stream using async enumerable
+        /// </summary>
+        public async IAsyncEnumerable<RouteEntity> GetRoutesStreamAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("Getting routes as stream");
+
+            var routes = _context.Routes
+                .AsNoTrackingWithIdentityResolution()  // New in EF Core 9 for better performance
+                .AsAsyncEnumerable();
+
+            await foreach (var route in routes.WithCancellation(cancellationToken))
+            {
+                yield return route;
+            }
+        }
+
+        /// <summary>
+        /// Gets drivers available during a specific time range using TimeProvider
+        /// </summary>
+        public async Task<IEnumerable<Driver>> GetDriversAvailableDuringAsync(TimeSpan startTime, TimeSpan endTime, 
+            TimeProvider timeProvider)
+        {
+            var currentTime = timeProvider.GetLocalNow();
+            var today = currentTime.Date;
+            
+            var startDateTime = today.Add(startTime);
+            var endDateTime = today.Add(endTime);
+            
+            return await _context.Drivers
+                .Where(d => !_context.Schedules.Any(s => 
+                    s.DriverId == d.Id && 
+                    ((s.StartTime <= startDateTime && s.EndTime >= startDateTime) ||
+                     (s.StartTime <= endDateTime && s.EndTime >= endDateTime) ||
+                     (s.StartTime >= startDateTime && s.EndTime <= endDateTime))))
+                .ToListAsync();
         }
     }
 }

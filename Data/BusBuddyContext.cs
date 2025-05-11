@@ -1,13 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using BusBuddy.Models.Entities;
 using BusBuddy.Models.ValueObjects;
 using BusBuddy.Models.Logs;
+// Add type aliases to resolve ambiguity
 using RouteEntity = BusBuddy.Models.Entities.Route;
 using RouteDataEntity = BusBuddy.Models.Entities.RouteData;
 
 namespace BusBuddy.Data
-{    public class BusBuddyContext : DbContext
+{
+    public class BusBuddyContext : DbContext
     {
         public BusBuddyContext(DbContextOptions<BusBuddyContext> options) : base(options) { }
 
@@ -23,6 +29,7 @@ namespace BusBuddy.Data
         public DbSet<LogEntry> LogEntries { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<Alert> Alerts { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,7 +48,7 @@ namespace BusBuddy.Data
                 .Property(p => p.UnitPrice).HasPrecision(18, 2);
 
             // Decimal precision for Route
-            modelBuilder.Entity<Route>()
+            modelBuilder.Entity<RouteEntity>()
                 .Property(r => r.Distance).HasPrecision(18, 2);
 
             // Decimal precision for Destination
@@ -53,25 +60,25 @@ namespace BusBuddy.Data
                 .Property(v => v.Odometer).HasPrecision(18, 2);
 
             // Decimal precision for RouteData
-            modelBuilder.Entity<RouteData>()
+            modelBuilder.Entity<RouteDataEntity>()
                 .Property(r => r.AMStartMileage).HasPrecision(18, 2);
-            modelBuilder.Entity<RouteData>()
+            modelBuilder.Entity<RouteDataEntity>()
                 .Property(r => r.AMEndMileage).HasPrecision(18, 2);
-            modelBuilder.Entity<RouteData>()
+            modelBuilder.Entity<RouteDataEntity>()
                 .Property(r => r.PMStartMileage).HasPrecision(18, 2);
-            modelBuilder.Entity<RouteData>()
+            modelBuilder.Entity<RouteDataEntity>()
                 .Property(r => r.PMEndMileage).HasPrecision(18, 2);
 
             // Configure cascade behavior for RouteData driver relationships
             // First relationship uses SetNull
-            modelBuilder.Entity<RouteData>()
+            modelBuilder.Entity<RouteDataEntity>()
                 .HasOne(rd => rd.AMDriver)
                 .WithMany()
                 .HasForeignKey(rd => rd.AMDriverId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             // Second relationship uses Restrict/NoAction to avoid multiple cascade paths
-            modelBuilder.Entity<RouteData>()
+            modelBuilder.Entity<RouteDataEntity>()
                 .HasOne(rd => rd.PMDriver)
                 .WithMany()
                 .HasForeignKey(rd => rd.PMDriverId)
@@ -124,14 +131,41 @@ namespace BusBuddy.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Configure relationships for Route and Destination
-            modelBuilder.Entity<Route>()
+            modelBuilder.Entity<RouteEntity>()
                 .HasMany(r => r.Destinations)
                 .WithOne(d => d.Route)  // Assuming Destination has a Route navigation property
                 .HasForeignKey("RouteId")  // Using string-based column name without requiring property
                 .IsRequired(false);  // Make it optional
-        }        /// <summary>
+
+            // Configure relationships for Schedule
+            modelBuilder.Entity<Schedule>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                
+                entity.HasOne(e => e.Driver)
+                      .WithMany()  // You might want to add a navigation property to Driver
+                      .HasForeignKey(e => e.DriverId)
+                      .IsRequired()
+                      .OnDelete(DeleteBehavior.Cascade);
+                      
+                entity.HasOne(e => e.Vehicle)
+                      .WithMany()  // You might want to add a navigation property to Vehicle
+                      .HasForeignKey(e => e.VehicleId)
+                      .IsRequired(false)
+                      .OnDelete(DeleteBehavior.SetNull);
+                      
+                entity.HasOne(e => e.Route)
+                      .WithMany()  // You might want to add a navigation property to Route
+                      .HasForeignKey(e => e.RouteId)
+                      .IsRequired(false)
+                      .OnDelete(DeleteBehavior.SetNull);
+            });
+        }
+
+        /// <summary>
         /// Safely deletes a driver by handling all dependent records to avoid foreign key constraint violations.
-        /// </summary>        /// <param name="driverId">The ID of the driver to delete.</param>
+        /// </summary>
+        /// <param name="driverId">The ID of the driver to delete.</param>
         /// <param name="reassignToDriverId">Optional. If provided, reassigns RouteData to this driver instead of setting to null.</param>
         /// <param name="logger">Optional. ILogger for logging errors.</param>
         /// <returns>True if deleted, false if not found or error.</returns>

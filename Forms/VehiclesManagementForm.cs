@@ -11,10 +11,16 @@ using System.Text.RegularExpressions;
 namespace BusBuddy.Forms
 {
     public class VehiclesManagementForm : Form
-    {
-        private IDatabaseHelper _dbHelper;
+    {        private IDatabaseHelper _dbHelper;
         private BindingSource bindingSource;
+        
+        /// <summary>
+        /// Gets the DataGridView component
+        /// </summary>
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public DataGridView DataGridView { get; private set; }
+        
         private readonly ILogger<VehiclesManagementForm> _logger;
         
         // UI Controls for adding/editing

@@ -118,7 +118,9 @@
             Console.WriteLine($"Error loading dashboard data: {ex.Message}");
             // In a real app, you might want to display an error message
         }
-    }    private async Task RenderChartAsync()
+    }
+
+    private async Task RenderChartAsync()
     {
         try
         {
@@ -166,6 +168,16 @@
             "warning" => "bg-warning",
             "info" => "bg-info",
             _ => "bg-secondary"
+        };
+    }
+
+    private DashboardMetricsDto MapDashboardDataToMetrics(DashboardDto dashboardData)
+    {
+        return new DashboardMetricsDto
+        {
+            ActiveDrivers = dashboardData.ActiveDrivers,
+            ActiveRoutes = dashboardData.ActiveRoutes,
+            // Map any other properties that exist in both types
         };
     }
 }
