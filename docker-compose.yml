@@ -1,22 +1,23 @@
 services:
   # BusBuddy Web Application
   busbuddy:
+    image: busbuddy:latest
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: busbuddy-app
+    container_name: busbuddy
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - USE_SQLITE=true
     ports:
-      - "5000:5000"
+      - "5000:80"
     volumes:
-      - busbuddy-data:/app/data
+      - busbuddy-data:/data
     networks:
       - busbuddy-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 10s
       timeout: 5s
       retries: 3

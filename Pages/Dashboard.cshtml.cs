@@ -44,48 +44,83 @@ namespace BusBuddy.Pages
                 // Add some demo data to ensure the page shows something
                 AddDemoData();
             }
-        }
-
-        private async Task LoadScheduleData()
+        }        private async Task LoadScheduleData()
         {
-            // This method would normally query the database with EF Core
-            // Since we don't know the exact structure, we're adding demo data
-            AddDemoData();
-        }
-
-        private async Task SeedBasicDataIfNeeded()
+            // Query the database for bus schedules
+            Schedules = await _context.BusSchedules
+                .OrderBy(s => s.Time)
+                .ToListAsync();
+                
+            _logger.LogInformation($"Loaded {Schedules.Count} schedules from the database");
+        }        private async Task SeedBasicDataIfNeeded()
         {
             // Check if we need to seed data (empty database)
-            // This would normally check specific tables and seed if empty
+            if (!await _context.BusSchedules.AnyAsync())
+            {
+                _logger.LogInformation("Seeding initial bus schedule data");
+                
+                _context.BusSchedules.AddRange(
+                    new BusSchedule
+                    {
+                        RouteName = "Downtown Express",
+                        Time = DateTime.Now.Date.AddHours(9).AddMinutes(30)
+                    },
+                    new BusSchedule
+                    {
+                        RouteName = "Airport Shuttle",
+                        Time = DateTime.Now.Date.AddHours(10).AddMinutes(15)
+                    },
+                    new BusSchedule
+                    {
+                        RouteName = "University Route",
+                        Time = DateTime.Now.Date.AddHours(11).AddMinutes(0)
+                    }
+                );
+                
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Database seeded with initial schedules");
+            }
+        }
+
+        public async Task<IActionResult> OnPostAddScheduleAsync()
+        {
+            if (string.IsNullOrEmpty(NewSchedule.RouteName))
+            {
+                NewSchedule.RouteName = "Downtown"; // Default value
+            }
+            
+            _context.BusSchedules.Add(NewSchedule);
+            await _context.SaveChangesAsync();
+            
+            _logger.LogInformation($"Added new schedule: {NewSchedule.RouteName} at {NewSchedule.Time}");
+            
+            return RedirectToPage();
         }
 
         private void AddDemoData()
         {
-            Schedules = new List<BusScheduleDto>
+            // Only add demo data if we couldn't load from database
+            _logger.LogWarning("Using demo data instead of database data");
+            
+            Schedules = new List<BusSchedule>
             {
-                new BusScheduleDto
+                new BusSchedule
                 {
+                    Id = -1,
                     RouteName = "Downtown Express",
-                    DriverName = "John Smith",
-                    VehicleInfo = "Bus #1042",
-                    Status = "On Time",
-                    UpdatedAt = DateTime.Now.AddMinutes(-5)
+                    Time = DateTime.Now.AddHours(1)
                 },
-                new BusScheduleDto
+                new BusSchedule
                 {
+                    Id = -2,
                     RouteName = "Airport Shuttle",
-                    DriverName = "Sarah Johnson",
-                    VehicleInfo = "Bus #2305",
-                    Status = "Delayed",
-                    UpdatedAt = DateTime.Now.AddMinutes(-15)
+                    Time = DateTime.Now.AddHours(2)
                 },
-                new BusScheduleDto
+                new BusSchedule
                 {
+                    Id = -3,
                     RouteName = "University Route",
-                    DriverName = "Michael Chen",
-                    VehicleInfo = "Bus #1578",
-                    Status = "On Time",
-                    UpdatedAt = DateTime.Now.AddMinutes(-2)
+                    Time = DateTime.Now.AddHours(3)
                 }
             };
         }

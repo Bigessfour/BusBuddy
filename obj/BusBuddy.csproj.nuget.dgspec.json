@@ -18,14 +18,14 @@
           "C:\\Users\\steve.mckitrick\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net6.0"
+          "net8.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net6.0": {
-            "targetAlias": "net6.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -33,117 +33,87 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Dapper": {
               "target": "Package",
               "version": "[2.1.35, )",
               "versionCentrallyManaged": true
             },
-            "MaterialSkin.2": {
-              "target": "Package",
-              "version": "[2.3.1, )",
-              "versionCentrallyManaged": true
-            },
-            "Microsoft.AspNetCore": {
-              "target": "Package",
-              "version": "[2.2.0, )",
-              "versionCentrallyManaged": true
-            },
-            "Microsoft.AspNetCore.Hosting": {
-              "target": "Package",
-              "version": "[2.2.7, )",
-              "versionCentrallyManaged": true
-            },
-            "Microsoft.AspNetCore.Mvc.Core": {
-              "target": "Package",
-              "version": "[2.2.5, )",
-              "versionCentrallyManaged": true
-            },
-            "Microsoft.AspNetCore.SignalR": {
-              "target": "Package",
-              "version": "[1.1.0, )",
-              "versionCentrallyManaged": true
-            },
             "Microsoft.AspNetCore.SignalR.Client": {
               "target": "Package",
-              "version": "[6.0.16, )",
+              "version": "[8.0.8, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[6.0.16, )",
+              "version": "[8.0.8, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[6.0.16, )",
+              "version": "[8.0.8, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[6.0.16, )",
+              "version": "[8.0.8, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[6.0.16, )",
+              "version": "[8.0.8, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[6.0.16, )",
+              "version": "[8.0.8, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Caching.Memory": {
               "target": "Package",
-              "version": "[6.0.3, )",
+              "version": "[8.0.8, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
-              "version": "[6.0.2, )",
-              "versionCentrallyManaged": true
-            },
-            "Microsoft.Extensions.Hosting": {
-              "target": "Package",
-              "version": "[6.0.1, )",
+              "version": "[8.0.8, )",
               "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Logging": {
               "target": "Package",
-              "version": "[6.0.1, )",
-              "versionCentrallyManaged": true
-            },
-            "System.Data.SQLite": {
-              "target": "Package",
-              "version": "[1.0.118, )",
+              "version": "[8.0.8, )",
               "versionCentrallyManaged": true
             }
           },
           "centralPackageVersions": {
-            "Dapper": "[2.1.35, )",
-            "MaterialSkin.2": "[2.3.1, )",
-            "Microsoft.AspNetCore": "[2.2.0, )",
-            "Microsoft.AspNetCore.Hosting": "[2.2.7, )",
-            "Microsoft.AspNetCore.Mvc.Core": "[2.2.5, )",
-            "Microsoft.AspNetCore.SignalR": "[1.1.0, )",
-            "Microsoft.AspNetCore.SignalR.Client": "[6.0.16, )",
-            "Microsoft.EntityFrameworkCore": "[6.0.16, )",
-            "Microsoft.EntityFrameworkCore.Design": "[6.0.16, )",
-            "Microsoft.EntityFrameworkCore.InMemory": "[6.0.16, )",
-            "Microsoft.EntityFrameworkCore.Sqlite": "[6.0.16, )",
-            "Microsoft.EntityFrameworkCore.SqlServer": "[6.0.16, )",
-            "Microsoft.EntityFrameworkCore.Tools": "[6.0.16, )",
-            "Microsoft.Extensions.Caching.Memory": "[6.0.3, )",
-            "Microsoft.Extensions.DependencyInjection": "[6.0.2, )",
-            "Microsoft.Extensions.Hosting": "[6.0.1, )",
-            "Microsoft.Extensions.Logging": "[6.0.1, )",
-            "System.Data.SQLite": "[1.0.118, )"
+            "Dapper": "2.1.35",
+            "Microsoft.AspNetCore.SignalR.Client": "8.0.8",
+            "Microsoft.EntityFrameworkCore": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.8",
+            "Microsoft.EntityFrameworkCore.InMemory": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Sqlite": "8.0.8",
+            "Microsoft.EntityFrameworkCore.SqlServer": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Tools": "8.0.8",
+            "Microsoft.Extensions.Caching.Memory": "8.0.8",
+            "Microsoft.Extensions.DependencyInjection": "8.0.8",
+            "Microsoft.Extensions.Hosting": "8.0.8",
+            "Microsoft.Extensions.Logging": "8.0.8",
+            "System.Data.SQLite": "1.0.118",
+            "System.Data.SQLite.Core": "1.0.118"
           },
           "imports": [
             "net461",
@@ -164,7 +134,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.428\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.408/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

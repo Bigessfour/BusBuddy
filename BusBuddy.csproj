@@ -1,46 +1,40 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">  
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <PreserveCompilationContext>true</PreserveCompilationContext>
     <RootNamespace>BusBuddy</RootNamespace>
-    <!-- Setting this explicitly for Linux Docker -->
-    <UseWindowsForms>false</UseWindowsForms>
-  </PropertyGroup><ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Dapper" Version="2.1.28" />
-  </ItemGroup>
-  
-  <!-- Exclude Windows Forms dependencies and specified files from compilation -->
+    <!-- Enable Dashboard Hub components -->
+    <UseHubDashboard>true</UseHubDashboard>
+    <UseControllers>true</UseControllers>
+  </PropertyGroup>
+    <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+  </ItemGroup>  <!-- Keep only essential files, remove everything else -->
   <ItemGroup>
-    <Compile Remove="Forms\**" />
-    <Compile Remove="BusBuddyApplicationContext.cs" />
-    <Compile Remove="Extensions\DriverManagementExtensions.cs" />
-    <Content Remove="Forms\**" />
-    <EmbeddedResource Remove="Forms\**" />
-    <None Remove="Forms\**" />
-    <None Include="BusBuddyApplicationContext.cs" CopyToOutputDirectory="Never" />
-    <None Include="Extensions\DriverManagementExtensions.cs" CopyToOutputDirectory="Never" />
+    <!-- Include only essential components -->
+    <Compile Include="Hubs\**\*.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Services\Dashboard\**\*.cs" />
+    <Compile Include="DTOs\DashboardMetricsDto.cs" />
+    <Compile Include="DTOs\AlertDto.cs" />
+    <Compile Include="DTOs\RouteDto.cs" />
+    <Compile Include="DTOs\IDashboardData.cs" />
+    <Compile Include="DTOs\TripDto.cs" />
+    <Compile Include="Data\BusBuddyContext.cs" />
+    
+    <!-- Exclude everything else -->
+    <Compile Remove="**\*.cs" Exclude="Program.cs;Hubs\**\*.cs;Controllers\DashboardController.cs;Services\Dashboard\**\*.cs;DTOs\DashboardMetricsDto.cs;DTOs\AlertDto.cs;DTOs\RouteDto.cs;DTOs\IDashboardData.cs;DTOs\TripDto.cs;Data\BusBuddyContext.cs" />
+    
+    <!-- Keep the demo dashboard HTML file -->
+    <Content Include="dashboard-demo.html" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
-
   <!-- Ensure appsettings.json is copied to output -->
   <ItemGroup>
     <Content Update="appsettings.json">
@@ -50,9 +44,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <!-- Link Dockerfile -->
+  
+  <!-- Include JavaScript files -->
   <ItemGroup>
-    <None Include="Dockerfile" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="wwwroot\js\dashboard.js" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

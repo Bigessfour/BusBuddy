@@ -1,5 +1,6 @@
 @page
 @model BusBuddy.Pages.DashboardModel
+@inject BusBuddy.Services.IBusScheduleHelper BusScheduleHelper
 @{
     ViewData["Title"] = "BusBuddy Dashboard";
 }
@@ -17,26 +18,41 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Route</th>
-                                <th>Driver</th>
-                                <th>Vehicle</th>
-                                <th>Status</th>
-                                <th>Last Updated</th>
+                                <th>Schedule</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var schedule in Model.Schedules)
                             {
                                 <tr>
+                                    <td>@schedule.Id</td>
                                     <td>@schedule.RouteName</td>
-                                    <td>@schedule.DriverName</td>
-                                    <td>@schedule.VehicleInfo</td>
-                                    <td>@schedule.Status</td>
-                                    <td>@schedule.UpdatedAt.ToString("g")</td>
+                                    <td>@BusScheduleHelper.FormatSchedule(schedule)</td>
                                 </tr>
                             }
                         </tbody>
                     </table>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h2>Add New Schedule</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" asp-page-handler="AddSchedule">
+                        <div class="mb-3">
+                            <label asp-for="NewSchedule.RouteName" class="form-label">Route Name</label>
+                            <input asp-for="NewSchedule.RouteName" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="NewSchedule.Time" class="form-label">Schedule Time</label>
+                            <input asp-for="NewSchedule.Time" class="form-control" type="datetime-local" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Schedule</button>
+                    </form>
                 </div>
             </div>
         </div>
