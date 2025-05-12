@@ -1,50 +1,19 @@
-version: '3.8'
-
 services:
-  # SQL Server Database
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: busbuddy-sqlserver
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=BusB#ddy!2025
-      - MSSQL_PID=Express
-    ports:
-      - "1433:1433"
-    volumes:
-      - busbuddy-sqlserver-data:/var/opt/mssql
-      - ./docker/sql:/docker-entrypoint-initdb.d
-    networks:
-      - busbuddy-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "bash", "-c", "</dev/tcp/localhost/1433"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # Blazor Application
-  blazor:
+  # BusBuddy Web Application
+  busbuddy:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: busbuddy-blazor
-    depends_on:
-      sqlserver:
-        condition: service_healthy
+    container_name: busbuddy-app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - USE_DOCKER_DB=true
-      - CONNECTION_STRING=Server=sqlserver;Database=BusBuddy;User Id=BusBuddyApp;Password=App@P@ss!2025;TrustServerCertificate=True;Encrypt=False
+      - USE_SQLITE=true
     ports:
       - "5000:5000"
-      - "5001:5001"
+    volumes:
+      - busbuddy-data:/app/data
     networks:
       - busbuddy-network
-    volumes:
-      - ./:/app
-      - /app/bin
-      - /app/obj
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
@@ -58,4 +27,5 @@ networks:
     driver: bridge
 
 volumes:
-  busbuddy-sqlserver-data:
+  busbuddy-data:
+    driver: local

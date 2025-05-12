@@ -21,8 +21,7 @@ docker-compose ps
 
 echo.
 echo BusBuddy application is now running!
-echo - Access the ASP.NET Core app at: http://localhost:5000
-echo - Access the React dashboard at: http://localhost:3000
+echo - Access the BusBuddy Dashboard at: http://localhost:5000/Dashboard
 echo.
 echo To view logs, use: docker-compose logs -f
 echo To stop the application, use: docker-compose down

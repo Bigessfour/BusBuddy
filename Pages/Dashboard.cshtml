@@ -1,0 +1,44 @@
+@page
+@model BusBuddy.Pages.DashboardModel
+@{
+    ViewData["Title"] = "BusBuddy Dashboard";
+}
+
+<div class="container">
+    <h1>BusBuddy Dashboard</h1>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2>Bus Schedules</h2>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Route</th>
+                                <th>Driver</th>
+                                <th>Vehicle</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var schedule in Model.Schedules)
+                            {
+                                <tr>
+                                    <td>@schedule.RouteName</td>
+                                    <td>@schedule.DriverName</td>
+                                    <td>@schedule.VehicleInfo</td>
+                                    <td>@schedule.Status</td>
+                                    <td>@schedule.UpdatedAt.ToString("g")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

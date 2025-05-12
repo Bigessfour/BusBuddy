@@ -1,15 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using BusBuddy.Models.Entities;
-using BusBuddy.Models.ValueObjects;
-using BusBuddy.Models.Logs;
-// Add type aliases to resolve ambiguity
-using RouteEntity = BusBuddy.Models.Entities.Route;
-using RouteDataEntity = BusBuddy.Models.Entities.RouteData;
 
 namespace BusBuddy.Data
 {
@@ -17,35 +6,16 @@ namespace BusBuddy.Data
     {
         public BusBuddyContext(DbContextOptions<BusBuddyContext> options) : base(options) { }
 
-        public DbSet<Driver> Drivers { get; set; }
-        public DbSet<Vehicle> Vehicles { get; set; }
-        public DbSet<RouteEntity> Routes { get; set; }
-        public DbSet<ActivityTrip> ActivityTrips { get; set; }
-        public DbSet<Destination> Destinations { get; set; }
-        public DbSet<FuelEntry> FuelEntries { get; set; }
-        public DbSet<Maintenance> Maintenances { get; set; }
-        public DbSet<Part> Parts { get; set; }
-        public DbSet<RouteDataEntity> RouteData { get; set; }
-        public DbSet<LogEntry> LogEntries { get; set; }
-        public DbSet<Trip> Trips { get; set; }
-        public DbSet<Alert> Alerts { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<BusSchedule> BusSchedules { get; set; }        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Decimal precision for FuelEntry
-            modelBuilder.Entity<FuelEntry>()
-                .Property(f => f.FuelAmount).HasPrecision(18, 2);
-            modelBuilder.Entity<FuelEntry>()
-                .Property(f => f.Mileage).HasPrecision(18, 2);
-            modelBuilder.Entity<FuelEntry>()
-                .Property(f => f.PricePerGallon).HasPrecision(18, 2);
-            modelBuilder.Entity<FuelEntry>()
-                .Property(f => f.TotalCost).HasPrecision(18, 2);
-
-            // Decimal precision for Part
-            modelBuilder.Entity<Part>()
-                .Property(p => p.UnitPrice).HasPrecision(18, 2);
+            // Configure BusSchedule entity
+            modelBuilder.Entity<BusSchedule>()
+                .HasKey(s => s.Id);
+            
+            modelBuilder.Entity<BusSchedule>()
+                .Property(s => s.RouteName)
+                .IsRequired()
+                .HasMaxLength(100);
 
             // Decimal precision for Route
             modelBuilder.Entity<RouteEntity>()

@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,30 +35,26 @@ namespace BusBuddy
         /// </summary>
         /// <param name="services">Service collection</param>
         public void ConfigureServices(IServiceCollection services)
-        {
-            // Add database context
+        {            // Add database context
             services.AddDbContext<BusBuddyContext>(options =>
             {
-                // Check if we're running in Docker environment
-                var useDocker = Environment.GetEnvironmentVariable("USE_DOCKER_DB")?.ToLower() == "true";
-                var connectionString = "";
+                // Check if we're running in Docker and should use SQLite
+                var useSqlite = Environment.GetEnvironmentVariable("USE_SQLITE") == "true";
                 
-                // If CONNECTION_STRING environment variable is set, use it directly (Docker container)
-                var envConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-                if (!string.IsNullOrEmpty(envConnectionString))
+                if (useSqlite)
                 {
-                    connectionString = envConnectionString;
-                    Console.WriteLine("Using connection string from environment variable");
+                    // Use SQLite for Docker
+                    var sqliteConnectionString = _configuration.GetConnectionString("SqliteConnection") ?? "Data Source=/app/data/BusBuddy.db";
+                    Console.WriteLine("Using SQLite connection: " + sqliteConnectionString);
+                    options.UseSqlite(sqliteConnectionString);
                 }
                 else
                 {
-                    // Otherwise use from appsettings.json
-                    var connectionName = useDocker ? "DockerConnection" : "DefaultConnection";
-                    connectionString = _configuration.GetConnectionString(connectionName);
-                    Console.WriteLine($"Using {connectionName} connection string from configuration");
+                    // Use SQL Server for local development
+                    var connectionString = _configuration.GetConnectionString("DefaultConnection");
+                    Console.WriteLine("Using SQL Server connection string from configuration");
+                    options.UseSqlServer(connectionString);
                 }
-                
-                options.UseSqlServer(connectionString);
             });
 
             // Add controllers
@@ -107,17 +104,22 @@ namespace BusBuddy
             logger.LogInformation("Configuring ASP.NET Core request pipeline");
 
             // Ensure database is created and migrations are applied
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            try
             {
-                var dbContext = serviceScope.ServiceProvider.GetService<BusBuddyContext>();
-                if (dbContext != null)
+                using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
-                    dbContext.Database.EnsureCreated();
-                    logger.LogInformation("Database created or verified");
-                    
-                    // Seed data for dashboard demo if needed
-                    SeedDashboardData(dbContext, logger);
+                    var dbContext = serviceScope.ServiceProvider.GetService<BusBuddyContext>();
+                    if (dbContext != null)
+                    {
+                        dbContext.Database.EnsureCreated();
+                        logger.LogInformation("Database created or verified");
+                        // Seed data for dashboard demo if needed
+                        SeedDashboardData(dbContext, logger);
+                    }
                 }
+            }            catch (Exception ex) when (ex is Microsoft.Data.SqlClient.SqlException || ex is SqliteException)
+            {
+                logger.LogError(ex, "Could not connect to the database. The dashboard will still start, but data will not be available. Please check your connection string and database server.");
             }
             
             if (env.IsDevelopment())
@@ -128,7 +130,7 @@ namespace BusBuddy
             {
                 app.UseExceptionHandler("/error");
             }
-            
+
             // Serve static files
             app.UseStaticFiles();
             
@@ -142,9 +144,7 @@ namespace BusBuddy
             app.UseRouting();
             
             // Enable CORS - should be after UseRouting and before UseEndpoints
-            app.UseCors("DashboardCorsPolicy");
-
-            // Configure endpoints
+            app.UseCors("DashboardCorsPolicy");            // Configure endpoints
             app.UseEndpoints(endpoints =>
             {
                 // Map controllers
@@ -156,17 +156,47 @@ namespace BusBuddy
                 // Map Blazor Hub
                 endpoints.MapBlazorHub();
                 
-                // Map fallback to _Host.cshtml
+                // Map Razor Pages
+                endpoints.MapRazorPages();
+                
+                // Map fallback to _Host.cshtml (required for Blazor Server)
                 endpoints.MapFallbackToPage("/_Host");
             });
 
+            // Log the dashboard URL for VS Code auto-open
+            logger.LogInformation("Now listening on: http://localhost:5500/dashboard");
+            logger.LogInformation("Now listening on: http://localhost:5500/modern-dashboard");
             logger.LogInformation("ASP.NET Core request pipeline configured");
-        }
-
-        // Seed method remains the same
-        private void SeedDashboardData(BusBuddyContext dbContext, ILogger logger)
+        }        private void SeedDashboardData(BusBuddyContext dbContext, ILogger logger)
         {
-            // Same implementation as before
+            try
+            {
+                // Sample data for the dashboard demo
+                if (dbContext.Routes != null && !dbContext.Routes.Any())
+                {
+                    logger.LogInformation("Seeding sample data for dashboard demo");
+                      // Add sample routes
+                    var routes = new[]
+                    {
+                        new Models.Entities.Route { RouteName = "Downtown Express", Description = "Express route through downtown area" },
+                        new Models.Entities.Route { RouteName = "Airport Shuttle", Description = "Route to the airport" },
+                        new Models.Entities.Route { RouteName = "Campus Loop", Description = "Loop around university campus" }
+                    };
+                    
+                    dbContext.Routes.AddRange(routes);
+                    dbContext.SaveChanges();
+                    
+                    logger.LogInformation("Sample data seeded successfully");
+                }
+                else
+                {
+                    logger.LogInformation("Sample data already exists or Routes table not available");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error seeding sample data");
+            }
         }
     }
 }

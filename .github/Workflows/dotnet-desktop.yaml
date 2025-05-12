@@ -50,29 +50,7 @@ jobs:
     - name: Build
       run: dotnet build BusBuddy.sln --configuration ${{ matrix.configuration }} --no-restore
 
-    # Step 7: Run tests with coverage (runs xUnit tests and measures how much code is tested)
-    - name: Install Coverlet
-      run: dotnet tool install --global coverlet.console
-      
-    - name: Test with Coverage
-      run: dotnet test Tests\BusBuddy.Tests.csproj --configuration ${{ matrix.configuration }} --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-      continue-on-error: true  # Won't fail the build if tests fail, but you'll see the results
-
-    # Step 8: Generate a test coverage report (shows which parts of your code need more tests)
-    - name: Install ReportGenerator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-      
-    - name: Generate Coverage Report
-      run: reportgenerator -reports:"**/coverage.opencover.xml" -targetdir:"coveragereport" -reporttypes:Html
-      if: always()  # Runs even if the test step fails
-
-    # Step 9: Upload the coverage report (you can download this to see untested code)
-    - name: Upload Coverage Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report-${{ matrix.configuration }}
-        path: coveragereport
-      if: always()
+    # Step 7-9: Test steps removed as test project has been removed
 
     # Step 10: Upload build artifacts (useful for debugging if the build fails)
     - name: Upload Build Artifacts

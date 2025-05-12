@@ -4,17 +4,28 @@ obj/
 **/bin/
 **/obj/
 out/
-TestResults/
-**/build/
+
+# Forms and Windows Forms dependencies
+Forms/
+BusBuddyApplicationContext.cs
+Extensions/DriverManagementExtensions.cs
+Extensions/*.cs
+
+# Test projects
+*.Tests/
+*Tests/
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+*.mdf
+*.ldf
 
 # Node modules and npm logs
 **/node_modules/
 **/npm-debug.log
 **/.npm/
-
-# React build artifacts
-**/build/
-**/.cache/
 
 # Git repositories
 .git/
@@ -51,10 +62,6 @@ yarn-error.log*
 *~
 *.backup
 
-# Test files
-# Tests/
-# TestResults/
-
 # Docker specific (avoids recursive copying)
 .dockerignore
 Dockerfile*
@@ -86,7 +93,3 @@ bld/
 *.snupkg
 **/packages/*
 !**/packages/build/
-
-# Test results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*

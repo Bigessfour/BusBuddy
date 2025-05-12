@@ -26,12 +26,10 @@ jobs:
       
       - name: Restore dependencies
         run: dotnet restore BusBuddy.sln
-      
-      - name: Build
+        - name: Build
         run: dotnet build BusBuddy.sln --no-restore
       
-      - name: Test
-        run: dotnet test Tests\BusBuddy.Tests.csproj --no-build
+      # Test step removed as test project has been removed
       
       - name: Analyze code quality
         run: |

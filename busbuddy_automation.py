@@ -411,9 +411,6 @@ def commit_changes(repo):
         )
         files_to_commit = [
             "Data/Interfaces/IDatabaseHelper.cs",
-            "Tests/RouteManagementFormTests.cs",
-            "Tests/VehiclesManagementFormTests.cs",
-            "Tests/BusBuddy.Tests.csproj",
             "Models/Entities/Driver.cs",
             "Forms/Dashboard.cs",
             "Forms/DriversManagementForm.cs",
